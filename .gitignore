@@ -1,3 +1,4 @@
 node_modules
 Pods
 .DS_Store
+.env
