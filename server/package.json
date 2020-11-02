@@ -8,5 +8,10 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "crypto-random-string": "^3.3.0",
+    "mongoose": "^5.10.11",
+    "mongoose-type-email": "^1.0.13"
+  }
 }

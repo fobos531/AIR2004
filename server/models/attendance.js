@@ -1,0 +1,23 @@
+const mongoose = require("mongoose");
+const cryptoRandomString = require("crypto-random-string");
+
+const attendanceSchema = mongoose.Schema({
+  lecture: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Lecture",
+  },
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+  },
+  qrCode: {
+    type: String,
+    required: true,
+    unique: true,
+    default: cryptoRandomString({ length: 15 }),
+  },
+});
+
+attendanceSchema.index({ lecture: 1, user: 1 }, { unique: true });
+
+module.exports = mongoose.model("Attendance", attendanceSchema);
