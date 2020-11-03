@@ -17,6 +17,8 @@
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.10.11",
     "mongoose-type-email": "^1.0.13",
-    "nodemon": "^2.0.6"
+    "nodemon": "^2.0.6",
+    "swagger-jsdoc": "^5.0.0",
+    "swagger-ui-express": "^4.1.4"
   }
 }

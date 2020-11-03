@@ -6,7 +6,7 @@ exports.login = async (req, res) => {
   const { email, password } = req.body;
 
   // Check if user exists
-  const user = User.findOne({ email });
+  const user = await User.findOne({ email });
   if (!user) return res.status(401).json({ success: false, message: "Email or password not valid!" });
 
   // Check if passwords match
