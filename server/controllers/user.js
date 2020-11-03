@@ -29,7 +29,8 @@ exports.login = async (req, res) => {
 
 exports.register = async (req, res) => {
   try {
-    await new User(req.body).save();
+    const hashedPassword = await bcrypt.hash(req.body.password, 10);
+    await new User({ ...req.body, password: hashedPassword }).save();
     res.status(200).json({ success: true });
   } catch (error) {
     res.status(400).json({ success: false, error });
