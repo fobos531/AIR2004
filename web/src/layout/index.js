@@ -6,11 +6,13 @@ export const Index = () => {
   return (
     <>
       <TopBar />
-      <NavBar />
-      {/* Main content goes here */}
-      <main>
-        <StudentsView />
-      </main>
+      <div style={{ display: "flex", flexDirection: "row" }}>
+        <NavBar style={{ flex: 1 }} />
+        {/* Main content goes here */}
+        <main>
+          <StudentsView />
+        </main>
+      </div>
     </>
   );
 };

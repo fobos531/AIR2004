@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
+import { Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
 import clsx from "clsx";
@@ -13,22 +14,19 @@ const useStyles = makeStyles((theme) => ({
     overflow: "auto",
     flexDirection: "column",
   },
-  fixedHeight: {
+  fixedHeightPaper: {
     height: 240,
   },
   Paper: {
     height: "fit-content",
   },
-  filePicker: {
-    height: "50%",
-  },
-  form: {
-    width: "100%", // Fix IE 11 issue.
-    marginTop: theme.spacing(1),
-  },
   submit: {
     margin: theme.spacing(3, 0, 2),
     width: "100%",
+  },
+  container: {
+    marginLeft: "27%",
+    marginTop: "8%",
   },
 }));
 
@@ -37,11 +35,11 @@ const StudentsView = () => {
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
   return (
     <>
-      <Grid container spacing={2}>
-        <Grid item xs={12} md={12} lg={12}>
-          <Paper className={`${fixedHeightPaper} ${classes.Paper}`}></Paper>
+      <Grid container className={classes.container}>
+        <Grid item>
           <Paper className={`${fixedHeightPaper} ${classes.Paper}`}>
-            SOMEEEETHING
+            <Typography>Add a new student:</Typography>
+            <NewStudentForm />
           </Paper>
         </Grid>
       </Grid>
