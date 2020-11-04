@@ -7,7 +7,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import clsx from "clsx";
 import NewStudentForm from "./components/NewStudentForm";
 import StudentsDataTable from "./components/StudentsDataTable";
-
+import api from "../../api/api";
 const useStyles = makeStyles((theme) => ({
   paper: {
     padding: theme.spacing(2),
@@ -35,6 +35,13 @@ const useStyles = makeStyles((theme) => ({
 const StudentsView = () => {
   const classes = useStyles();
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
+  const [allStudents, setAllStudents] = useState();
+  useEffect(() => {
+    api.get("/user").then((response) => {
+      console.log("RESPONSE", response.data);
+      setAllStudents(response.data);
+    });
+  }, []);
   return (
     <>
       <Grid container className={classes.container}>
@@ -50,7 +57,7 @@ const StudentsView = () => {
             className={`${fixedHeightPaper} ${classes.Paper}`}
             elevation={3}
           >
-            <StudentsDataTable />
+            {allStudents && <StudentsDataTable students={allStudents} />}
           </Paper>
         </Grid>
       </Grid>

@@ -2,13 +2,24 @@ import React from "react";
 import MUIDataTable from "mui-datatables";
 
 const columns = ["Email", "JMBAG", "Phone number", "User type"];
-const data = [["Test test", "00161203102", "123-456-7890", "Administrator"]];
 
 const options = {
   filterType: "checkbox",
 };
 
-const StudentsDataTable = () => {
+const StudentsDataTable = ({ students }) => {
+  let data = [];
+
+  students.map((student) => {
+    let _student = [
+      student.email,
+      student.jmbag,
+      student.phoneNumber,
+      student.userType,
+    ];
+    data.push(_student);
+  });
+
   return (
     <>
       <MUIDataTable
