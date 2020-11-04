@@ -6,6 +6,7 @@ import { makeStyles } from "@material-ui/core/styles";
 
 import clsx from "clsx";
 import NewStudentForm from "./components/NewStudentForm";
+import StudentsDataTable from "./components/StudentsDataTable";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -19,6 +20,7 @@ const useStyles = makeStyles((theme) => ({
   },
   Paper: {
     height: "fit-content",
+    margin: "2%",
   },
   submit: {
     margin: theme.spacing(3, 0, 2),
@@ -37,9 +39,18 @@ const StudentsView = () => {
     <>
       <Grid container className={classes.container}>
         <Grid item>
-          <Paper className={`${fixedHeightPaper} ${classes.Paper}`}>
+          <Paper
+            className={`${fixedHeightPaper} ${classes.Paper}`}
+            elevation={3}
+          >
             <Typography>Add a new student:</Typography>
             <NewStudentForm />
+          </Paper>
+          <Paper
+            className={`${fixedHeightPaper} ${classes.Paper}`}
+            elevation={3}
+          >
+            <StudentsDataTable />
           </Paper>
         </Grid>
       </Grid>
