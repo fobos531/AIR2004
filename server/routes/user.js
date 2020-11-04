@@ -57,4 +57,17 @@ router.post("/login", userController.login);
  */
 router.post("/register", userController.register);
 
+/**
+ * @swagger
+ * /user/:
+ *  get:
+ *    tags:
+ *    - "/user/"
+ *    summary: Get all users
+ *    responses:
+ *      '200':
+ *        description: A successful response
+ */
+router.get("/", userController.getAllUsers);
+
 module.exports = router;
