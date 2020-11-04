@@ -2,7 +2,10 @@ import React, { useState } from "react";
 
 import { Field, Form, Formik } from "formik";
 import { makeStyles } from "@material-ui/core/styles";
-import { TextField, Button, Typography } from "@material-ui/core";
+import { TextField, Button } from "@material-ui/core";
+
+import api from "../../../api/api";
+
 const useStyles = makeStyles((theme) => ({
   paper: {
     padding: theme.spacing(2),
@@ -16,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
   },
 
   form: {
-    width: "40%", // Fix IE 11 issue.
+    width: "40%",
     marginTop: theme.spacing(1),
   },
   submit: {
@@ -24,15 +27,24 @@ const useStyles = makeStyles((theme) => ({
     width: "100%",
   },
 }));
+
 const NewStudentForm = () => {
   const classes = useStyles();
   const [formData, setFormData] = useState({});
+
   const handleFormChange = (event) => {
     setFormData({ ...formData, [event.target.id]: event.target.value });
     console.log(formData);
   };
-  const handleSubmit = async () => {
-    // to do
+  const handleSubmit = () => {
+    api
+      .post("/user/register", formData)
+      .then((response) => console.log("RESPONSE", response));
+
+    document.getElementById("email").value = "";
+    document.getElementById("password").value = "";
+    document.getElementById("jmbag").value = "";
+    document.getElementById("phoneNumber").value = "";
   };
   return (
     <>
@@ -57,6 +69,7 @@ const NewStudentForm = () => {
             variant="outlined"
             margin="normal"
             required
+            type="password"
             fullWidth
             id="password"
             autoComplete="password"
