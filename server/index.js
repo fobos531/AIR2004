@@ -37,4 +37,6 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 app.use(express.json());
 app.use("/api", routes);
 
-app.listen(process.env.PORT || 8080, () => console.log("Started!"));
+app.listen(process.env.PORT || 8080, () =>
+  console.log(`Started on port ${process.env.PORT}!`)
+);
