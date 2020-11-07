@@ -44,6 +44,11 @@ exports.register = async (req, res) => {
 };
 
 exports.getAllUsers = async (req, res) => {
-  const allUsers = await User.find({});
-  res.status(200).json(allUsers.map((user) => user.toJSON()));
+  try {
+    const allUsers = await User.find({});
+    const data = allUsers.map((user) => user.toJSON());
+    res.status(200).json({ success: true, data });
+  } catch (error) {
+    res.status(400).json({ success: false, error });
+  }
 };
