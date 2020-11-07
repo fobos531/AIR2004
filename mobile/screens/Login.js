@@ -44,7 +44,7 @@ const Login = (props) => {
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <View style={styles.container}>
             <View>
-              <Image style={styles.logo} source={require("../assets/logo_sample.png")}/>
+              <Image style={styles.logo} source={require("../assets/logo.png")}/>
             </View>
 
             <View style={{marginTop: 60}}>
@@ -77,11 +77,11 @@ const Login = (props) => {
             </View>
 
             <View style={styles.textContainer}>
-              <TouchableOpacity onPress={() => console.log("")>
+              <TouchableOpacity onPress={() => console.log("")}>
                 <Text>Don't have an account?</Text>
               </TouchableOpacity>
 
-              <TouchableOpacity onPress={() => console.log("")>
+              <TouchableOpacity onPress={() => console.log("")}>
                 <Text style={{marginTop: 50}}>Forgot password?</Text>
               </TouchableOpacity>
             </View>
@@ -118,8 +118,8 @@ const styles = StyleSheet.create({
   },
 
   logo: {
-    height: 150,
-    width: 150
+    height: 140,
+    width: 170
   }
 });
 
