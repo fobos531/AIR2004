@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
     width: "100%",
   },
   container: {
-    marginLeft: "27%",
+    marginLeft: "40%",
     marginTop: "8%",
   },
 }));
@@ -38,8 +38,12 @@ const StudentsView = () => {
   const [allStudents, setAllStudents] = useState();
   useEffect(() => {
     api.get("/user").then((response) => {
-      console.log("RESPONSE", response.data);
-      setAllStudents(response.data);
+      /* response {
+        success: true/false,
+        data/error: ...
+      } */
+      console.log("RESPONSE", response.data.data);
+      setAllStudents(response.data.data);
     });
   }, []);
   return (
