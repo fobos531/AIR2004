@@ -9,6 +9,7 @@ import {
 } from "@material-ui/core";
 
 import PeopleIcon from "@material-ui/icons/People";
+import PersonIcon from '@material-ui/icons/Person';
 import NavItem from "./NavItem";
 
 const user = {
@@ -22,6 +23,11 @@ const items = [
     icon: PeopleIcon,
     title: "Students",
   },
+  {
+    href: "/teachers",
+    icon: PersonIcon,
+    title: "Teachers"
+  }
 ];
 
 const useStyles = makeStyles(() => ({
