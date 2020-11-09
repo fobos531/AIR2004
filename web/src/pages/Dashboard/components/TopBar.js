@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React from "react";
 import { Link as RouterLink } from "react-router-dom";
-import clsx from "clsx";
+
 import {
   AppBar,
   Box,
@@ -14,7 +14,6 @@ import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import Tooltip from "@material-ui/core/Tooltip";
 
 const useStyles = makeStyles(() => ({
-  root: {},
   avatar: {
     width: 60,
     height: 60,
@@ -29,7 +28,7 @@ const TopBar = () => {
   const classes = useStyles();
 
   return (
-    <AppBar className={classes.root} elevation={0}>
+    <AppBar elevation={0}>
       <Toolbar>
         <RouterLink to="/" className={classes.appTitle}>
           <Typography>UNITTEND</Typography>

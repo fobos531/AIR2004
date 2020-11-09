@@ -9,13 +9,9 @@ const options = {
 
 const TeachersDataTable = ({ teachers }) => {
   let data = [];
-
+  console.log("TEACHERS", teachers);
   teachers.map((teacher) => {
-    let _teacher = [
-      teacher.email,
-      teacher.phoneNumber,
-      teacher.userType,
-    ];
+    let _teacher = [teacher.email, teacher.phoneNumber, teacher.userType];
     data.push(_teacher);
   });
 

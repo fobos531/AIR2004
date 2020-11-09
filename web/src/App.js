@@ -1,14 +1,30 @@
 import React from "react";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
-import { Index } from "./layout/index";
-import StudentView from "./layout/StudentsView/index";
-import AdministratorView from "./layout/AdministratorView/index";
+import { Dashboard, HomeView } from "./pages/Dashboard/Dashboard";
+import StudentsView from "./pages/StudentsView/StudentsView";
+import TeachersView from "./pages/TeachersView/TeachersView";
+
 const App = () => {
   return (
     <Router>
-      <Index />
-      <Route path="/students" component={StudentView} />
-      <Route path="/teachers" component={AdministratorView} />
+      <Switch>
+        <Route path="/students">
+          <Dashboard>
+            <StudentsView />
+          </Dashboard>
+        </Route>
+        <Route path="/teachers">
+          <Dashboard>
+            <TeachersView />
+          </Dashboard>
+        </Route>
+        <Route path="/dashboard">
+          <Dashboard>
+            <HomeView />
+          </Dashboard>
+        </Route>
+      </Switch>
+      <Dashboard />
     </Router>
   );
 };

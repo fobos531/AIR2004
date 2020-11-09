@@ -2,10 +2,11 @@ import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { TextField, Button, Typography, Snackbar } from "@material-ui/core";
 import { useForm } from "react-hook-form";
-import MuiAlert from "@material-ui/lab/Alert";
+import Alert from "../../../components/Alert";
 import * as Yup from "yup";
 
 import api from "../../../api/api";
+
 import { yupResolver } from "@hookform/resolvers/yup";
 const initialValues = {
   email: "",
@@ -27,10 +28,6 @@ const validationSchema = Yup.object().shape({
     .max(15, "Phone number must be 10-15 characters long!")
     .required("This field is required!"),
 });
-
-const Alert = (props) => {
-  return <MuiAlert elevation={6} variant="filled" {...props} />;
-};
 
 const NewStudentForm = () => {
   const [SnackbarData, setSnackBarData] = useState({

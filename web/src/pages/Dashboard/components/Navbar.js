@@ -9,7 +9,8 @@ import {
 } from "@material-ui/core";
 
 import PeopleIcon from "@material-ui/icons/People";
-import PersonIcon from '@material-ui/icons/Person';
+import PersonIcon from "@material-ui/icons/Person";
+import HomeIcon from "@material-ui/icons/Home";
 import NavItem from "./NavItem";
 
 const user = {
@@ -19,6 +20,11 @@ const user = {
 
 const items = [
   {
+    href: "/dashboard",
+    icon: HomeIcon,
+    title: "Home",
+  },
+  {
     href: "/students",
     icon: PeopleIcon,
     title: "Students",
@@ -26,8 +32,8 @@ const items = [
   {
     href: "/teachers",
     icon: PersonIcon,
-    title: "Teachers"
-  }
+    title: "Teachers",
+  },
 ];
 
 const useStyles = makeStyles(() => ({
@@ -48,15 +54,6 @@ const NavBar = () => {
 
   const content = (
     <Box height="100%" display="flex" flexDirection="column">
-      <Box alignItems="center" display="flex" flexDirection="column" p={2}>
-        <Typography className={classes.name} color="textPrimary" variant="h5">
-          Hello,
-        </Typography>
-        <Typography color="textPrimary" variant="h5">
-          {user.name}!
-        </Typography>
-      </Box>
-      <Divider />
       <Box p={2}>
         <List>
           {items.map((item) => (
