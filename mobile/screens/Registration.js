@@ -27,6 +27,12 @@ const Registration = () => {
   const[JMBAG, setJMBAG] = useState('');
   const[phoneNumber, setPhoneNumber] = useState('');
   
+  const[showHidePassword, setShowHidePassword] = useState(true);
+
+  const handleShowHidePassword = () => {
+    setShowHidePassword(!showHidePassword);
+  }
+
   const handleRegistrationRequest = () => {
     //TO DO -> spajanje na backend
     console.log("Sending request for register...");
@@ -52,11 +58,12 @@ const Registration = () => {
               
               <TextInput
                 style={styles.textInput}
+                secureTextEntry={showHidePassword === true ? false : true}
                 label="Password"
                 value={password}
                 mode= "outlined"
                 onChangeText={(password) => setPassword(password)}
-                right={<TextInput.Icon name={<IconButton icon="eye"/>}/>}
+                right={<TextInput.Icon style={styles.eyeIcon} name={showHidePassword === true ? 'eye' : 'eye-off'} onPress={handleShowHidePassword}/>}
               />
 
               <TextInput
@@ -127,6 +134,11 @@ const styles = StyleSheet.create({
   logo: {
     height: 130,
     width: 170
+  },
+
+  eyeIcon: {
+    marginTop: 15, 
+    marginRight: 10 
   }
 });
 
