@@ -44,7 +44,7 @@ const Login = (props) => {
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <View style={styles.container}>
             <View>
-              <Image style={styles.logo} source={require("../assets/logo_sample.png")}/>
+              <Image style={styles.logo} source={require("../assets/logo.png")}/>
             </View>
 
             <View style={{marginTop: 60}}>
@@ -118,8 +118,8 @@ const styles = StyleSheet.create({
   },
 
   logo: {
-    height: 150,
-    width: 150
+    height: 140,
+    width: 170
   }
 });
 

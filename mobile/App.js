@@ -24,14 +24,16 @@ import {
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 
-import {Provider as PaperProvider} from 'react-native-paper';
+import Login from './screens/Login';
 
-import Login from './screens/Login'
+import {Provider as PaperProvider} from 'react-native-paper'
 
 const App = () => {
   return (
     <>
-      <Login/>
+      <PaperProvider>
+        <Login/>
+      </PaperProvider>
     </>
   );
 };
