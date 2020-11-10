@@ -68,6 +68,6 @@ router.post("/register", userController.register);
  *      '200':
  *        description: A successful response
  */
-router.get("/", userController.getAllUsers);
+router.get("/role/:role", userController.getAllUsers);
 
 module.exports = router;
