@@ -28,12 +28,18 @@ router.post("/login", userController.login);
 
 /**
  * @swagger
- * /user/register:
+ * /user/{role}/register:
  *  post:
  *    tags:
  *    - "/user/"
- *    summary: Register a new account
+ *    summary: Register a new account with the provided role
  *    parameters:
+ *    - name: "role"
+ *      in: "path"
+ *      description: "User's role"
+ *      schema:
+ *        type: "string"
+ *        enum: [student, teacher]
  *    - name: "body"
  *      in: "body"
  *      description: "Account's data"
@@ -50,24 +56,24 @@ router.post("/login", userController.login);
  *            type: "string"
  *          userType:
  *            type: "string"
- *            enum: [Student, Teacher, Admin]
+ *            enum: [student, teacher, admin]
  *    responses:
  *      '200':
  *        description: A successful response
  */
-router.post("/register", userController.register);
+router.post("/:role/register", userController.register);
 
 /**
  * @swagger
- * /user/:
+ * /user/{role}:
  *  get:
  *    tags:
  *    - "/user/"
- *    summary: Get all users
+ *    summary: Get all users that have the provided role
  *    responses:
  *      '200':
  *        description: A successful response
  */
-router.get("/role/:role", userController.getAllUsers);
+router.get("/:role", userController.getAllUsers);
 
 module.exports = router;

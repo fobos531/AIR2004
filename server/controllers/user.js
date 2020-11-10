@@ -28,9 +28,13 @@ exports.login = async (req, res) => {
 };
 
 exports.register = async (req, res) => {
+  const { role } = req.params;
+
+  if (!["student", "teacher"].includes(role)) return res.status(400).json({ success: false, error: "Valid roles are student, teacher" });
+
   try {
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
-    await new User({ ...req.body, password: hashedPassword }).save();
+    await new User({ ...req.body, password: hashedPassword, userType: role }).save();
     res.status(200).json({ success: true });
   } catch (error) {
     res.status(400).json({ success: false, error });
