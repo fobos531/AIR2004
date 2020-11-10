@@ -1,11 +1,3 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow strict-local
- */
-
 import React, { useState } from 'react';
 import {
   SafeAreaView,
@@ -29,13 +21,15 @@ import {
 
 import { Provider as PaperProvider, TextInput, Button, IconButton } from 'react-native-paper';
 
-const Login = (props) => {
+const Registration = () => {
   const[username, setUsername] = useState('');
   const[password, setPassword] = useState('');
-
-  const handleLoginRequest = () => {
+  const[JMBAG, setJMBAG] = useState('');
+  const[phoneNumber, setPhoneNumber] = useState('');
+  
+  const handleRegistrationRequest = () => {
     //TO DO -> spajanje na backend
-    console.log("Sending request...");
+    console.log("Sending request for register...");
   }
 
   return (
@@ -64,25 +58,38 @@ const Login = (props) => {
                 onChangeText={(password) => setPassword(password)}
                 right={<TextInput.Icon name={<IconButton icon="eye"/>}/>}
               />
+
+              <TextInput
+                style={styles.textInput}
+                label="JMBAG"
+                value={JMBAG}
+                mode= "outlined"
+                onChangeText={(JMBAG) => setJMBAG(JMBAG)}
+              />
+
+              <TextInput
+                style={styles.textInput}
+                label="Phone Number"
+                value={phoneNumber}
+                mode= "outlined"
+                onChangeText={(phoneNumber) => setPhoneNumber(phoneNumber)}
+              />
+
             </View>
 
             <View style={styles.signButton}>
               <Button
                 contentStyle={{height: 46}}
                 mode="contained"
-                onPress={handleLoginRequest}
+                onPress={handleRegistrationRequest}
               >
-                SIGN IN
+                SIGN UP
               </Button>
             </View>
 
             <View style={styles.textContainer}>
               <TouchableOpacity onPress={() => console.log("")}>
-                <Text>Don't have an account?</Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity onPress={() => console.log("")}>
-                <Text style={{marginTop: 50}}>Forgot password?</Text>
+                <Text>Already have an account?</Text>
               </TouchableOpacity>
             </View>
 
@@ -118,9 +125,9 @@ const styles = StyleSheet.create({
   },
 
   logo: {
-    height: 140,
+    height: 130,
     width: 170
   }
 });
 
-export default Login;
+export default Registration;
