@@ -1,55 +1,55 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow strict-local
- */
-
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import {
-  SafeAreaView,
   StyleSheet,
-  ScrollView,
   View,
   Text,
-  StatusBar,
   TouchableWithoutFeedback,
   TouchableOpacity,
   Keyboard,
-  Image
+  Image,
+  ActivityIndicator
 } from 'react-native';
 
-import {
-  Header,
-  LearnMoreLinks,
-  DebugInstructions,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
-
-import { Provider as PaperProvider, TextInput, Button, IconButton } from 'react-native-paper';
+import {Dialog, Portal, TextInput, Button, Paragraph} from 'react-native-paper';
 
 const Login = (props) => {
   const[email, setEmail] = useState('');
+  const[emailChangePassword, setEmailChangePassword] = useState('');
   const[password, setPassword] = useState('');
   const[showHidePassword, setShowHidePassword] = useState(true);
+  const[showLoadingIndicator, setShowLoadingIndicator] = useState(false);
+  const[visible, toggleVisible] = useState(false);
 
   const handleShowHidePassword = () => {
     setShowHidePassword(!showHidePassword);
-  }
+  };
 
   const handleLoginRequest = () => {
     //TO DO -> spajanje na backend
-    console.log("Sending request...");
+    console.log('Sending request...');
+  };
+
+  const handleSubmitChangePassword = () => {
+    setShowLoadingIndicator(true);
+
+    setTimeout(() => {
+      setShowLoadingIndicator(false);
+      toggleVisible(false);
+    }, 4000);
+
+    //TO DO -> spajanje na backend
   }
 
   return (
     <>
-      <PaperProvider>
+      <Portal>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <View style={styles.container}>
             <View>
-              <Image style={styles.logo} source={require("../assets/logo.png")}/>
+              <Image
+                style={styles.logo}
+                source={require('../assets/logo.png')}
+              />
             </View>
 
             <View style={{marginTop: 60}}>
@@ -57,46 +57,67 @@ const Login = (props) => {
                 style={styles.textInput}
                 label="E-mail"
                 value={email}
-                mode= "outlined"
+                mode="outlined"
                 onChangeText={(email) => setEmail(email)}
               />
-              
+
               <TextInput
                 style={styles.textInput}
                 secureTextEntry={showHidePassword === true ? false : true}
                 label="Password"
                 value={password}
-                mode= "outlined"
+                mode="outlined"
                 onChangeText={(password) => setPassword(password)}
-                right={<TextInput.Icon style={styles.eyeIcon} name={showHidePassword === true ? 'eye' : 'eye-off'} onPress={handleShowHidePassword}/>}
+                right={
+                  <TextInput.Icon
+                    style={styles.eyeIcon}
+                    name={showHidePassword === true ? 'eye' : 'eye-off'}
+                    onPress={handleShowHidePassword}
+                  />
+                }
               />
-              
             </View>
-
 
             <View style={styles.signButton}>
               <Button
                 contentStyle={{height: 46}}
                 mode="contained"
-                onPress={handleLoginRequest}
-              >
+                onPress={handleLoginRequest}>
                 SIGN IN
               </Button>
             </View>
 
             <View style={styles.textContainer}>
-              <TouchableOpacity onPress={() => console.log("")}>
+              <TouchableOpacity onPress={() => console.log('')}>
                 <Text>Don't have an account?</Text>
               </TouchableOpacity>
 
-              <TouchableOpacity onPress={() => console.log("")}>
+              <TouchableOpacity onPress={() => toggleVisible(true)}>
                 <Text style={{marginTop: 50}}>Forgot password?</Text>
               </TouchableOpacity>
-            </View>
 
+              <Portal>
+                <Dialog visible={visible} onDismiss={() => {toggleVisible(false); setEmailChangePassword('');}}>
+                <View style={{flexDirection: "row", justifyContent: "space-between", marginRight: 20}}><Dialog.Title>Change password</Dialog.Title>{showLoadingIndicator && <ActivityIndicator size="large" color="#0000ff" />}</View>
+                  <Dialog.Content>
+                    <TextInput
+                      label="Enter your E-mail"
+                      value={emailChangePassword}
+                      mode= "outlined"
+                      onChangeText={(emailChangePassword) => setEmailChangePassword(emailChangePassword)}
+                    />
+
+                  </Dialog.Content>
+                  <Dialog.Actions>
+                    <Button onPress={() => {toggleVisible(false); setEmailChangePassword('');}}>Close</Button>
+                    <Button onPress={() => handleSubmitChangePassword()}>Reset Password</Button>
+                  </Dialog.Actions>
+                </Dialog>
+              </Portal>
+            </View>
           </View>
         </TouchableWithoutFeedback>
-      </PaperProvider>
+      </Portal>
     </>
   );
 };
@@ -104,38 +125,36 @@ const Login = (props) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 
   textInput: {
     width: 330,
     height: 50,
-    marginTop: 25
+    marginTop: 25,
   },
 
   signButton: {
     width: 330,
-    marginTop: 25
+    marginTop: 25,
   },
 
   textContainer: {
-    alignSelf: "center",
-    alignItems: "center",
-    marginTop: 120
+    alignSelf: 'center',
+    alignItems: 'center',
+    marginTop: 120,
   },
 
   logo: {
     height: 140,
-    width: 170
+    width: 170,
   },
 
   eyeIcon: {
-    marginTop: 15, 
-    marginRight: 10 
-  }
+    marginTop: 15,
+    marginRight: 10,
+  },
 });
 
 export default Login;
-
-
