@@ -22,7 +22,9 @@ import {
 import { Provider as PaperProvider, TextInput, Button, IconButton } from 'react-native-paper';
 
 const Registration = () => {
-  const[username, setUsername] = useState('');
+  const[name, setName] = useState('');
+  const[surname, setSurname] = useState('');
+  const[email, setEmail] = useState('');
   const[password, setPassword] = useState('');
   const[JMBAG, setJMBAG] = useState('');
   const[phoneNumber, setPhoneNumber] = useState('');
@@ -48,12 +50,29 @@ const Registration = () => {
             </View>
 
             <View style={{marginTop: 60}}>
+
+            <TextInput
+                style={styles.textInput}
+                label="First Name"
+                value={name}
+                mode= "outlined"
+                onChangeText={(name) => setName(name)}
+              />
+
+              <TextInput
+                style={styles.textInput}
+                label="Surname"
+                value={surname}
+                mode= "outlined"
+                onChangeText={(surname) => setSurname(surname)}
+              />
+
               <TextInput
                 style={styles.textInput}
                 label="E-mail"
-                value={username}
+                value={email}
                 mode= "outlined"
-                onChangeText={(username) => setUsername(username)}
+                onChangeText={(email) => setUsername(email)}
               />
               
               <TextInput
@@ -117,7 +136,7 @@ const styles = StyleSheet.create({
   textInput: {
     width: 330,
     height: 50,
-    marginTop: 25
+    marginTop: 7
   },
 
   signButton: {

@@ -30,7 +30,7 @@ import {
 import { Provider as PaperProvider, TextInput, Button, IconButton } from 'react-native-paper';
 
 const Login = (props) => {
-  const[username, setUsername] = useState('');
+  const[email, setEmail] = useState('');
   const[password, setPassword] = useState('');
   const[showHidePassword, setShowHidePassword] = useState(true);
 
@@ -56,9 +56,9 @@ const Login = (props) => {
               <TextInput
                 style={styles.textInput}
                 label="E-mail"
-                value={username}
+                value={email}
                 mode= "outlined"
-                onChangeText={(username) => setUsername(username)}
+                onChangeText={(email) => setEmail(email)}
               />
               
               <TextInput

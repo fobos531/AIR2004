@@ -24,7 +24,7 @@ import {
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 
-import Login from './screens/Login';
+import Registration from './screens/Registration';
 
 import {Provider as PaperProvider} from 'react-native-paper'
 
@@ -32,7 +32,7 @@ const App = () => {
   return (
     <>
       <PaperProvider>
-        <Login/>
+        <Registration/>
       </PaperProvider>
     </>
   );
