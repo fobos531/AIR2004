@@ -32,6 +32,11 @@ import { Provider as PaperProvider, TextInput, Button, IconButton } from 'react-
 const Login = (props) => {
   const[username, setUsername] = useState('');
   const[password, setPassword] = useState('');
+  const[showHidePassword, setShowHidePassword] = useState(true);
+
+  const handleShowHidePassword = () => {
+    setShowHidePassword(!showHidePassword);
+  }
 
   const handleLoginRequest = () => {
     //TO DO -> spajanje na backend
@@ -58,13 +63,16 @@ const Login = (props) => {
               
               <TextInput
                 style={styles.textInput}
+                secureTextEntry={showHidePassword === true ? false : true}
                 label="Password"
                 value={password}
                 mode= "outlined"
                 onChangeText={(password) => setPassword(password)}
-                right={<TextInput.Icon name={<IconButton icon="eye"/>}/>}
+                right={<TextInput.Icon style={styles.eyeIcon} name={showHidePassword === true ? 'eye' : 'eye-off'} onPress={handleShowHidePassword}/>}
               />
+              
             </View>
+
 
             <View style={styles.signButton}>
               <Button
@@ -120,7 +128,14 @@ const styles = StyleSheet.create({
   logo: {
     height: 140,
     width: 170
+  },
+
+  eyeIcon: {
+    marginTop: 15, 
+    marginRight: 10 
   }
 });
 
 export default Login;
+
+
