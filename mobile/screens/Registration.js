@@ -32,7 +32,7 @@ const Registration = ({ navigation }) => {
   const[JMBAG, setJMBAG] = useState('');
   const[phoneNumber, setPhoneNumber] = useState('');
   
-  const[showHidePassword, setShowHidePassword] = useState(true);
+  const[showHidePassword, setShowHidePassword] = useState(false);
 
   const handleShowHidePassword = () => {
     setShowHidePassword(!showHidePassword);

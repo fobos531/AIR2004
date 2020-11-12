@@ -18,7 +18,8 @@ const Login = ({ navigation }) => {
   const[email, setEmail] = useState('');
   const[emailChangePassword, setEmailChangePassword] = useState('');
   const[password, setPassword] = useState('');
-  const[showHidePassword, setShowHidePassword] = useState(true);
+  const[showHidePassword, setShowHidePassword] = useState(false);
+  
   const[showLoadingIndicator, setShowLoadingIndicator] = useState(false);
   const[visible, toggleVisible] = useState(false);
 
