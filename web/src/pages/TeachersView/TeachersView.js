@@ -13,7 +13,7 @@ const TeachersView = () => {
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
   const [allTeachers, setAllTeachers] = useState();
   useEffect(() => {
-    api.get("/user").then((response) => {
+    api.get("/user/teacher/").then((response) => {
       console.log("RESPONSE", response.data.data);
       setAllTeachers(response.data.data);
     });

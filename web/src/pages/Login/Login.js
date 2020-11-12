@@ -4,6 +4,8 @@ import { makeStyles } from "@material-ui/core/styles";
 import { useForm } from 'react-hook-form';
 import MuiAlert from '@material-ui/lab/Alert';
 import * as Yup from 'yup';
+import Grid from "@material-ui/core/Grid";
+import Paper from "@material-ui/core/Paper";
 
 import api from '../../api/api';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -62,8 +64,13 @@ const LoginForm = () => {
     }
 
     return (
-        <>
-            <form onSubmit={handleSubmit(onSubmit)} className={classes.form}>
+      <Grid container className={classes.container}>
+        <Grid item>
+          <Paper
+            className={`${classes.fixedHeightPaper} ${classes.Paper}`}
+            elevation={3}
+          >
+            <form onSubmit={handleSubmit(onSubmit)} className={classes.form} >
                 <TextField 
                     name="email"
                     label="Email"
@@ -121,30 +128,42 @@ const LoginForm = () => {
                 </Alert>
                 )}
             </Snackbar>
-        </>
+          </Paper>
+          <Paper
+            className={`${classes.fixedHeightPaper} ${classes.Paper}`}
+            elevation={3}
+          >
+          </Paper>
+        </Grid>
+      </Grid>
     );
 }
 
 const useStyles = makeStyles((theme) => ({
     paper: {
-      padding: theme.spacing(2),
-      display: "flex",
-      overflow: "auto",
-      flexDirection: "column",
+        padding: theme.spacing(2),
+        display: "flex",
+        overflow: "auto",
+        flexDirection: "column",
     },
-  
+    fixedHeightPaper: {
+        height: 240,
+    },
     Paper: {
-      height: "fit-content",
-    },
-  
-    form: {
-      width: "60%",
-      marginTop: theme.spacing(1),
+        height: "fit-content",
+        margin: "2%",
     },
     submit: {
-      margin: theme.spacing(3, 0, 2),
-      width: "100%",
+        margin: theme.spacing(3, 0, 2),
+        width: "100%",
     },
+    container: {
+        marginLeft: "35%",
+        marginTop: "10%",
+    },
+    form: {
+        margin: "5%"
+    }
 }));
 
 export default LoginForm;

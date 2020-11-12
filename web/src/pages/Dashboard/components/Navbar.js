@@ -33,7 +33,7 @@ const items = [
     href: "/teachers",
     icon: PersonIcon,
     title: "Teachers",
-  },
+  },  
 ];
 
 const useStyles = makeStyles(() => ({

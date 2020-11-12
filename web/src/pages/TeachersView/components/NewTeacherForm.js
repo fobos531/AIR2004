@@ -16,14 +16,13 @@ const useStyles = makeStyles((theme) => ({
     overflow: "auto",
     flexDirection: "column",
   },
-
   Paper: {
     height: "fit-content",
   },
-
   form: {
-    width: "40%",
+    width: "60%",
     marginTop: theme.spacing(1),
+    margin: "auto"
   },
   submit: {
     margin: theme.spacing(3, 0, 2),
@@ -38,6 +37,10 @@ const initialValues = {
 };
 
 const validationSchema = Yup.object().shape({
+  name: Yup.string()
+    .required("This field is required!"),
+  surname: Yup.string()
+  .required("This field is required!"),
   email: Yup.string()
     .email("You need to enter a valid email!")
     .required("This field is required!"),
@@ -81,6 +84,36 @@ const NewTeacherForm = () => {
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)} className={classes.form}>
+        <TextField
+          name="name"
+          label="Name"
+          variant="outlined"
+          margin="normal"
+          required
+          inputRef={register}
+          fullWidth
+          id="name"
+          autoComplete="name"
+        />
+        {errors.name?.message && (
+          <Typography>{errors.name.message}</Typography>
+        )}
+
+        <TextField
+          name="surname"
+          label="Surname"
+          variant="outlined"
+          margin="normal"
+          required
+          inputRef={register}
+          fullWidth
+          id="surname"
+          autoComplete="surname"
+        />
+        {errors.surname?.message && (
+          <Typography>{errors.surname.message}</Typography>
+        )}
+
         <TextField
           name="email"
           label="Email"

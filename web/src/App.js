@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import { Dashboard, HomeView } from "./pages/Dashboard/Dashboard";
 import StudentsView from "./pages/StudentsView/StudentsView";
 import TeachersView from "./pages/TeachersView/TeachersView";
+import Login from "./pages/Login/Login";
 
 const App = () => {
   return (
@@ -21,6 +22,11 @@ const App = () => {
         <Route path="/dashboard">
           <Dashboard>
             <HomeView />
+          </Dashboard>
+        </Route>
+        <Route path="/login">
+          <Dashboard>
+            <Login />
           </Dashboard>
         </Route>
       </Switch>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState, useEffect} from "react";
 import { Typography } from "@material-ui/core";
 import TopBar from "./components/TopBar";
 import NavBar from "./components/Navbar";
@@ -17,14 +17,23 @@ const Dashboard = (props) => {
 
 const HomeView = () => {
   // TO DO, fix CSS for this view
+
+  const [user, setUser] = useState('');
+
+  useEffect(() => {
+    if (localStorage.getItem('userToken')) {
+      setUser(localStorage.getItem('userToken'));
+      console.log(user);
+    }
+  }, []);
+
   return (
     <>
+    <div style={{ margin: "120px 0px 0 300px"}}>
       <Typography color="textPrimary" variant="h5">
-        Hello,
+        {`Hello ${user}!`} 
       </Typography>
-      <Typography color="textPrimary" variant="h5">
-        Administrator!
-      </Typography>
+      </div>
     </>
   );
 };

@@ -35,9 +35,11 @@ const TopBar = () => {
         </RouterLink>
         <Box flexGrow={1} />
         <Tooltip title="Log out">
+        <RouterLink to="/login">
           <IconButton color="inherit" aria-label="delete">
             <ExitToAppIcon />
           </IconButton>
+        </RouterLink>
         </Tooltip>
       </Toolbar>
     </AppBar>
