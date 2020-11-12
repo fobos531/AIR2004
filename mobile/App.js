@@ -24,17 +24,22 @@ import {
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 
-import Login from './screens/Login';
+import { NavigationContainer } from "@react-navigation/native";
+import{ createStackNavigator } from "@react-navigation/stack";
 
-import {Provider as PaperProvider} from 'react-native-paper'
+import Login from './screens/Login';
+import Registration from './screens/Registration';
+
+const AuthenticationStack = createStackNavigator();
 
 const App = () => {
   return (
-    <>
-      <PaperProvider>
-        <Login/>
-      </PaperProvider>
-    </>
+    <NavigationContainer>
+      <AuthenticationStack.Navigator>
+        <AuthenticationStack.Screen name="Login" component={Login} options={{ headerTitleAlign: "center" }}/>
+        <AuthenticationStack.Screen name="Registration" component={Registration} options={{ title: "Create Account", headerTitleAlign: "center"}}/>
+      </AuthenticationStack.Navigator>
+    </NavigationContainer>
   );
 };
 
