@@ -21,82 +21,109 @@ import {
 
 import { Provider as PaperProvider, TextInput, Button, IconButton } from 'react-native-paper';
 
-const Registration = () => {
-  const[username, setUsername] = useState('');
+import Login from './Login';
+import { NavigationContainer } from '@react-navigation/native';
+
+const Registration = ({ navigation }) => {
+  const[name, setName] = useState('');
+  const[surname, setSurname] = useState('');
+  const[email, setEmail] = useState('');
   const[password, setPassword] = useState('');
   const[JMBAG, setJMBAG] = useState('');
   const[phoneNumber, setPhoneNumber] = useState('');
   
+  const[showHidePassword, setShowHidePassword] = useState(false);
+
+  const handleShowHidePassword = () => {
+    setShowHidePassword(!showHidePassword);
+  }
+
   const handleRegistrationRequest = () => {
     //TO DO -> spajanje na backend
     console.log("Sending request for register...");
   }
 
   return (
-    <>
-      <PaperProvider>
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-          <View style={styles.container}>
-            <View>
-              <Image style={styles.logo} source={require("../assets/logo.png")}/>
-            </View>
+    <PaperProvider>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <View style={styles.container}>
+          <View>
+            <Image style={styles.logo} source={require("../assets/logo.png")}/>
+          </View>
 
-            <View style={{marginTop: 60}}>
-              <TextInput
-                style={styles.textInput}
-                label="E-mail"
-                value={username}
-                mode= "outlined"
-                onChangeText={(username) => setUsername(username)}
-              />
-              
-              <TextInput
-                style={styles.textInput}
-                label="Password"
-                value={password}
-                mode= "outlined"
-                onChangeText={(password) => setPassword(password)}
-                right={<TextInput.Icon name={<IconButton icon="eye"/>}/>}
-              />
+          <View style={{marginTop: 60}}>
 
-              <TextInput
-                style={styles.textInput}
-                label="JMBAG"
-                value={JMBAG}
-                mode= "outlined"
-                onChangeText={(JMBAG) => setJMBAG(JMBAG)}
-              />
+          <TextInput
+              style={styles.textInput}
+              label="First Name"
+              value={name}
+              mode= "outlined"
+              onChangeText={(name) => setName(name)}
+            />
 
-              <TextInput
-                style={styles.textInput}
-                label="Phone Number"
-                value={phoneNumber}
-                mode= "outlined"
-                onChangeText={(phoneNumber) => setPhoneNumber(phoneNumber)}
-              />
+            <TextInput
+              style={styles.textInput}
+              label="Surname"
+              value={surname}
+              mode= "outlined"
+              onChangeText={(surname) => setSurname(surname)}
+            />
 
-            </View>
+            <TextInput
+              style={styles.textInput}
+              label="E-mail"
+              value={email}
+              mode= "outlined"
+              onChangeText={(email) => setUsername(email)}
+            />
+            
+            <TextInput
+              style={styles.textInput}
+              secureTextEntry={showHidePassword === true ? false : true}
+              label="Password"
+              value={password}
+              mode= "outlined"
+              onChangeText={(password) => setPassword(password)}
+              right={<TextInput.Icon style={styles.eyeIcon} name={showHidePassword === true ? 'eye' : 'eye-off'} onPress={handleShowHidePassword}/>}
+            />
 
-            <View style={styles.signButton}>
-              <Button
-                contentStyle={{height: 46}}
-                mode="contained"
-                onPress={handleRegistrationRequest}
-              >
-                SIGN UP
-              </Button>
-            </View>
+            <TextInput
+              style={styles.textInput}
+              label="JMBAG"
+              value={JMBAG}
+              mode= "outlined"
+              onChangeText={(JMBAG) => setJMBAG(JMBAG)}
+            />
 
-            <View style={styles.textContainer}>
-              <TouchableOpacity onPress={() => console.log("")}>
-                <Text>Already have an account?</Text>
-              </TouchableOpacity>
-            </View>
+            <TextInput
+              style={styles.textInput}
+              label="Phone Number"
+              value={phoneNumber}
+              mode= "outlined"
+              onChangeText={(phoneNumber) => setPhoneNumber(phoneNumber)}
+            />
 
           </View>
-        </TouchableWithoutFeedback>
-      </PaperProvider>
-    </>
+
+          <View style={styles.signButton}>
+            <Button
+              contentStyle={{height: 46}}
+              mode="contained"
+              onPress={handleRegistrationRequest}
+            >
+              SIGN UP
+            </Button>
+          </View>
+
+          <View style={styles.textContainer}>
+            <TouchableOpacity onPress={() => navigation.push("Login")}>
+              <Text>Already have an account?</Text>
+            </TouchableOpacity>
+          </View>
+
+        </View>
+      </TouchableWithoutFeedback>
+    </PaperProvider>
   );
 };
 
@@ -110,7 +137,7 @@ const styles = StyleSheet.create({
   textInput: {
     width: 330,
     height: 50,
-    marginTop: 25
+    marginTop: 7
   },
 
   signButton: {
@@ -121,12 +148,17 @@ const styles = StyleSheet.create({
   textContainer: {
     alignSelf: "center",
     alignItems: "center",
-    marginTop: 120
+    marginTop: 50
   },
 
   logo: {
     height: 130,
     width: 170
+  },
+
+  eyeIcon: {
+    marginTop: 15, 
+    marginRight: 10 
   }
 });
 
