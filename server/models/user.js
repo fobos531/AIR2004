@@ -7,6 +7,14 @@ const userSchema = mongoose.Schema({
     required: true,
     unique: true,
   },
+  name: {
+    type: String,
+    required: true,
+  },
+  surname: {
+    type: String,
+    required: true,
+  },
   password: {
     type: String,
     required: true,
@@ -23,8 +31,8 @@ const userSchema = mongoose.Schema({
   },
   userType: {
     type: String,
-    enum: ["Student", "Teacher", "Admin"],
-    default: "Student",
+    enum: ["student", "teacher", "admin"],
+    default: "student",
   },
 });
 
