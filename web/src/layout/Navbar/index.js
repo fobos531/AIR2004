@@ -1,12 +1,5 @@
 import React, { useEffect } from "react";
-import {
-  Box,
-  Divider,
-  Drawer,
-  List,
-  Typography,
-  makeStyles,
-} from "@material-ui/core";
+import { Box, Divider, Drawer, List, Typography, makeStyles } from "@material-ui/core";
 
 import PeopleIcon from "@material-ui/icons/People";
 import NavItem from "./NavItem";
@@ -54,12 +47,7 @@ const NavBar = () => {
       <Box p={2}>
         <List>
           {items.map((item) => (
-            <NavItem
-              href={item.href}
-              key={item.title}
-              title={item.title}
-              icon={item.icon}
-            />
+            <NavItem href={item.href} key={item.title} title={item.title} icon={item.icon} />
           ))}
         </List>
       </Box>
@@ -69,12 +57,7 @@ const NavBar = () => {
 
   return (
     <>
-      <Drawer
-        anchor="left"
-        classes={{ paper: classes.desktopDrawer }}
-        open
-        variant="persistent"
-      >
+      <Drawer anchor="left" classes={{ paper: classes.desktopDrawer }} open variant="persistent">
         {content}
       </Drawer>
     </>
