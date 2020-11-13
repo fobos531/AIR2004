@@ -8,6 +8,7 @@ import {
   Keyboard,
   Image,
   ActivityIndicator,
+  Alert,
 } from 'react-native';
 
 import {
@@ -39,8 +40,8 @@ const Login = ({navigation}) => {
       .then(({data}) => {
         console.log(data.user.token);
       })
-      .catch((error) => {
-        console.error(error);
+      .catch(() => {
+        Alert.alert('Invalid credentials!');
       });
     console.log('Sending request for login...');
   };

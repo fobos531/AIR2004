@@ -6,40 +6,38 @@
  * @flow strict-local
  */
 
-import React from 'react';
-import {
-  SafeAreaView,
-  StyleSheet,
-  ScrollView,
-  View,
-  Text,
-  StatusBar,
-} from 'react-native';
+import React from "react";
+import { SafeAreaView, StyleSheet, ScrollView, View, Text, StatusBar } from "react-native";
 
-import {
-  Header,
-  LearnMoreLinks,
-  Colors,
-  DebugInstructions,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+import { Header, LearnMoreLinks, Colors, DebugInstructions, ReloadInstructions } from "react-native/Libraries/NewAppScreen";
+
+import { Provider } from "react-redux";
+import { createStore } from "redux";
+import userReducer from "./reducers/user";
 
 import { NavigationContainer } from "@react-navigation/native";
-import{ createStackNavigator } from "@react-navigation/stack";
+import { createStackNavigator } from "@react-navigation/stack";
 
-import Login from './screens/Login';
-import Registration from './screens/Registration';
+import Login from "./screens/Login";
+import Registration from "./screens/Registration";
 
 const AuthenticationStack = createStackNavigator();
+const store = createStore(userReducer);
 
 const App = () => {
   return (
-    <NavigationContainer>
-      <AuthenticationStack.Navigator>
-        <AuthenticationStack.Screen name="Login" component={Login} options={{ headerTitleAlign: "center" }}/>
-        <AuthenticationStack.Screen name="Registration" component={Registration} options={{ title: "Create Account", headerTitleAlign: "center"}}/>
-      </AuthenticationStack.Navigator>
-    </NavigationContainer>
+    <Provider store={store}>
+      <NavigationContainer>
+        <AuthenticationStack.Navigator>
+          <AuthenticationStack.Screen name="Login" component={Login} options={{ headerTitleAlign: "center" }} />
+          <AuthenticationStack.Screen
+            name="Registration"
+            component={Registration}
+            options={{ title: "Create Account", headerTitleAlign: "center" }}
+          />
+        </AuthenticationStack.Navigator>
+      </NavigationContainer>
+    </Provider>
   );
 };
 
@@ -48,7 +46,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.lighter,
   },
   engine: {
-    position: 'absolute',
+    position: "absolute",
     right: 0,
   },
   body: {
@@ -60,25 +58,25 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 24,
-    fontWeight: '600',
+    fontWeight: "600",
     color: Colors.black,
   },
   sectionDescription: {
     marginTop: 8,
     fontSize: 18,
-    fontWeight: '400',
+    fontWeight: "400",
     color: Colors.dark,
   },
   highlight: {
-    fontWeight: '700',
+    fontWeight: "700",
   },
   footer: {
     color: Colors.dark,
     fontSize: 12,
-    fontWeight: '600',
+    fontWeight: "600",
     padding: 4,
     paddingRight: 12,
-    textAlign: 'right',
+    textAlign: "right",
   },
 });
 
