@@ -1,31 +1,18 @@
 import React, { useState } from "react";
-import {
-  SafeAreaView,
-  StyleSheet,
-  ScrollView,
-  View,
-  Text,
-  StatusBar,
-  TouchableWithoutFeedback,
-  TouchableOpacity,
-  Keyboard,
-  Image,
-} from "react-native";
+import { StyleSheet, View, Text, TouchableWithoutFeedback, TouchableOpacity, Keyboard, Image, Alert } from "react-native";
+import { Provider as PaperProvider, TextInput, Button } from "react-native-paper";
 
-import { Header, LearnMoreLinks, DebugInstructions, ReloadInstructions } from "react-native/Libraries/NewAppScreen";
-
-import { Provider as PaperProvider, TextInput, Button, IconButton } from "react-native-paper";
-
-import Login from "./Login";
-import { NavigationContainer } from "@react-navigation/native";
+import api from "../../utils/api";
 
 const Registration = ({ navigation }) => {
-  const [name, setName] = useState("");
-  const [surname, setSurname] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [JMBAG, setJMBAG] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
+  const [input, setInput] = useState({
+    email: "",
+    name: "",
+    surname: "",
+    password: "",
+    jmbag: "",
+    phoneNumber: "",
+  });
 
   const [showHidePassword, setShowHidePassword] = useState(false);
 
@@ -34,8 +21,18 @@ const Registration = ({ navigation }) => {
   };
 
   const handleRegistrationRequest = () => {
-    //TO DO -> spajanje na backend
-    console.log("Sending request for register...");
+    api
+      .post("/user/student/register", input)
+      .then(({ data }) => {
+        if (data.success) {
+          Alert.alert("Succcessfully created a new account!");
+          navigation.navigate("Login");
+        }
+      })
+      .catch((error) => {
+        console.log(error.response);
+        Alert.alert("Error");
+      });
   };
 
   return (
@@ -47,25 +44,37 @@ const Registration = ({ navigation }) => {
           </View>
 
           <View style={{ marginTop: 60 }}>
-            <TextInput style={styles.textInput} label="First Name" value={name} mode="outlined" onChangeText={(name) => setName(name)} />
+            <TextInput
+              style={styles.textInput}
+              label="First Name"
+              value={input.name}
+              mode="outlined"
+              onChangeText={(name) => setInput((old) => ({ ...old, name }))}
+            />
 
             <TextInput
               style={styles.textInput}
               label="Surname"
-              value={surname}
+              value={input.surname}
               mode="outlined"
-              onChangeText={(surname) => setSurname(surname)}
+              onChangeText={(surname) => setInput((old) => ({ ...old, surname }))}
             />
 
-            <TextInput style={styles.textInput} label="E-mail" value={email} mode="outlined" onChangeText={(email) => setUsername(email)} />
+            <TextInput
+              style={styles.textInput}
+              label="E-mail"
+              value={input.email}
+              mode="outlined"
+              onChangeText={(email) => setInput((old) => ({ ...old, email }))}
+            />
 
             <TextInput
               style={styles.textInput}
               secureTextEntry={showHidePassword === true ? false : true}
               label="Password"
-              value={password}
+              value={input.password}
               mode="outlined"
-              onChangeText={(password) => setPassword(password)}
+              onChangeText={(password) => setInput((old) => ({ ...old, password }))}
               right={
                 <TextInput.Icon
                   style={styles.eyeIcon}
@@ -75,14 +84,20 @@ const Registration = ({ navigation }) => {
               }
             />
 
-            <TextInput style={styles.textInput} label="JMBAG" value={JMBAG} mode="outlined" onChangeText={(JMBAG) => setJMBAG(JMBAG)} />
+            <TextInput
+              style={styles.textInput}
+              label="JMBAG"
+              value={input.jmbag}
+              mode="outlined"
+              onChangeText={(jmbag) => setInput((old) => ({ ...old, jmbag }))}
+            />
 
             <TextInput
               style={styles.textInput}
               label="Phone Number"
-              value={phoneNumber}
+              value={input.phoneNumber}
               mode="outlined"
-              onChangeText={(phoneNumber) => setPhoneNumber(phoneNumber)}
+              onChangeText={(phoneNumber) => setInput((old) => ({ ...old, phoneNumber }))}
             />
           </View>
 
