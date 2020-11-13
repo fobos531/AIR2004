@@ -21,7 +21,7 @@ const userSchema = mongoose.Schema({
   },
   jmbag: {
     type: String,
-    required: true,
+    required: false,
     validate: /^[0-9]{10}$/,
   },
   phoneNumber: {
