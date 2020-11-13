@@ -68,7 +68,7 @@ const NewTeacherForm = () => {
   const onSubmit = (data) => {
     console.log("FORM DATA", data);
     api
-      .post("/user/register", JSON.stringify(data), {
+      .post("/user/teacher/register", JSON.stringify(data), {
         headers: { "Content-Type": "application/json" },
       })
       .then((response) => {
