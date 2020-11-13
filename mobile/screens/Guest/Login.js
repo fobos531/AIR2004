@@ -12,6 +12,7 @@ import {
 } from "react-native";
 import { Dialog, Portal, TextInput, Button, Provider as PaperProvider } from "react-native-paper";
 import { useDispatch } from "react-redux";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import api from "../../utils/api";
 import { signIn } from "../../actions";
@@ -31,17 +32,16 @@ const Login = ({ navigation }) => {
   };
 
   const handleLoginRequest = () => {
-    //TO DO -> spajanje na backend
     api
       .post("/user/login", { email, password })
-      .then(({ data }) => {
-        console.log(data.user);
+      .then(async ({ data }) => {
+        // Save user data (along with the token) on the device storage and in Redux state
+        await AsyncStorage.setItem("user", JSON.stringify(data.user));
         dispatch(signIn(data.user));
       })
       .catch(() => {
         Alert.alert("Invalid credentials!");
       });
-    console.log("Sending request for login...");
   };
 
   const handleSubmitChangePassword = () => {

@@ -9,8 +9,8 @@ const Stack = createStackNavigator();
 const Guest = () => {
   return (
     <Stack.Navigator>
-      <Stack.Screen name="Login" component={Login} />
-      <Stack.Screen name="Registration" component={Registration} />
+      <Stack.Screen name="Login" component={Login} options={{ headerTitleAlign: "center" }} />
+      <Stack.Screen name="Registration" component={Registration} options={{ title: "Create Account", headerTitleAlign: "center" }} />
     </Stack.Navigator>
   );
 };
