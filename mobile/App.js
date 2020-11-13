@@ -18,24 +18,34 @@ import userReducer from "./reducers/user";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 
-import Login from "./screens/Login";
-import Registration from "./screens/Registration";
+import Login from "./screens/Guest/Login";
+import Registration from "./screens/Guest/Registration";
+import Navigation from "./navigation";
 
 const AuthenticationStack = createStackNavigator();
 const store = createStore(userReducer);
 
+// const App = () => {
+//   return (
+//     <Provider store={store}>
+//       <NavigationContainer>
+//         <AuthenticationStack.Navigator>
+//           <AuthenticationStack.Screen name="Login" component={Login} options={{ headerTitleAlign: "center" }} />
+//           <AuthenticationStack.Screen
+//             name="Registration"
+//             component={Registration}
+//             options={{ title: "Create Account", headerTitleAlign: "center" }}
+//           />
+//         </AuthenticationStack.Navigator>
+//       </NavigationContainer>
+//     </Provider>
+//   );
+// };
 const App = () => {
   return (
     <Provider store={store}>
       <NavigationContainer>
-        <AuthenticationStack.Navigator>
-          <AuthenticationStack.Screen name="Login" component={Login} options={{ headerTitleAlign: "center" }} />
-          <AuthenticationStack.Screen
-            name="Registration"
-            component={Registration}
-            options={{ title: "Create Account", headerTitleAlign: "center" }}
-          />
-        </AuthenticationStack.Navigator>
+        <Navigation />
       </NavigationContainer>
     </Provider>
   );

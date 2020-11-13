@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from "react";
 import {
   StyleSheet,
   View,
@@ -9,21 +9,18 @@ import {
   Image,
   ActivityIndicator,
   Alert,
-} from 'react-native';
+} from "react-native";
+import { Dialog, Portal, TextInput, Button, Provider as PaperProvider } from "react-native-paper";
+import { useDispatch } from "react-redux";
 
-import {
-  Dialog,
-  Portal,
-  TextInput,
-  Button,
-  Provider as PaperProvider,
-} from 'react-native-paper';
-import api from '../utils/api';
+import api from "../../utils/api";
+import { signIn } from "../../actions";
 
-const Login = ({navigation}) => {
-  const [email, setEmail] = useState('');
-  const [emailChangePassword, setEmailChangePassword] = useState('');
-  const [password, setPassword] = useState('');
+const Login = ({ navigation }) => {
+  const dispatch = useDispatch();
+  const [email, setEmail] = useState("");
+  const [emailChangePassword, setEmailChangePassword] = useState("");
+  const [password, setPassword] = useState("");
   const [showHidePassword, setShowHidePassword] = useState(false);
 
   const [showLoadingIndicator, setShowLoadingIndicator] = useState(false);
@@ -36,14 +33,15 @@ const Login = ({navigation}) => {
   const handleLoginRequest = () => {
     //TO DO -> spajanje na backend
     api
-      .post('/user/login', {email, password})
-      .then(({data}) => {
-        console.log(data.user.token);
+      .post("/user/login", { email, password })
+      .then(({ data }) => {
+        console.log(data.user);
+        dispatch(signIn(data.user));
       })
       .catch(() => {
-        Alert.alert('Invalid credentials!');
+        Alert.alert("Invalid credentials!");
       });
-    console.log('Sending request for login...');
+    console.log("Sending request for login...");
   };
 
   const handleSubmitChangePassword = () => {
@@ -55,7 +53,7 @@ const Login = ({navigation}) => {
     }, 4000);
 
     //TO DO -> spajanje na backend
-    console.log('Sending request for changing password...');
+    console.log("Sending request for changing password...");
   };
 
   return (
@@ -64,20 +62,11 @@ const Login = ({navigation}) => {
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <View style={styles.container}>
             <View>
-              <Image
-                style={styles.logo}
-                source={require('../assets/logo.png')}
-              />
+              <Image style={styles.logo} source={require("../../assets/logo.png")} />
             </View>
 
-            <View style={{marginTop: 60}}>
-              <TextInput
-                style={styles.textInput}
-                label="E-mail"
-                value={email}
-                mode="outlined"
-                onChangeText={(email) => setEmail(email)}
-              />
+            <View style={{ marginTop: 60 }}>
+              <TextInput style={styles.textInput} label="E-mail" value={email} mode="outlined" onChangeText={(email) => setEmail(email)} />
 
               <TextInput
                 style={styles.textInput}
@@ -89,7 +78,7 @@ const Login = ({navigation}) => {
                 right={
                   <TextInput.Icon
                     style={styles.eyeIcon}
-                    name={showHidePassword === true ? 'eye' : 'eye-off'}
+                    name={showHidePassword === true ? "eye" : "eye-off"}
                     onPress={handleShowHidePassword}
                   />
                 }
@@ -97,21 +86,18 @@ const Login = ({navigation}) => {
             </View>
 
             <View style={styles.signButton}>
-              <Button
-                contentStyle={{height: 46}}
-                mode="contained"
-                onPress={handleLoginRequest}>
+              <Button contentStyle={{ height: 46 }} mode="contained" onPress={handleLoginRequest}>
                 SIGN IN
               </Button>
             </View>
 
             <View style={styles.textContainer}>
-              <TouchableOpacity onPress={() => navigation.push('Registration')}>
+              <TouchableOpacity onPress={() => navigation.push("Registration")}>
                 <Text>Don't have an account?</Text>
               </TouchableOpacity>
 
               <TouchableOpacity onPress={() => toggleVisible(true)}>
-                <Text style={{marginTop: 50}}>Forgot password?</Text>
+                <Text style={{ marginTop: 50 }}>Forgot password?</Text>
               </TouchableOpacity>
 
               <Portal>
@@ -119,40 +105,37 @@ const Login = ({navigation}) => {
                   visible={visible}
                   onDismiss={() => {
                     toggleVisible(false);
-                    setEmailChangePassword('');
-                  }}>
+                    setEmailChangePassword("");
+                  }}
+                >
                   <View
                     style={{
-                      flexDirection: 'row',
-                      justifyContent: 'space-between',
+                      flexDirection: "row",
+                      justifyContent: "space-between",
                       marginRight: 20,
-                    }}>
+                    }}
+                  >
                     <Dialog.Title>Change password</Dialog.Title>
-                    {showLoadingIndicator && (
-                      <ActivityIndicator size="large" color="#0000ff" />
-                    )}
+                    {showLoadingIndicator && <ActivityIndicator size="large" color="#0000ff" />}
                   </View>
                   <Dialog.Content>
                     <TextInput
                       label="Enter your E-mail"
                       value={emailChangePassword}
                       mode="outlined"
-                      onChangeText={(emailChangePassword) =>
-                        setEmailChangePassword(emailChangePassword)
-                      }
+                      onChangeText={(emailChangePassword) => setEmailChangePassword(emailChangePassword)}
                     />
                   </Dialog.Content>
                   <Dialog.Actions>
                     <Button
                       onPress={() => {
                         toggleVisible(false);
-                        setEmailChangePassword('');
-                      }}>
+                        setEmailChangePassword("");
+                      }}
+                    >
                       Close
                     </Button>
-                    <Button onPress={() => handleSubmitChangePassword()}>
-                      Reset Password
-                    </Button>
+                    <Button onPress={() => handleSubmitChangePassword()}>Reset Password</Button>
                   </Dialog.Actions>
                 </Dialog>
               </Portal>
@@ -167,8 +150,8 @@ const Login = ({navigation}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
 
   textInput: {
@@ -183,8 +166,8 @@ const styles = StyleSheet.create({
   },
 
   textContainer: {
-    alignSelf: 'center',
-    alignItems: 'center',
+    alignSelf: "center",
+    alignItems: "center",
     marginTop: 120,
   },
 
