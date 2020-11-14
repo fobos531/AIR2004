@@ -4,33 +4,31 @@ import { Dashboard, HomeView } from "./pages/Dashboard/Dashboard";
 import StudentsView from "./pages/StudentsView/StudentsView";
 import TeachersView from "./pages/TeachersView/TeachersView";
 import Login from "./pages/Login/Login";
+import PrivateRoute from "./components/PrivateRoute";
 
 const App = () => {
   return (
     <Router>
       <Switch>
-        <Route path="/students">
+        <Route path="/login">
+          <Login />
+        </Route>
+        <PrivateRoute path="/students">
           <Dashboard>
             <StudentsView />
           </Dashboard>
-        </Route>
-        <Route path="/teachers">
+        </PrivateRoute>
+        <PrivateRoute path="/teachers">
           <Dashboard>
             <TeachersView />
           </Dashboard>
-        </Route>
-        <Route path="/dashboard">
+        </PrivateRoute>
+        <PrivateRoute path="/">
           <Dashboard>
             <HomeView />
           </Dashboard>
-        </Route>
-        <Route path="/login">
-          <Dashboard>
-            <Login />
-          </Dashboard>
-        </Route>
+        </PrivateRoute>
       </Switch>
-      <Dashboard />
     </Router>
   );
 };
