@@ -2,10 +2,26 @@ const mongoose = require("mongoose");
 const Email = require("mongoose-type-email");
 
 const userSchema = mongoose.Schema({
+  name: {
+    type: String,
+    required: true,
+  },
+  surname: {
+    type: String,
+    required: true,
+  },
   email: {
     type: Email,
     required: true,
     unique: true,
+  },
+  name: {
+    type: String,
+    required: true,
+  },
+  surname: {
+    type: String,
+    required: true,
   },
   password: {
     type: String,
@@ -13,7 +29,7 @@ const userSchema = mongoose.Schema({
   },
   jmbag: {
     type: String,
-    required: true,
+    required: false,
     validate: /^[0-9]{10}$/,
   },
   phoneNumber: {
@@ -23,8 +39,8 @@ const userSchema = mongoose.Schema({
   },
   userType: {
     type: String,
-    enum: ["Student", "Teacher", "Admin"],
-    default: "Student",
+    enum: ["student", "teacher", "admin"],
+    default: "student",
   },
 });
 
