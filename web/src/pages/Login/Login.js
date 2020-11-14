@@ -69,7 +69,7 @@ const Login = () => {
       .then(({ data }) => {
         console.log("RESPONSE: ", data);
         localStorage.setItem("userToken", data.user.token);
-        localStorage.setItem("loggedUser", JSON.stringify(data.user));
+
         dispatch(login(data.user));
 
         history.push("/");
