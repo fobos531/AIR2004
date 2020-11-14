@@ -28,6 +28,28 @@ router.post("/login", userController.login);
 
 /**
  * @swagger
+ * /user/verify:
+ *  post:
+ *    tags:
+ *    - "/user/"
+ *    summary: Verify user's JWT
+ *  parameters:
+ *   - name: "body"
+ *     in: "body"
+ *     description: "JWT to verify"
+ *     schema:
+ *       type: "object"
+ *       properties:
+ *         token:
+ *           type: "string"
+ *     responses:
+ *      '200':
+ *        description: A successful response
+ */
+router.get("/verify", userController.verify);
+
+/**
+ * @swagger
  * /user/{role}/register:
  *  post:
  *    tags:
@@ -75,27 +97,5 @@ router.post("/:role/register", userController.register);
  *        description: A successful response
  */
 router.get("/:role", userController.getAllUsers);
-
-/**
- * @swagger
- * /user/verify:
- *  post:
- *    tags:
- *    - "/user/"
- *    summary: Verify user's JWT
- *  parameters:
- *   - name: "body"
- *     in: "body"
- *     description: "JWT to verify"
- *     schema:
- *       type: "object"
- *       properties:
- *         token:
- *           type: "string"
- *     responses:
- *      '200':
- *        description: A successful response
- */
-router.post("/verify", userController.verify);
 
 module.exports = router;
