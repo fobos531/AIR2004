@@ -35,7 +35,7 @@ const TopBar = () => {
   const dispatch = useDispatch();
   const handleLogout = () => {
     localStorage.removeItem("userToken");
-    localStorage.removeItem("loggedUser");
+
     dispatch(logout());
   };
   return (

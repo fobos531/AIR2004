@@ -1,13 +1,17 @@
 import React, { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { Route, Redirect } from "react-router-dom";
 import api from "../api/api";
+import { login } from "../store/actions/userActions";
 
 const PrivateRoute = ({ component: Component, ...rest }) => {
   const loggedUser = useSelector((state) => state.loggedUser);
+  const dispatch = useDispatch();
   const reqConfig = {
     headers: {
-      Authorization: `Bearer ${loggedUser ? loggedUser.token : null}`,
+      Authorization: `Bearer ${
+        loggedUser ? loggedUser.token : localStorage.getItem("userToken")
+      }`,
     },
   };
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -18,6 +22,9 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
       .get("/user/verify", reqConfig)
       .then((response) => {
         if (response.data.success == true) {
+          if (loggedUser == null) {
+            dispatch(login(response.data.user));
+          }
           setIsAuthenticated(true);
         }
       })
