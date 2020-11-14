@@ -18,10 +18,8 @@ const initialValues = {
 };
 
 const validationSchema = Yup.object().shape({
-  name: Yup.string()
-    .required("This field is required!"),
-  surname: Yup.string()
-    .required("This field is required!"),  
+  name: Yup.string().required("This field is required!"),
+  surname: Yup.string().required("This field is required!"),
   email: Yup.string()
     .email("You need to enter a valid email!")
     .required("This field is required!"),
@@ -51,7 +49,7 @@ const NewStudentForm = () => {
   const onSubmit = (data) => {
     console.log("FORM DATA", data);
     api
-      .post("/user/register", JSON.stringify(data), {
+      .post("/user/student/register", JSON.stringify(data), {
         headers: { "Content-Type": "application/json" },
       })
       .then((response) => {
@@ -69,7 +67,7 @@ const NewStudentForm = () => {
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)} className={classes.form}>
-      <TextField
+        <TextField
           name="name"
           label="Name"
           variant="outlined"
@@ -80,9 +78,7 @@ const NewStudentForm = () => {
           id="name"
           autoComplete="name"
         />
-        {errors.name?.message && (
-          <Typography>{errors.name.message}</Typography>
-        )}
+        {errors.name?.message && <Typography>{errors.name.message}</Typography>}
 
         <TextField
           name="surname"
@@ -98,7 +94,7 @@ const NewStudentForm = () => {
         {errors.surname?.message && (
           <Typography>{errors.surname.message}</Typography>
         )}
-        
+
         <TextField
           name="email"
           label="Email"
@@ -204,7 +200,7 @@ const useStyles = makeStyles((theme) => ({
   form: {
     width: "60%",
     marginTop: theme.spacing(1),
-    margin: "auto"
+    margin: "auto",
   },
   submit: {
     margin: theme.spacing(3, 0, 2),
