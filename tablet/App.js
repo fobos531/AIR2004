@@ -1,6 +1,6 @@
 import React from 'react';
-import {NavigationContainer} from '@react-navigation/native';
-import {createStackNavigator} from '@react-navigation/stack';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
 import Login from './screens/Login';
 
 const Stack = createStackNavigator();
@@ -9,7 +9,19 @@ const App = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        <Stack.Screen name="Login" component={Login} />
+        <Stack.Screen
+          name="Login"
+          component={Login}
+          options={{
+            title: 'Unittend',
+            headerStyle: {
+              backgroundColor: '#5725E5',
+            },
+            headerTitleStyle: {
+              color: '#fff',
+            },
+          }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
