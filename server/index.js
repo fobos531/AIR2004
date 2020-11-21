@@ -6,11 +6,13 @@ const routes = require("./routes");
 const swaggerJsDoc = require("swagger-jsdoc");
 const swaggerUi = require("swagger-ui-express");
 
+// Connect to the database
 mongoose.connect(process.env.MONGODB_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
 
+// Configure Swagger
 const swaggerOptions = {
   swaggerDefinition: {
     info: {
@@ -31,12 +33,15 @@ const swaggerOptions = {
   apis: ["./routes/*.js"],
 };
 
+// Serve Swagger documentation
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
+// REST API
 app.use(express.json());
 app.use("/api", routes);
 
-app.listen(process.env.PORT || 8080, () =>
-  console.log(`Started on port ${process.env.PORT}!`)
-);
+const server = app.listen(process.env.PORT || 8080, () => console.log(`Started on port ${process.env.PORT}!`));
+
+// Start WebSocket server on the same Express server
+require("./websocket")(server);
