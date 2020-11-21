@@ -1,29 +1,17 @@
-import React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
-import Login from './screens/Login';
+import React from "react";
+import { Provider } from "react-redux";
+import { createStore } from "redux";
+import Navigation from "./navigation";
 
-const Stack = createStackNavigator();
+import userReducer from "./reducers/user";
+
+const store = createStore(userReducer);
 
 const App = () => {
   return (
-    <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen
-          name="Login"
-          component={Login}
-          options={{
-            title: 'Unittend',
-            headerStyle: {
-              backgroundColor: '#5725E5',
-            },
-            headerTitleStyle: {
-              color: '#fff',
-            },
-          }}
-        />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <Provider store={store}>
+      <Navigation />
+    </Provider>
   );
 };
 

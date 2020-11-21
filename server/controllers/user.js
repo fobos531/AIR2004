@@ -13,7 +13,10 @@ exports.login = async (req, res) => {
   const match = await bcrypt.compareSync(password, user.password);
   if (!match) return res.status(401).json({ success: false, message: "Email or password not valid!" });
 
-  const token = jwt.sign({ email: user.email, jmbag: user.jmbag, phoneNumber: user.phoneNumber }, process.env.JWT_SECRET);
+  const token = jwt.sign(
+    { email: user.email, jmbag: user.jmbag, phoneNumber: user.phoneNumber, name: user.name, surname: user.surname },
+    process.env.JWT_SECRET
+  );
 
   res.status(200).json({
     success: true,
@@ -23,6 +26,8 @@ exports.login = async (req, res) => {
       jmbag: user.jmbag,
       phoneNumber: user.phoneNumber,
       userType: user.userType,
+      name: user.name,
+      surname: user.surname,
     },
   });
 };
