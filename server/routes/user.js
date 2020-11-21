@@ -28,6 +28,28 @@ router.post("/login", userController.login);
 
 /**
  * @swagger
+ * /user/login/tablet:
+ *  post:
+ *    tags:
+ *    - "/user/"
+ *    summary: Route which is called by the mobile application when teacher scans the sign in QR code that is generated on the tablet
+ *    parameters:
+ *    - token: "body"
+ *      in: "body"
+ *      description: "Authentication token that had been read out from the scanned authentication QR code"
+ *      schema:
+ *        type: "object"
+ *        properties:
+ *          token:
+ *            type: "string"
+ *    responses:
+ *      '200':
+ *        description: A successful response
+ */
+router.post("/login/tablet", userController.loginTablet);
+
+/**
+ * @swagger
  * /user/verify:
  *  post:
  *    tags:

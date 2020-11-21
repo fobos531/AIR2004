@@ -8,6 +8,7 @@ const websocket = (server) => {
   global.io.on("connect", (socket) => {
     socket.data = { token: crypto.randomBytes(64).toString("hex") };
     socket.emit("tokenReceived", { token: socket.data.token });
+    console.log(socket.data.token);
   });
 };
 
