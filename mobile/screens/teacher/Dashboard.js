@@ -5,13 +5,13 @@ import { useDispatch } from "react-redux";
 
 import { signOut } from "../../actions";
 
-const Dashboard = () => {
+const Dashboard = ({ navigation }) => {
   const dispatch = useDispatch();
 
   return (
     <View>
       <Button onPress={() => dispatch(signOut())}>Sign out</Button>
-      <Button onPress={() => dispatch(signOut())}>Tablet login</Button>
+      <Button onPress={() => navigation.push("QRScan")}>Tablet login</Button>
     </View>
   );
 };
