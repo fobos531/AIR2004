@@ -1,17 +1,19 @@
-import React from "react";
-import { Provider } from "react-redux";
-import { createStore } from "redux";
-import Navigation from "./navigation";
-
-import userReducer from "./reducers/user";
+import React from 'react';
+import {Provider as StoreProvider} from 'react-redux';
+import {createStore} from 'redux';
+import Navigation from './navigation';
+import {Provider as PaperProvider} from 'react-native-paper';
+import userReducer from './reducers/user';
 
 const store = createStore(userReducer);
 
 const App = () => {
   return (
-    <Provider store={store}>
-      <Navigation />
-    </Provider>
+    <StoreProvider store={store}>
+      <PaperProvider>
+        <Navigation />
+      </PaperProvider>
+    </StoreProvider>
   );
 };
 
