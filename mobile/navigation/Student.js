@@ -1,7 +1,7 @@
 import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 
-import Dashboard from "../screens/Student/Dashboard";
+import Dashboard from "../screens/student/Dashboard";
 
 const Stack = createStackNavigator();
 

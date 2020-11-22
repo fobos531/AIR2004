@@ -5,6 +5,7 @@ import { useSelector, useDispatch } from "react-redux";
 
 import { signIn } from "../actions/";
 import Student from "./Student";
+import Teacher from "./Teacher";
 import Guest from "./Guest";
 
 const Stack = createStackNavigator();
@@ -25,7 +26,13 @@ const Navigation = () => {
 
   return (
     <Stack.Navigator headerMode="none">
-      {user.token === null ? <Stack.Screen name="Login" component={Guest} /> : <Stack.Screen name="Dashboard" component={Student} />}
+      {user.token === null ? (
+        <Stack.Screen name="Login" component={Guest} />
+      ) : user.userType === "student" ? (
+        <Stack.Screen name="Dashboard" component={Student} />
+      ) : (
+        <Stack.Screen name="Dashboard" component={Teacher} />
+      )}
     </Stack.Navigator>
   );
 };
