@@ -58,8 +58,6 @@ const TeacherTabNavigation = () => {
 function getHeaderTitle(route) {
   const routeName = getFocusedRouteNameFromRoute(route) ?? 'Dashboard';
 
-  console.log(routeName);
-
   switch (routeName) {
     case 'Dashboard':
       return 'Dashboard';
