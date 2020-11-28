@@ -13,11 +13,11 @@ const lectureSchema = mongoose.Schema({
   timeStart: {
     type: Date,
     default: Date.now,
-    required: true,
+    required: false,
   },
   timeEnd: {
     type: Date,
-    required: true,
+    required: false,
   },
 });
 
