@@ -1,65 +1,27 @@
 import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
+import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 import FontAwesomeIcons from "react-native-vector-icons/FontAwesome5";
 
 import Dashboard from "../screens/student/Dashboard";
 import Attendance from "../screens/student/Attendance";
 import Statistics from "../screens/student/Statistics";
 
-const DashboardStack = createStackNavigator();
-const AttendanceStack = createStackNavigator();
-const StatisticsStack = createStackNavigator();
+import { Title } from "react-native-paper";
 
+const Stack = createStackNavigator();
 const Tabs = createMaterialBottomTabNavigator();
 
-const DashboardStackScreen = () => (
-  <DashboardStack.Navigator>
-    <DashboardStack.Screen 
-      name="Dashboard" 
-      component={Dashboard}
-      options={{
-        headerTintColor: 'white',
-        headerStyle: { backgroundColor: '#6202EE' },
-      }}
-    />
-  </DashboardStack.Navigator>
-);
-
-const AttendanceStackScreen = () => (
-  <AttendanceStack.Navigator>
-    <AttendanceStack.Screen 
-      name="Attendance" 
-      component={Attendance}
-      options={{
-        headerTintColor: 'white',
-        headerStyle: { backgroundColor: '#6202EE' },
-      }}
-    />
-  </AttendanceStack.Navigator>
-);
-
-const StatisticsStackScreen = () => (
-  <StatisticsStack.Navigator>
-    <StatisticsStack.Screen 
-      name="Statistics" 
-      component={Statistics}
-      options={{
-        headerTintColor: 'white',
-        headerStyle: { backgroundColor: '#6202EE' },
-      }}
-    />
-  </StatisticsStack.Navigator>
-);
-
-const Student = () => {
+const StudentTabNavigation = () => {
   return (
+
     <Tabs.Navigator
       barStyle={{ backgroundColor: '#6202EE' }}
     >
       <Tabs.Screen
         name="Dashboard" 
-        component={DashboardStackScreen}
+        component={Dashboard}
         options={{
           tabBarLabel: 'Dashboard',
           tabBarIcon: ({ color }) => (
@@ -70,7 +32,7 @@ const Student = () => {
 
       <Tabs.Screen
         name="Attendance" 
-        component={AttendanceStackScreen}
+        component={Attendance}
         options={{
           tabBarLabel: 'Attendance',
           tabBarIcon: ({ color }) => (
@@ -81,7 +43,7 @@ const Student = () => {
 
       <Tabs.Screen
         name="Statistics" 
-        component={StatisticsStackScreen}
+        component={Statistics}
         options={{
           tabBarLabel: 'Statistics',
           tabBarIcon: ({ color }) => (
@@ -90,11 +52,37 @@ const Student = () => {
         }} 
       />
     </Tabs.Navigator>
-
-    /*<Stack.Navigator>
-      <Stack.Screen name="Dashboard" component={Dashboard} />
-    </Stack.Navigator>*/
   );
 };
+
+function getHeaderTitle(route) {
+  const routeName = getFocusedRouteNameFromRoute(route) ?? 'Dashboard';
+
+  switch (routeName) {
+    case 'Dashboard':
+      return 'Dashboard';
+    case 'Attendance':
+      return 'Attendance';
+    case 'Statistics':
+      return 'Statistics';
+  }
+}
+
+const Student = () => {
+  return(
+    <Stack.Navigator>
+      <Stack.Screen 
+        name="Dashboard" 
+        component={StudentTabNavigation} 
+        options={({ route }) => ({
+          headerTitle: getHeaderTitle(route),
+          headerTintColor: 'white', 
+          headerStyle: { backgroundColor: '#6202EE' }
+        })}
+      />
+    </Stack.Navigator>
+  );
+};
+
 
 export default Student;
