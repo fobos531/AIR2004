@@ -1,86 +1,19 @@
 import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
-
-import Dashboard from "../screens/teacher/Dashboard";
-import QR from "../screens/teacher/QR";
-
-const Stack = createStackNavigator();
-
-const Teacher = () => {
-  return (
-    <Stack.Navigator>
-      <Stack.Screen name="Dashboard" component={Dashboard} />
-      <Stack.Screen name="QRScan" component={QR} />
-    </Stack.Navigator>
-  );
-};
-
-export default Teacher;
-import React from "react";
-import { createStackNavigator } from "@react-navigation/stack";
 import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
+import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 import FontAwesomeIcons from "react-native-vector-icons/FontAwesome5";
 
 import Dashboard from "../screens/teacher/Dashboard";
 import Attendance from "../screens/teacher/Attendance";
 import Courses from "../screens/teacher/Courses";
 import QR from "../screens/teacher/QR";
+import { Title } from "react-native-paper";
 
-const DashboardStack = createStackNavigator();
-const AttendanceStack = createStackNavigator();
-const CoursesStack = createStackNavigator();
-
+const Stack = createStackNavigator();
 const Tabs = createMaterialBottomTabNavigator();
 
-const DashboardStackScreen = () => (
-  <DashboardStack.Navigator>
-    <DashboardStack.Screen 
-      name="Dashboard" 
-      component={Dashboard}
-      options={{
-        headerTintColor: 'white',
-        headerStyle: { backgroundColor: '#6202EE' },
-      }}
-    />
-
-    <DashboardStack.Screen 
-      name="QRScan" 
-      component={QR}
-      options={{
-        headerTintColor: 'white',
-        headerStyle: { backgroundColor: '#6202EE' },
-      }}
-    />
-  </DashboardStack.Navigator>
-);
-
-const AttendanceStackScreen = () => (
-  <AttendanceStack.Navigator>
-    <AttendanceStack.Screen 
-      name="Attendance" 
-      component={Attendance}
-      options={{
-        headerTintColor: 'white',
-        headerStyle: { backgroundColor: '#6202EE' },
-      }}
-    />
-  </AttendanceStack.Navigator>
-);
-
-const CoursesStackScreen = () => (
-  <CoursesStack.Navigator>
-    <CoursesStack.Screen 
-      name="Courses" 
-      component={Courses}
-      options={{
-        headerTintColor: 'white',
-        headerStyle: { backgroundColor: '#6202EE' },
-      }}
-    />
-  </CoursesStack.Navigator>
-);
-
-const Teacher = () => {
+const TeacherTabNavigation = () => {
   return (
 
     <Tabs.Navigator
@@ -88,7 +21,7 @@ const Teacher = () => {
     >
       <Tabs.Screen
         name="Dashboard" 
-        component={DashboardStackScreen}
+        component={Dashboard}
         options={{
           tabBarLabel: 'Dashboard',
           tabBarIcon: ({ color }) => (
@@ -99,7 +32,7 @@ const Teacher = () => {
 
       <Tabs.Screen
         name="Attendance" 
-        component={AttendanceStackScreen}
+        component={Attendance}
         options={{
           tabBarLabel: 'Attendance',
           tabBarIcon: ({ color }) => (
@@ -110,7 +43,7 @@ const Teacher = () => {
 
       <Tabs.Screen
         name="Courses" 
-        component={CoursesStackScreen}
+        component={Courses}
         options={{
           tabBarLabel: 'Courses',
           tabBarIcon: ({ color }) => (
@@ -119,13 +52,49 @@ const Teacher = () => {
         }} 
       />
     </Tabs.Navigator>
-
-
-    /*<Stack.Navigator>
-      <Stack.Screen name="Dashboard" component={Dashboard} />
-      <Stack.Screen name="QRScan" component={QR} />
-    </Stack.Navigator>*/
   );
 };
+
+function getHeaderTitle(route) {
+  const routeName = getFocusedRouteNameFromRoute(route) ?? 'Dashboard';
+
+  console.log(routeName);
+
+  switch (routeName) {
+    case 'Dashboard':
+      return 'Dashboard';
+    case 'Attendance':
+      return 'Attendance';
+    case 'Courses':
+      return 'Courses';
+  }
+}
+
+const Teacher = () => {
+  return(
+    <Stack.Navigator>
+      <Stack.Screen 
+        name="Dashboard" 
+        component={TeacherTabNavigation} 
+        options={({ route }) => ({
+          headerTitle: getHeaderTitle(route),
+          headerTintColor: 'white', 
+          headerStyle: { backgroundColor: '#6202EE' }
+        })}
+      />
+
+      <Stack.Screen 
+        name="QRScan" 
+        component={QR} 
+        options={{
+          headerTitle: "QR Scan",
+          headerTintColor: 'white', 
+          headerStyle: { backgroundColor: '#6202EE' }
+        }}
+      />
+    </Stack.Navigator>
+  );
+};
+
 
 export default Teacher;
