@@ -1,8 +1,8 @@
 import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 
-import Dashboard from "../screens/teacher/Dashboard";
-import QR from "../screens/teacher/QR";
+import Dashboard from "../screens/Teacher/Dashboard";
+import QR from "../screens/Teacher/QR";
 
 const Stack = createStackNavigator();
 
