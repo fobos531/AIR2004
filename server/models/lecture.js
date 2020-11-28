@@ -13,11 +13,19 @@ const lectureSchema = mongoose.Schema({
   timeStart: {
     type: Date,
     default: Date.now,
-    required: true,
+    required: false,
   },
   timeEnd: {
     type: Date,
-    required: true,
+    required: false,
+  },
+});
+
+lectureSchema.set("toJSON", {
+  transform: (document, returnedObject) => {
+    returnedObject.id = returnedObject._id.toString();
+    delete returnedObject._id;
+    delete returnedObject.__v;
   },
 });
 

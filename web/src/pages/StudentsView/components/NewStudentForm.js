@@ -4,6 +4,7 @@ import { TextField, Button, Typography, Snackbar } from "@material-ui/core";
 import { useForm } from "react-hook-form";
 import Alert from "../../../components/Alert";
 import * as Yup from "yup";
+import { useHistory } from "react-router-dom";
 
 import api from "../../../api/api";
 
@@ -46,6 +47,7 @@ const NewStudentForm = () => {
     resolver: yupResolver(validationSchema),
     defaultValues: initialValues,
   });
+  const history = useHistory();
   const onSubmit = (data) => {
     console.log("FORM DATA", data);
     api
@@ -61,6 +63,7 @@ const NewStudentForm = () => {
         setSnackBarData({ isOpen: true, response: false });
         reset();
       });
+      history.push('/students');
   };
   console.log("SNACKBAR response", SnackbarData.response);
 
