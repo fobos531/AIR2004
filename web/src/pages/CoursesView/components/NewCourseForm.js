@@ -14,10 +14,17 @@ const initialValues = {
   allowedAbsences: 0,
 };
 
+const positiveInteger = Yup.number()
+  .integer("Only integers are accepted!")
+  .typeError("Only integers are accepted!")
+  .positive("You need to enter a positive integer!")
+  .nullable()
+  .transform((value, originalValue) => (originalValue.trim() === "" ? null : value));
+
 const validationSchema = Yup.object().shape({
   name: Yup.string().required("This field is required!"),
   passcode: Yup.string().required("This field is required!"),
-  allowedAbsences: Yup.number().required("This field is required!"),
+  allowedAbsences: positiveInteger,
 });
 
 const NewCourseForm = () => {
@@ -25,8 +32,7 @@ const NewCourseForm = () => {
     isOpen: false,
     response: null,
   });
-  const handleSnackBarClose = (event, reason) =>
-    setSnackBarData({ ...SnackbarData, isOpen: false });
+  const handleSnackBarClose = (event, reason) => setSnackBarData({ ...SnackbarData, isOpen: false });
   const classes = useStyles();
   const { register, handleSubmit, errors, reset } = useForm({
     mode: "onChange",
@@ -46,7 +52,7 @@ const NewCourseForm = () => {
       .catch((error) => {
         setSnackBarData({ isOpen: true, response: false });
         reset();
-      })
+      });
   };
   console.log("SNACKBAR response", SnackbarData.response);
 
@@ -77,9 +83,7 @@ const NewCourseForm = () => {
           id="passcode"
           autoComplete="passcode"
         />
-        {errors.passcode?.message && (
-          <Typography>{errors.passcode.message}</Typography>
-        )}
+        {errors.passcode?.message && <Typography>{errors.passcode.message}</Typography>}
 
         <TextField
           name="allowedAbsences"
@@ -92,32 +96,15 @@ const NewCourseForm = () => {
           id="allowedAbsences"
           autoComplete="allowedAbsences"
         />
-        {errors.allowedAbsences?.message && (
-          <Typography>{errors.allowedAbsences.message}</Typography>
-        )}
-        <Button
-          type="submit"
-          fullWidth
-          variant="contained"
-          color="primary"
-          className={classes.submit}
-        >
+        {errors.allowedAbsences?.message && <Typography>{errors.allowedAbsences.message}</Typography>}
+        <Button type="submit" fullWidth variant="contained" color="primary" className={classes.submit}>
           Add new course
         </Button>
       </form>
-      <Snackbar
-        open={SnackbarData.isOpen}
-        autoHideDuration={4000}
-        onClose={handleSnackBarClose}
-      >
+      <Snackbar open={SnackbarData.isOpen} autoHideDuration={4000} onClose={handleSnackBarClose}>
         {SnackbarData.response != null && (
-          <Alert
-            onClose={handleSnackBarClose}
-            severity={SnackbarData.response == false ? "error" : "success"}
-          >
-            {SnackbarData.response == false
-              ? "Unable to add a new course! Please check your data!"
-              : "Course successfully added!"}
+          <Alert onClose={handleSnackBarClose} severity={SnackbarData.response == false ? "error" : "success"}>
+            {SnackbarData.response == false ? "Unable to add a new course! Please check your data!" : "Course successfully added!"}
           </Alert>
         )}
       </Snackbar>

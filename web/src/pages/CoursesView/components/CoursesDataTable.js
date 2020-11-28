@@ -10,23 +10,14 @@ const options = {
 const CoursesDataTable = ({ courses }) => {
   let data = [];
 
-  courses.map((courses) => {
-    let _courses = [
-      courses.name,
-      courses.passcode,
-      courses.allowedAbsences
-    ];
-    data.push(_courses);
+  courses.map((course) => {
+    let _course = [course.name, course.passcode, course.allowedAbsences];
+    data.push(_course);
   });
 
   return (
     <>
-      <MUIDataTable
-        title={"All courses"}
-        data={data}
-        columns={columns}
-        options={options}
-      />
+      <MUIDataTable title={"All courses"} data={data} columns={columns} options={options} />
     </>
   );
 };

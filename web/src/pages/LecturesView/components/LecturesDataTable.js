@@ -7,27 +7,17 @@ const options = {
   filterType: "checkbox",
 };
 
-const LecturesDataTable = ({ lectures  }) => {
+const LecturesDataTable = ({ lectures }) => {
   let data = [];
 
-  lectures.map((lectures) => {
-    let _lectures = [
-      lectures.course,
-      lectures.type,
-      lectures.timeStart,
-      lectures.timeEnd
-    ];
-    data.push(_lectures);
+  lectures.map((lecture) => {
+    let _lecture = [lecture.course.name, lecture.type, lecture.timeStart, lecture.timeEnd];
+    data.push(_lecture);
   });
 
   return (
     <>
-      <MUIDataTable
-        title={"All lectures"}
-        data={data}
-        columns={columns}
-        options={options}
-      />
+      <MUIDataTable title={"All lectures"} data={data} columns={columns} options={options} />
     </>
   );
 };

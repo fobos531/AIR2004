@@ -1,4 +1,3 @@
-const bcrypt = require("bcrypt");
 const Lecture = require("../models/lecture");
 
 exports.add = async (req, res) => {
@@ -14,7 +13,7 @@ exports.add = async (req, res) => {
 
 exports.getAll = async (req, res) => {
   try {
-    const allLectures = await Lecture.find();
+    const allLectures = await Lecture.find().populate("course");
     const data = allLectures.map((lecture) => lecture.toJSON());
     res.status(200).json({ success: true, data });
   } catch (error) {
