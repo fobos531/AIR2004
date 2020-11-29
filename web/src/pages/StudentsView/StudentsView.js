@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from "react";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
-import { Typography } from "@material-ui/core";
+import { Button } from "@material-ui/core";
 import clsx from "clsx";
-import NewStudentForm from "./components/NewStudentForm";
 import StudentsDataTable from "./components/StudentsDataTable";
 import api from "../../api/api";
 import { useStyles } from "./styles";
+import { useHistory } from "react-router-dom"
 
 const StudentsView = () => {
   const classes = useStyles();
+  const history = useHistory();
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
   const [allStudents, setAllStudents] = useState();
   useEffect(() => {
@@ -18,17 +19,22 @@ const StudentsView = () => {
       setAllStudents(response.data.data);
     });
   }, []);
+  const redirect = () => {
+    history.push('/students/add');
+  };
   return (
     <>
       <Grid container className={classes.container}>
+      <Button
+          type="add"
+          variant="contained"
+          color="primary"
+          className={classes.add}
+          onClick={redirect}
+        >
+          New student
+        </Button>
         <Grid item>
-          <Paper
-            className={`${fixedHeightPaper} ${classes.Paper}`}
-            elevation={3}
-          >
-            <Typography>Add a new student:</Typography>
-            <NewStudentForm />
-          </Paper>
           <Paper
             className={`${fixedHeightPaper} ${classes.Paper}`}
             elevation={3}

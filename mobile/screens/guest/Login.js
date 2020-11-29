@@ -23,7 +23,8 @@ const Login = ({ navigation }) => {
   const [password, setPassword] = useState("");
   const [showHidePassword, setShowHidePassword] = useState(false);
 
-  const [showLoadingIndicator, setShowLoadingIndicator] = useState(false);
+  const [showLoadingIndicatorForgotPassword, setShowLoadingIndicatorForgotPassword] = useState(false);
+  const [showLoadingIndicatorLogin, setShowLoadingIndicatorLogin] = useState(false);
   const [visible, toggleVisible] = useState(false);
 
   const handleShowHidePassword = () => {
@@ -31,17 +32,25 @@ const Login = ({ navigation }) => {
   };
 
   const handleLoginRequest = () => {
-    api
+    setShowLoadingIndicatorLogin(true);
+
+    setTimeout(() => {
+      setShowLoadingIndicatorLogin(false);
+      toggleVisible(false);
+
+      api
       .post("/user/login", { email, password })
       .then(({ data }) => dispatch(signIn(data.user)))
       .catch(() => Alert.alert("Invalid credentials!"));
+
+    }, 4000);
   };
 
   const handleSubmitChangePassword = () => {
-    setShowLoadingIndicator(true);
+    setShowLoadingIndicatorForgotPassword(true);
 
     setTimeout(() => {
-      setShowLoadingIndicator(false);
+      setShowLoadingIndicatorForgotPassword(false);
       toggleVisible(false);
     }, 4000);
 
@@ -82,6 +91,11 @@ const Login = ({ navigation }) => {
               <Button contentStyle={{ height: 46 }} mode="contained" onPress={handleLoginRequest}>
                 SIGN IN
               </Button>
+
+              <View style={{marginTop: 10}}>
+                {showLoadingIndicatorLogin && <ActivityIndicator size="large" color="#0000ff" />}
+              </View>
+
             </View>
 
             <View style={styles.textContainer}>
@@ -109,7 +123,7 @@ const Login = ({ navigation }) => {
                     }}
                   >
                     <Dialog.Title>Change password</Dialog.Title>
-                    {showLoadingIndicator && <ActivityIndicator size="large" color="#0000ff" />}
+                    {showLoadingIndicatorForgotPassword && <ActivityIndicator size="large" color="#0000ff" />}
                   </View>
                   <Dialog.Content>
                     <TextInput
@@ -173,6 +187,10 @@ const styles = StyleSheet.create({
     marginTop: 15,
     marginRight: 10,
   },
+
+  loginIndicator: {
+    position: "absolute"
+  }
 });
 
 export default Login;

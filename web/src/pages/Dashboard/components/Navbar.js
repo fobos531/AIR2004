@@ -5,6 +5,8 @@ import PeopleIcon from "@material-ui/icons/People";
 import PersonIcon from "@material-ui/icons/Person";
 import HomeIcon from "@material-ui/icons/Home";
 import NavItem from "./NavItem";
+import SchoolIcon from "@material-ui/icons/School";
+import SubjectIcon from '@material-ui/icons/Subject';
 
 const user = {
   jobTitle: "Web administrator",
@@ -26,7 +28,17 @@ const items = [
     href: "/teachers",
     icon: PersonIcon,
     title: "Teachers",
+  },
+  {
+    href: "/courses",
+    icon: SchoolIcon,
+    title: "Courses",
   },  
+  {
+    href: "/lectures",
+    icon: SubjectIcon,
+    title: "Lectures",
+  }
 ];
 
 const useStyles = makeStyles(() => ({

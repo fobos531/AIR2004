@@ -52,7 +52,7 @@ exports.loginTablet = async (req, res) => {
     tabletSocket.data.token = null;
 
     // Send response to the mobile app
-    res.status(200).json({ success: true, user: { ...user, token } });
+    res.status(200).json({ success: true });
   } catch (error) {
     console.log(error);
     res.status(400).json({ success: false, error });

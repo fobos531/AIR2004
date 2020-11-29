@@ -21,7 +21,7 @@ const Navigation = () => {
   // Checks whether user is already logged in (his data is stored in AsyncStorage)
   const checkIfSignedIn = async () => {
     const userData = await AsyncStorage.getItem("user");
-    if (userData) dispatch(signIn(userData));
+    if (userData) dispatch(signIn(JSON.parse(userData)));
   };
 
   return (
