@@ -16,6 +16,12 @@ const courseSchema = mongoose.Schema({
     default: 3,
     required: true,
   },
+  enrolledStudents: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
+  ],
 });
 
 courseSchema.set("toJSON", {
