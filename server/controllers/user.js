@@ -98,7 +98,9 @@ exports.getAllUsers = async (req, res) => {
 
 exports.getSingle = async (req, res) => {
   try {
-    const user = await User.findById(req.params.id).populate("enrolledCourses");
+    const token = req.header("Authorization").replace("Bearer ", "");
+    let user = jwt.verify(token, process.env.JWT_SECRET);
+    user = await User.findOne({ jmbag: user.jmbag }).populate("enrolledCourses");
     const data = user.toJSON();
     res.status(200).json({ success: true, data });
   } catch (error) {

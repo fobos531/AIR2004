@@ -136,18 +136,18 @@ router.post("/:role/register", userController.register);
 
 /**
  * @swagger
- * /user/{id}/details:
+ * /user/details:
  *  get:
  *    tags:
  *    - "/user/"
- *    summary: Get detailed information about the user with a specified id
+ *    summary: Get detailed information about the user
  *    responses:
  *      '200':
  *        description: Detailed information about the requested user
  *      '400':
  *        description: An unsuccessful request
  */
-router.get("/:id/details", userController.getSingle);
+router.get("/details", userController.getSingle);
 
 /**
  * @swagger
