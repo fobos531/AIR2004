@@ -13,6 +13,7 @@ import { signOut } from "../actions";
 
 import { TouchableOpacity, View } from "react-native";
 import { Title, Button } from "react-native-paper";
+import QR from "../screens/student/QR";
 
 const Stack = createStackNavigator();
 const Tabs = createMaterialBottomTabNavigator();
@@ -89,6 +90,17 @@ const Student = () => {
           )
         })}
       />
+
+      <Stack.Screen
+        name="QRScan"
+        component={QR}
+        options={{
+          headerTitle: "Scan QR code",
+          headerTintColor: 'white', 
+          headerStyle: { backgroundColor: '#6202EE' },
+        }}
+      /> 
+
     </Stack.Navigator>
   );
 };

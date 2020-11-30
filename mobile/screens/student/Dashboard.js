@@ -8,6 +8,8 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import { signIn } from "../../actions";
 import { FlatList } from "react-native-gesture-handler";
 
+import QR from "../student/QR";
+
 const theme = {
   ...DefaultTheme,
   colors: {
@@ -16,7 +18,7 @@ const theme = {
   },
 };
 
-const Dashboard = () => {
+const Dashboard = ({ navigation }) => {
   const[showLoadingIndicator, setShowLoadingIndicator] = useState(false);
   const[courseCode, setCourseCode] = useState("");
   const[visible, toggleVisible] = useState(false);
@@ -121,7 +123,7 @@ const Dashboard = () => {
         label="SCAN"
         icon="qrcode"
         color="black"
-        onPress={() => console.log('Pressed')}
+        onPress={() => navigation.push("QRScan")}
       />
 
     </PaperProvider>
