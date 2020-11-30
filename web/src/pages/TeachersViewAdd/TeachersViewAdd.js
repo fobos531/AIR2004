@@ -1,12 +1,12 @@
-import NewStudentForm from "../StudentsView/components/NewStudentForm";
+import React, { useEffect, useState } from "react";
+import NewTeacherForm from "../TeachersView/components/NewTeacherForm";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
-import React, { useEffect, useState } from "react";
 import clsx from "clsx";
-import { useStyles } from "../StudentsView/styles";
+import { useStyles } from "../TeachersView/styles";
 
-const StudentViewAdd = () => {
+const TeachersViewAdd = () => {
     const classes = useStyles();
     const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
 
@@ -17,14 +17,14 @@ const StudentViewAdd = () => {
             className={`${fixedHeightPaper} ${classes.Paper}`}
             elevation={3}
           >
-          <Typography>Add new student:</Typography>
-            <NewStudentForm />
+          <Typography>Add new teacher:</Typography>
+            <NewTeacherForm />
           </Paper>
         </Grid>
       </Grid>
     )
 }
 
-export default StudentViewAdd
+export default TeachersViewAdd
 
 
