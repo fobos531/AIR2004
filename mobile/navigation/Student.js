@@ -1,14 +1,19 @@
 import React from "react";
+import { useDispatch } from "react-redux";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
 import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 import FontAwesomeIcons from "react-native-vector-icons/FontAwesome5";
+import MaterialIcons from "react-native-vector-icons/MaterialIcons"
 
 import Dashboard from "../screens/student/Dashboard";
 import Attendance from "../screens/student/Attendance";
 import Statistics from "../screens/student/Statistics";
 
-import { Title } from "react-native-paper";
+import { signOut } from "../actions";
+
+import { TouchableOpacity, View } from "react-native";
+import { Title, Button } from "react-native-paper";
 
 const Stack = createStackNavigator();
 const Tabs = createMaterialBottomTabNavigator();
@@ -25,7 +30,7 @@ const StudentTabNavigation = () => {
         options={{
           tabBarLabel: 'Dashboard',
           tabBarIcon: ({ color }) => (
-            <FontAwesomeIcons name="home" color={color} size={22} />
+            <FontAwesomeIcons name="home" color={color} size={22}/>
           ),
         }} 
       />
@@ -69,6 +74,8 @@ function getHeaderTitle(route) {
 }
 
 const Student = () => {
+  const dispatch = useDispatch();
+
   return(
     <Stack.Navigator>
       <Stack.Screen 
@@ -77,7 +84,12 @@ const Student = () => {
         options={({ route }) => ({
           headerTitle: getHeaderTitle(route),
           headerTintColor: 'white', 
-          headerStyle: { backgroundColor: '#6202EE' }
+          headerStyle: { backgroundColor: '#6202EE' },
+          headerRight: () => (
+            <View style={{marginRight: 15}}>
+              <MaterialIcons name="logout" size={34} color={"white"} onPress={() => dispatch(signOut())}/>
+            </View>
+          )
         })}
       />
     </Stack.Navigator>
