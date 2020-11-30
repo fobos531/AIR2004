@@ -1,5 +1,4 @@
 import React from "react";
-import { useDispatch } from "react-redux";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
 import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
@@ -74,8 +73,6 @@ function getHeaderTitle(route) {
 }
 
 const Student = () => {
-  const dispatch = useDispatch();
-
   return(
     <Stack.Navigator>
       <Stack.Screen 
@@ -87,7 +84,7 @@ const Student = () => {
           headerStyle: { backgroundColor: '#6202EE' },
           headerRight: () => (
             <View style={{marginRight: 15}}>
-              <MaterialIcons name="logout" size={34} color={"white"} onPress={() => dispatch(signOut())}/>
+              <MaterialIcons name="logout" size={26} color={"white"} onPress={() => dispatch(signOut())}/>
             </View>
           )
         })}
