@@ -22,6 +22,12 @@ const courseSchema = mongoose.Schema({
       ref: "User",
     },
   ],
+  assignedTeachers: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
+  ],
 });
 
 courseSchema.set("toJSON", {
