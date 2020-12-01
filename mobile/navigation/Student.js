@@ -2,6 +2,7 @@ import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
 import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
+import { useDispatch } from "react-redux";
 import FontAwesomeIcons from "react-native-vector-icons/FontAwesome5";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons"
 
@@ -74,6 +75,8 @@ function getHeaderTitle(route) {
 }
 
 const Student = () => {
+  const dispatch = useDispatch();
+
   return(
     <Stack.Navigator>
       <Stack.Screen 
