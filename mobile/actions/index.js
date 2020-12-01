@@ -10,3 +10,9 @@ export const signOut = () => {
     type: "SIGN_OUT",
   };
 };
+
+export const signInTablet = () => {
+  return {
+    type: "SIGN_IN_TABLET"
+  };
+};

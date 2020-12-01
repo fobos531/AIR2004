@@ -3,6 +3,7 @@ const initialState = {
   surname: null,
   token: null,
   userType: null,
+  loggedInTablet: false,
 };
 
 const userReducer = (state = initialState, action) => {
@@ -16,6 +17,11 @@ const userReducer = (state = initialState, action) => {
       };
     case "SIGN_OUT":
       return initialState;
+    case "SIGN_IN_TABLET":
+        return {
+          ...state, 
+          loggedInTablet: true
+        };
     default:
       return state;
   }
