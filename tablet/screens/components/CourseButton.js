@@ -2,9 +2,13 @@ import React from "react";
 import { StyleSheet } from "react-native";
 import { Button } from "react-native-paper";
 
-const CourseButton = ({ name, showDialog }) => {
+const CourseButton = ({ name, showDialog, setCourse }) => {
+  const handleOnPress = () => {
+    setCourse();
+    showDialog();
+  };
   return (
-    <Button mode="contained" style={styles.button} onPress={showDialog}>
+    <Button mode="contained" style={styles.button} onPress={() => handleOnPress()}>
       {name}
     </Button>
   );

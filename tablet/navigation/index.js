@@ -9,6 +9,7 @@ import { signIn, signOut } from "../actions/";
 
 import Login from "../screens/Login";
 import Home from "../screens/Home";
+import LectureInProgress from "../screens/LectureInProgress";
 
 const Stack = createStackNavigator();
 
@@ -34,6 +35,7 @@ const Navigation = () => {
 
     return () => socket.current.disconnect();
   }, []);
+
   return (
     <NavigationContainer>
       <Stack.Navigator>
@@ -51,10 +53,9 @@ const Navigation = () => {
             }}>
             {(props) => <Login {...props} tabletToken={token} />}
           </Stack.Screen>
-        ) : (
+        ) : user.courseInProgress === null ? (
           <Stack.Screen
             name="Home"
-            component={Home}
             options={{
               title: "Unittend",
               headerStyle: {
@@ -63,8 +64,23 @@ const Navigation = () => {
               headerTitleStyle: {
                 color: "#fff",
               },
-            }}
-          />
+            }}>
+            {(props) => <Home {...props} socket={socket.current} />}
+          </Stack.Screen>
+        ) : (
+          <Stack.Screen
+            name="LectureInProgress"
+            options={{
+              title: "Unittend",
+              headerStyle: {
+                backgroundColor: "#5725E5",
+              },
+              headerTitleStyle: {
+                color: "#fff",
+              },
+            }}>
+            {() => <LectureInProgress courseName={user.courseInProgress.courseName} lectureType={user.courseInProgress.lectureType} />}
+          </Stack.Screen>
         )}
       </Stack.Navigator>
     </NavigationContainer>

@@ -1,16 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
 import { View, Text, StyleSheet, Dimensions, Image } from "react-native";
-import { useDispatch } from "react-redux";
-import QRCode from "react-native-qrcode-svg";
-import { io } from "socket.io-client";
-import { API_URL } from "@env";
 
-import { signIn } from "../actions/";
+import QRCode from "react-native-qrcode-svg";
 
 const Login = ({ tabletToken }) => {
   const [token, setToken] = useState(null);
 
-  console.log("TABLET TOKEN", tabletToken);
   useEffect(() => {
     setToken(tabletToken);
   });
