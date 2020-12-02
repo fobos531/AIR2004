@@ -53,6 +53,7 @@ const Dashboard = ({ navigation }) => {
   const[coursePasscode, setCoursePasscode] = useState("");
   const[visible, toggleVisible] = useState(false);
   const[enrolledCourses, setEnrolledCourses] = useState([]);
+  const[refresh, setRefresh] = useState(false);
 
   const user = useSelector((state) => state);
 
@@ -105,7 +106,10 @@ const Dashboard = ({ navigation }) => {
           "Content-Type": "application/json" 
         }
       })
-      .then(({ data }) => console.log(data))
+      .then(({ data }) => {
+        console.log("ADDED COURSE", data.data.course);
+        setEnrolledCourses(enrolledCourses.concat(data.data.course))
+      })
       .catch((error) => console.log(error));
 
       setCoursePasscode("");
@@ -183,6 +187,7 @@ const Dashboard = ({ navigation }) => {
                 <FlatList
                   keyExtractor={(item) => item.id}
                   data={enrolledCourses}
+                  extraData={enrolledCourses.length}
                   renderItem={({item}) => 
                     <CourseItem id={item.id} courseName={item.name}/>
                   }

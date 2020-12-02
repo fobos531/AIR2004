@@ -128,7 +128,7 @@ exports.enroll = async (req, res) => {
 
     student.enrolledCourses = student.enrolledCourses.concat(course._id);
     course.enrolledStudents = course.enrolledStudents.concat(student._id);
-    const data = [student, course];
+    const data = {student, course};
 
     await student.save();
     await course.save();
