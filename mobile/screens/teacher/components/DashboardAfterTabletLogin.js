@@ -1,15 +1,25 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { View, StyleSheet } from "react-native";
 import { Button, Text, FAB, Chip } from "react-native-paper";
 import { useSelector, useDispatch } from "react-redux";
+import {io} from "socket.io-client";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons"
+import { signOutTablet } from '../../../actions';
 
 const DashboardAfterTabletLogin = () => {
+  const dispatch = useDispatch();
+  const socket = useRef();
+  const user = useSelector((state) => state);
+
+  useEffect(() => {
+    socket.current = io("http://192.168.1.5:8080");
+    return () => socket.current.disconnect();
+  }, []);
     return (
-     
-       
+
   <>
         <View style={{marginTop: 25}}>
-          <Text style={styles.font}>You are currently not signed in a lecture room.</Text>
+          <Text style={styles.font}>You are signed in on a tablet in a lecture room.</Text>
         </View>
   
         <View style={{...styles.stepContainer, marginTop: 25}}>
@@ -19,8 +29,13 @@ const DashboardAfterTabletLogin = () => {
             style={{marginTop: 27,marginBottom: 27}}
             mode="contained"
             icon={() => (
-              <MaterialCommunityIcons name="plus" size={35} color="#fff" onPress={() => console.log("")}/>
+              <MaterialCommunityIcons name="plus" size={35} color="#fff" />
             )}
+            onPress={() => {
+              console.log("I WAS PRESSED");
+              socket.current.emit("signOutTablet", { token: user.tabletSocketToken })
+              dispatch(signOutTablet());
+            }}
           >
             SIGN OUT
           </Button>

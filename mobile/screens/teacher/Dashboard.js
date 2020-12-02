@@ -7,25 +7,21 @@ import { io } from 'socket.io-client';
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons"
 import FontAwesomeIcons from "react-native-vector-icons/FontAwesome5";
 import DashboardAfterLogin from "./components/DashboardAfterLogin"
+import DashboardAfterTabletLogin from "./components/DashboardAfterTabletLogin"
 
 import { signIn } from "../../actions";
 
-
 const Dashboard = ({ navigation }) => {
   const socket = useRef();
- /*  useEffect(() => {
-    socket.current = io("http://192.168.1.5:8080");
-    socket.current.on("loginSuccess", (data) => {
-      console.log("DATA", data);
 
-    })
-  },[]) */
   const user = useSelector((state) => state);
+  console.log("USER STATE", user.tabletSocketToken);
   return (
 <View>    
   <Text style={styles.title}>Hi, <Text style={{ fontWeight: "bold" }}>{user.name} {user.surname}!</Text></Text>
       <View style={styles.container}>
-      <DashboardAfterLogin/>
+      {user.tabletSocketToken == null ? <DashboardAfterLogin/> : <DashboardAfterTabletLogin />}
+      {user.tabletSocketToken == null && 
       <FAB
         style={styles.fab}
         small
@@ -34,7 +30,10 @@ const Dashboard = ({ navigation }) => {
         color="black"
         onPress={() => console.log('Pressed')}
         onPress={() => navigation.push("QRScan")}
-      />
+      />}
+
+      
+
       </View>
 </View>
   );

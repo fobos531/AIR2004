@@ -11,8 +11,16 @@ export const signOut = () => {
   };
 };
 
-export const signInTablet = () => {
+export const signInTablet = (tabletSocketToken) => {
   return {
-    type: "SIGN_IN_TABLET"
+    type: "SIGN_IN_TABLET",
+    tabletSocketToken
   };
 };
+
+export const signOutTablet = () => {
+  return {
+    type: "SIGN_OUT_TABLET",
+  };
+};
+
