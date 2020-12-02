@@ -2,9 +2,13 @@ import React from 'react';
 import { View, StyleSheet } from "react-native";
 import { Button, Text, FAB, Chip } from "react-native-paper";
 import { useSelector, useDispatch } from "react-redux";
+import { signOutTablet } from "../../../actions/index";
+import FontAwesomeIcons from "react-native-vector-icons/FontAwesome";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
-const DashboardAfterCourseSelection = () => {
-
+const DashboardAfterCourseSelection = ({ socket }) => {
+    const user = useSelector((state) => state)
+    const dispatch = useDispatch();
   
     return (
     <>
@@ -23,8 +27,8 @@ const DashboardAfterCourseSelection = () => {
                 name="graduation-cap" 
                 size={16}/>
             )} 
-            onPress={() => console.log('Pressed')}>
-              Test
+          >
+              {user.courseSelectedOnTablet.courseName} | {user.courseSelectedOnTablet.lectureType}
           </Chip>
         </View>
   
@@ -35,7 +39,7 @@ const DashboardAfterCourseSelection = () => {
             style={{marginTop: 20, marginBottom: 27}}
             mode="contained"
             icon={() => (
-              <MaterialCommunityIcons name="plus" size={35} color="#fff" onPress={() => console.log("")}/>
+              <MaterialCommunityIcons name="plus" size={35} color="#fff"/>
             )}
           >
             START TRACKING ATTENDANCE
@@ -50,8 +54,13 @@ const DashboardAfterCourseSelection = () => {
             style={{marginTop: 20,marginBottom: 27}}
             mode="contained"
             icon={() => (
-              <MaterialCommunityIcons name="plus" size={35} color="#fff" onPress={() => console.log("")}/>
+              <MaterialCommunityIcons name="plus" size={35} color="#fff" />
             )}
+            onPress={() => {
+              console.log("I WAS PRESSED");
+              socket.emit("signOutTablet", { token: user.tabletSocketToken })
+              dispatch(signOutTablet());
+            }}
           >
             SIGN OUT
           </Button>

@@ -4,6 +4,7 @@ const initialState = {
   token: null,
   userType: null,
   tabletSocketToken: null,
+  courseSelectedOnTablet: null,
 };
 
 const userReducer = (state = initialState, action) => {
@@ -26,8 +27,14 @@ const userReducer = (state = initialState, action) => {
     case "SIGN_OUT_TABLET":
         return {
           ...state,
-          tabletSocketToken: null
+          tabletSocketToken: null,
+          courseSelectedOnTablet: null,
         };
+    case "SET_COURSE_SELECTED_ON_TABLET":
+        return {
+          ...state,
+          courseSelectedOnTablet: action.courseSelectedOnTablet
+        };    
     default:
       return state;
   }

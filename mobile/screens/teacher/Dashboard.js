@@ -1,26 +1,44 @@
 import React, { useEffect, useRef } from "react";
 import { View, StyleSheet } from "react-native";
-import { Button, Text, FAB, Provider as PaperProvider, Chip } from "react-native-paper";
+import { Text, FAB, Provider as PaperProvider } from "react-native-paper";
 import { useSelector, useDispatch } from "react-redux";
 import { io } from 'socket.io-client';
-
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons"
-import FontAwesomeIcons from "react-native-vector-icons/FontAwesome5";
+import { setCourseSelectedOnTablet } from "../../actions";
 import DashboardAfterLogin from "./components/DashboardAfterLogin"
 import DashboardAfterTabletLogin from "./components/DashboardAfterTabletLogin"
+import DashboardAfterCourseSelection from "./components/DashboardAfterCourseSelection"
 
-import { signIn } from "../../actions";
 
 const Dashboard = ({ navigation }) => {
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state);
   const socket = useRef();
 
-  const user = useSelector((state) => state);
+  useEffect(() => {
+    socket.current = io("http://192.168.1.5:8080",  {
+      query: {
+        userToken: user.token
+      }
+    });
+    socket.current.on("selectedLectureType", (data) => {
+      console.log("MOBILE RECEIVED", data);
+      dispatch(setCourseSelectedOnTablet(data));
+    })
+
+    return () => socket.current.disconnect();
+  }, []);
+
+
+ 
   console.log("USER STATE", user.tabletSocketToken);
   return (
 <View>    
   <Text style={styles.title}>Hi, <Text style={{ fontWeight: "bold" }}>{user.name} {user.surname}!</Text></Text>
       <View style={styles.container}>
-      {user.tabletSocketToken == null ? <DashboardAfterLogin/> : <DashboardAfterTabletLogin />}
+      {user.tabletSocketToken == null ? <DashboardAfterLogin/> :
+      (user.courseSelectedOnTablet == null ? <DashboardAfterTabletLogin socket={socket.current} /> :
+        <DashboardAfterCourseSelection socket={socket.current} />) 
+     }
       {user.tabletSocketToken == null && 
       <FAB
         style={styles.fab}
@@ -40,10 +58,8 @@ const Dashboard = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
-  container:{
-
-    borderColor: "red",
-    borderWidth: 1,
+  container: {
+    padding: "4%",
     width: "100%",
     height: "100%",
   },
@@ -53,7 +69,9 @@ const styles = StyleSheet.create({
 
   title: {
     fontSize: 24,
-    padding: "2%"
+    paddingTop: "3.75%",
+    paddingLeft: "4%",
+    paddingRight: "4%",
   },
 
   stepContainer: {

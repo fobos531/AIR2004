@@ -6,15 +6,11 @@ import {io} from "socket.io-client";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons"
 import { signOutTablet } from '../../../actions';
 
-const DashboardAfterTabletLogin = () => {
+const DashboardAfterTabletLogin = ({ socket }) => {
   const dispatch = useDispatch();
-  const socket = useRef();
+
   const user = useSelector((state) => state);
 
-  useEffect(() => {
-    socket.current = io("http://192.168.1.5:8080");
-    return () => socket.current.disconnect();
-  }, []);
     return (
 
   <>
@@ -33,7 +29,7 @@ const DashboardAfterTabletLogin = () => {
             )}
             onPress={() => {
               console.log("I WAS PRESSED");
-              socket.current.emit("signOutTablet", { token: user.tabletSocketToken })
+              socket.emit("signOutTablet", { token: user.tabletSocketToken })
               dispatch(signOutTablet());
             }}
           >
