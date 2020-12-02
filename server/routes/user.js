@@ -77,6 +77,33 @@ router.post("/enroll", userController.enroll);
 
 /**
  * @swagger
+ * /user/assignCourse:
+ *  post:
+ *    tags:
+ *    - "/user/"
+ *    summary: Assign a course to a teacher
+ *    parameters:
+ *    - in: header
+ *      name: Bearer
+ *      description: User token
+ *    - name: "body"
+ *      in: "body"
+ *      description: "Course join passcode"
+ *      schema:
+ *        type: "object"
+ *        properties:
+ *          passcode:
+ *            type: "string"
+ *    responses:
+ *      '200':
+ *        description: An object containing the both the newly modified teacher and the course
+ *      '400':
+ *        description: An unsuccessful response
+ */
+router.post("/assignCourse", userController.assignCourse);
+
+/**
+ * @swagger
  * /user/verify:
  *  post:
  *    tags:

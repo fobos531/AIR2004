@@ -40,6 +40,12 @@ const userSchema = mongoose.Schema({
       ref: "Course",
     },
   ],
+  assignedCourses: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Course",
+    },
+  ],
 });
 
 userSchema.set("toJSON", {
