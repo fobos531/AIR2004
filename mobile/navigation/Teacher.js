@@ -10,12 +10,34 @@ import MaterialIcons from "react-native-vector-icons/MaterialIcons"
 import Dashboard from "../screens/teacher/Dashboard";
 import Attendance from "../screens/teacher/Attendance";
 import Courses from "../screens/teacher/Courses";
+import NewCourse from "../screens/teacher/NewCourse";
+import EditCourse from "../screens/teacher/EditCourse";
 import QR from "../screens/teacher/QR";
 
 import { signOut } from "../actions";
 
 const Stack = createStackNavigator();
 const Tabs = createMaterialBottomTabNavigator();
+const CoursesStack = createStackNavigator();
+
+const CoursesStackNavigation = () => {
+
+  return( <CoursesStack.Navigator headerMode="none">
+            <CoursesStack.Screen 
+                name="Courses" 
+                component={Courses} 
+              />
+            <CoursesStack.Screen 
+                name="NewCourse" 
+                component={NewCourse} 
+              />
+            <CoursesStack.Screen 
+                name="EditCourse" 
+                component={EditCourse} 
+              />
+          </CoursesStack.Navigator>)
+
+}
 
 const TeacherTabNavigation = () => {
   return (
@@ -47,7 +69,7 @@ const TeacherTabNavigation = () => {
 
       <Tabs.Screen
         name="Courses" 
-        component={Courses}
+        component={CoursesStackNavigation}
         options={{
           tabBarLabel: 'Courses',
           tabBarIcon: ({ color }) => (

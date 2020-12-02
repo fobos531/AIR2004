@@ -2,51 +2,44 @@ import React, { useState, useEffect } from "react";
 import { View, StyleSheet, FlatList } from "react-native";
 import { IconButton, Button, Text, Title, Chip, Card } from "react-native-paper";
 import FontAwesomeIcons from "react-native-vector-icons/FontAwesome5";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { FAB, Provider as PaperProvider } from "react-native-paper";
+import api from '../../utils/api';
 
-
-const Courses = () => {
+const Courses = ({ navigation }) => {
   const dispatch = useDispatch();
+  const user = useSelector(state => state);
 
-  const [courses, setCourses] = useState([
-    {
-      id: 1,
-      title: 'Course 1',
-      lectureTypes: ['Lecture', 'Seminar'],
-    },
-    {
-      id: 2,
-      title: 'Course 2',
-      lectureTypes: ['Lecture', 'Lab'],
-    },
-    {
-      id: 3,
-      title: 'Course 3',
-      lectureTypes: ['Lecture'],
-    },
-  ]);
+  const [courses, setCourses] = useState([]);
 
-  useEffect(() => {
-    
+  useEffect(() => { 
+    api.get('/user/details', {
+      headers: {
+        Authorization: `Bearer ${user.token}`,
+        "Content-Type": "application/json", 
+      }
+      })
+      .then(({ data }) => setCourses(data.data.assignedCourses))
+      .catch(error => console.log(error));
   }, []);
-
 
   return (
     <PaperProvider>
       <View style={styles.container}>
         <Text style={styles.pageTitle}>Your courses</Text>
-        {courses.map(({ id, title, lectureTypes }) => (
+        {courses.map(({ id, name }) => (
           <Card style={styles.courseCard} key={id}>
             <Card.Content>
-              <Title style={styles.cardTitle}>{title}</Title>
+              <Title style={styles.cardTitle}>{name}</Title>
               <View style={styles.cardContentWrapper}>
                 <View style={styles.cardLectureTypes}>
-                  {lectureTypes.map(lectureType => <Chip style={styles.lectureTypeBadge} textStyle={{ color: '#9b5cf4', fontWeight: 'bold' }}>{lectureType}</Chip>)}
+                  {/* {lectureTypes.map(lectureType => <Chip style={styles.lectureTypeBadge} textStyle={{ color: '#9b5cf4', fontWeight: 'bold' }}>{lectureType}</Chip>)} */}
+                  <Chip style={styles.lectureTypeBadge} textStyle={{ color: '#9b5cf4', fontWeight: 'bold' }}>Lecture</Chip>
+                  <Chip style={styles.lectureTypeBadge} textStyle={{ color: '#9b5cf4', fontWeight: 'bold' }}>Lab</Chip>
                 </View>
                 <View style={styles.cardActions}>
-                  <IconButton style={styles.courseIcon} icon={() => (<FontAwesomeIcons name="pen" size={16}/> )} onPress={() => console.log('Luka ce dobiti posao')} /> 
-                  <IconButton style={styles.courseIcon} icon={() => (<FontAwesomeIcons name="trash" size={16}/> )} onPress={() => console.log('Luka ce dobiti posao')} />
+                  <IconButton style={styles.courseIcon} icon={() => (<FontAwesomeIcons name="pen" size={16}/> )} onPress={() => navigation.push("EditCourse")} /> 
+                  <IconButton style={styles.courseIcon} icon={() => (<FontAwesomeIcons name="trash" size={16}/> )} onPress={() => console.log('Potrebno implementirati brisanje')} />
                 </View>
               </View>
             </Card.Content>
@@ -59,8 +52,7 @@ const Courses = () => {
         label="add"
         icon="plus"
         color="black"
-        onPress={() => console.log('Pressed')}
-        onPress={() => navigation.push("QRScan")}
+        onPress={() => navigation.push("NewCourse")}
       />
     </PaperProvider>
   );
@@ -122,6 +114,7 @@ const styles = StyleSheet.create({
       marginRight: 5,
       borderColor: '#9b5cf4',
       backgroundColor: '#f2eafe',
+      
     },
 });
 
