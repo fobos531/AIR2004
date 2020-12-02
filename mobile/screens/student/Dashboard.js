@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { View, StyleSheet, ActivityIndicator, FlatList, Alert } from "react-native";
+import { View, StyleSheet, ActivityIndicator, FlatList, ScrollView, Dimensions } from "react-native";
 import { 
   Button, 
   Text, 
@@ -11,19 +10,17 @@ import {
   TextInput, 
   Provider as PaperProvider, 
   FAB, 
-  Chip,
-  Card, 
-  Title, 
-  Paragraph
+  Card
 } from "react-native-paper";
-import { useSelector, useDispatch } from "react-redux";
+import { LineChart } from "react-native-chart-kit"
+import { useSelector } from "react-redux";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import FontAwesomeIcons from "react-native-vector-icons/FontAwesome5";
 
-
-import { signIn } from "../../actions";
+import CourseItem from "../student/components/CourseItem";
+import AttendanceItem from "../student/components/AttendanceItem";
 
 import api from "../../utils/api";
+
 
 const theme = {
   ...DefaultTheme,
@@ -33,51 +30,63 @@ const theme = {
   },
 };
 
-const CourseItem = ({courseName}) => {
-  return(
-    <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start'}}>
-      <Chip 
-        style={styles.chip} 
-        textStyle={{color: "#731ff0"}} 
-        mode="outlined" 
-        icon={() => (
-          <FontAwesomeIcons 
-            name="graduation-cap" 
-            size={16}/>
-        )} 
-        onPress={() => console.log('Pressed')}>
-        {courseName}
-      </Chip>
-    </View>
-  );
-}
+const chartConfig={
+  backgroundColor: "#a1a09f",
+  backgroundGradientFrom: "#949494",
+  backgroundGradientTo: "#949494",
+  decimalPlaces: 2, // optional, defaults to 2dp
+  color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+  labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+  style: {
+    borderRadius: 16
+  },
+  propsForDots: {
+    r: "6",
+    strokeWidth: "2",
+    stroke: "#757575"
+  }
+};
+
 
 const Dashboard = ({ navigation }) => {
   const[showLoadingIndicator, setShowLoadingIndicator] = useState(false);
   const[coursePasscode, setCoursePasscode] = useState("");
   const[visible, toggleVisible] = useState(false);
+  const[enrolledCourses, setEnrolledCourses] = useState([]);
 
   const user = useSelector((state) => state);
-  const dispatch = useDispatch();
+
+  useEffect(() => {
+    api.get("/user/details", {
+      headers: { 
+        Authorization: `Bearer ${user.token}`, 
+        "Content-Type": "application/json" 
+      }
+    })
+    .then(({ data }) => {setEnrolledCourses(data.data.enrolledCourses)})
+    .catch((error) => console.log(error));
+  }, []);
 
   const mockData=[
     {
       id: '1',
+      attendanceTime: '10:01',
       courseName: 'Software Analysis and Design'
     },
     {
       id: '2',
-      courseName: 'Foreign Trade1'
+      attendanceTime: '13:48',
+      courseName: 'Foreign Trade'
     }
   ]; 
 
-  useEffect(() => {
-    checkIfSignedIn();
-  }, []);
-
-  const checkIfSignedIn = async () => {
-    const userData = await AsyncStorage.getItem("user");
-    if (userData) dispatch(signIn(JSON.parse(userData)));
+  const graphData = {
+    labels: ['M', 'T', 'W', 'T', 'F'],
+    datasets: [
+      {
+        data: [4, 2, 5, 5, 1],
+      },
+    ],
   };
 
   const handleSubmitAddCourse = () => {
@@ -111,32 +120,81 @@ const Dashboard = ({ navigation }) => {
         
         <View style={{ marginTop: 25 }}>
           <Text style={styles.font}>Here's your summary for today:</Text>
-          <Surface style={styles.graphContainer} theme={theme}>
-          <Text style={styles.font, { margin: 12, fontWeight: "bold", color: "#626262" }}>Recent attendance</Text>
+          <Surface style={{...styles.graphContainer, marginTop: 20}} theme={theme}>
+            <ScrollView>
+              <Text style={styles.font, { marginLeft: 12, marginTop: 12, fontWeight: "bold", color: "#626262" }}>Recent attendance</Text>
+              
+              <Text style={styles.font, { marginLeft: 12, color: "#000", fontSize: 34 }}>12</Text>
+
+              <Text style={styles.font, { marginLeft: 12, color: "#000" }}>in the last week</Text>
+
+              {mockData.length !== 0 ? (
+                  
+                  <View style={{margin: 10, padding: 10, alignItems: "center"}}>
+                    <LineChart
+                      data={graphData}
+                      width={280}
+                      height={165}
+                      chartConfig={chartConfig}
+                      bezier
+                    />
+                  </View>
+
+                ) : (
+                <View style={{marginLeft: 20}}>
+                  <MaterialCommunityIcons name="cloud-sync-outline" size={26}/>
+                  <Text style={styles.font}>No data found!</Text>
+                </View>
+              )}
+            </ScrollView>
           </Surface>
         </View>
 
         <View style={{ marginTop: 15 }}>
           <Surface style={styles.graphContainer} theme={theme}>
-            <Text style={styles.font, { margin: 12, fontWeight: "bold", color: "#626262" }}>Your attendance today</Text>
+            <Text style={styles.font, { margin: 12, marginBottom: 5 ,fontWeight: "bold", color: "#626262" }}>Your attendance today</Text>
             
-            <Card style={{marginLeft: 10, marginRight: 10}}>
-              <Card.Content>
-                <Paragraph>10:01 AM</Paragraph>
-                <Paragraph style={{fontWeight: "bold"}}>Software Analysis and Design</Paragraph>
-              </Card.Content>
-            </Card>
+              {mockData.length !== 0 ? (
+
+                <FlatList
+                  keyExtractor={(item) => item.id}
+                  data={mockData}
+                  renderItem={({item}) => 
+                    <AttendanceItem id={item.id} attendanceTime={item.attendanceTime} courseName={item.courseName}/>
+                  }
+                />
+
+              ) : (
+                <View style={{marginLeft: 20}}>
+                  <MaterialCommunityIcons name="cloud-sync-outline" size={26}/>
+                  <Text style={styles.font}>No data found!</Text>
+                </View>
+              )}
 
           </Surface>
         </View>
 
         <View style={{ marginTop: 15 }}>
           <Surface style={styles.graphContainer} theme={theme}>
-            <Text style={styles.font, { margin: 12, fontWeight: "bold", color: "#626262" }}>Courses</Text>
-              
-              <CourseItem courseName="Software Analysis and Design"/>
-              <CourseItem courseName="Foreign Trade"/>
-              
+            <Text style={styles.font, { margin: 12, marginBottom: 5, fontWeight: "bold", color: "#626262" }}>Courses</Text>
+
+              {enrolledCourses.length !== 0 ? (
+
+                <FlatList
+                  keyExtractor={(item) => item.id}
+                  data={enrolledCourses}
+                  renderItem={({item}) => 
+                    <CourseItem id={item.id} courseName={item.name}/>
+                  }
+                />
+                
+              ) : (
+                <View style={{marginLeft: 20}}>
+                  <MaterialCommunityIcons name="cloud-sync-outline" size={26}/>
+                  <Text style={styles.font}>No data found!</Text>
+                </View>
+              )}
+
               <MaterialCommunityIcons style={styles.plusIcon} name="plus" size={35} onPress={() => toggleVisible(true)}/>
           </Surface>
         </View>
@@ -205,7 +263,7 @@ const styles = StyleSheet.create({
   },
 
   graphContainer: {
-    marginTop: 15,
+    marginTop: 5,
     height: 150,
     elevation: 4
   },
@@ -229,7 +287,7 @@ const styles = StyleSheet.create({
 
   fab: {
     position: "absolute",
-    margin: 12,
+    margin: 17,
     right: 0,
     bottom: 0
   },
@@ -239,14 +297,6 @@ const styles = StyleSheet.create({
     alignItems: "center", 
     justifyContent: "flex-start",
     marginLeft: 10
-  },
-
-  chip: {
-    backgroundColor: "#dcc7fc",
-     borderWidth: 1, 
-     borderColor: "#731ff0", 
-     marginTop: 10, 
-     marginLeft: 20
   }
 });
 
