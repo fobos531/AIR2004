@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { View, StyleSheet, ScrollView, Text } from "react-native";
 import { Button, Headline, Dialog, Portal } from "react-native-paper";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import CourseButton from "./components/CourseButton";
+import { io } from "socket.io-client";
 
 const api = axios.create({
   baseURL: "http://192.168.1.5:8080/api",

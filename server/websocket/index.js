@@ -9,6 +9,16 @@ const websocket = (server) => {
     socket.data = { token: crypto.randomBytes(64).toString("hex") };
     socket.emit("tokenReceived", { token: socket.data.token });
     console.log(socket.data.token);
+
+    socket.on("signOutTablet", (data) => {
+      const token = data.token;
+      console.log("DATA", data);
+      let tabletSocket;
+      for (let socket of global.io.of("/").sockets.values()) if (socket.data && socket.data.token == token) tabletSocket = socket;
+
+      tabletSocket.emit("signOutTablet");
+      console.log("I HAVE EMITTED");
+    });
   });
 };
 
