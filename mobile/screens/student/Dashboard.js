@@ -260,11 +260,14 @@ const Dashboard = ({ navigation }) => {
 
 const styles = StyleSheet.create({
   container:{
-    margin: 25
+    padding: "4%",
+    width: "100%",
+    height: "100%"
   },
   
   title: {
-    fontSize: 24
+    fontSize: 24,
+    paddingTop: "2%",
   },
 
   graphContainer: {
