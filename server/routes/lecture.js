@@ -8,7 +8,7 @@ const lectureController = require("../controllers/lecture");
  *  post:
  *    tags:
  *    - "/lecture/"
- *    summary: Add a new lecture 
+ *    summary: Add a new lecture
  *    parameters:
  *    - name: "body"
  *      in: "body"
@@ -28,6 +28,7 @@ const lectureController = require("../controllers/lecture");
  *      '200':
  *        description: A successful response
  */
+
 router.post("/add", lectureController.add);
 
 /**
@@ -36,11 +37,12 @@ router.post("/add", lectureController.add);
  *  get:
  *    tags:
  *    - "/lecture/"
- *    summary: Get all lectures 
+ *    summary: Get all lectures
  *    responses:
  *      '200':
  *        description: A successful response
  */
+
 router.get("/", lectureController.getAll);
 
 module.exports = router;

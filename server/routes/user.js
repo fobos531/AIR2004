@@ -24,6 +24,7 @@ const userController = require("../controllers/user");
  *      '200':
  *        description: A successful response
  */
+
 router.post("/login", userController.login);
 
 /**
@@ -46,6 +47,7 @@ router.post("/login", userController.login);
  *      '200':
  *        description: A successful response
  */
+
 router.post("/login/tablet", userController.loginTablet);
 
 /**
@@ -73,6 +75,7 @@ router.post("/login/tablet", userController.loginTablet);
  *      '400':
  *        description: An unsuccessful response
  */
+
 router.post("/enroll", userController.enroll);
 
 /**
@@ -100,6 +103,7 @@ router.post("/enroll", userController.enroll);
  *      '400':
  *        description: An unsuccessful response
  */
+
 router.post("/assignCourse", userController.assignCourse);
 
 /**
@@ -122,6 +126,7 @@ router.post("/assignCourse", userController.assignCourse);
  *      '200':
  *        description: A successful response
  */
+
 router.get("/verify", userController.verify);
 
 /**
@@ -159,6 +164,7 @@ router.get("/verify", userController.verify);
  *      '200':
  *        description: A successful response
  */
+
 router.post("/:role/register", userController.register);
 
 /**
@@ -174,6 +180,7 @@ router.post("/:role/register", userController.register);
  *      '400':
  *        description: An unsuccessful request
  */
+
 router.get("/details", userController.getSingle);
 
 /**
@@ -187,6 +194,7 @@ router.get("/details", userController.getSingle);
  *      '200':
  *        description: A successful response
  */
+
 router.get("/:role", userController.getAllUsers);
 
 module.exports = router;

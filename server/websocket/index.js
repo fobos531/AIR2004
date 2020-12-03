@@ -1,46 +1,20 @@
-const crypto = require("crypto");
+const onConnect = require("./onConnect");
+const onSelectedLectureType = require("./onSelectedLectureType");
+const onSignOutTablet = require("./onSignOutTablet");
 
 const websocket = (server) => {
   global.io = require("socket.io")(server);
   console.log("WebSocket server started!");
 
-  // When tablet app connects, generate random token and send it back
   global.io.on("connect", (socket) => {
-    if (socket.handshake.query.userToken) {
-      socket.data = { userToken: socket.handshake.query.userToken };
-    }
-    socket.data = { ...socket.data, token: crypto.randomBytes(64).toString("hex") };
-    socket.emit("tokenReceived", { token: socket.data.token });
-    console.log(socket.data.token);
+    // When tablet app connects, generate random token and send it back
+    onConnect(socket);
 
-    socket.on("selectedLectureType", (data) => {
-      console.log("INCOMING REQUEST");
-      let lectureType = data.lectureType;
-      let userToken = data.userToken;
-      let courseName = data.courseName;
+    // When teacher selects the lecture type on the tablet, notify his mobile app
+    socket.on("selectedLectureType", (data) => onSelectedLectureType(data));
 
-      let mobileSocket;
-
-      //trebamo javiti Mobitelu koji lecture type smo odabrali
-      for (let socket of global.io.of("/").sockets.values()) if (socket.data && socket.data.userToken == userToken) mobileSocket = socket;
-
-      console.log("MOBILE SOCKET", mobileSocket);
-      // Tablet dok se prijavi dobi informacije o tome koji profesor se prijavio (to se vidi iz tokena)
-      mobileSocket.emit("selectedLectureType", { lectureType, courseName });
-      // Dok se profesosr na mobitelu prvi put prijavi, on mora u socket connectionu poslati i svoj token
-      // i dok na tabletu odabere tip predmeta, u payloadu se šalje i profesorov token
-      // šalje se na socket (mobitel) koji ima taj token
-    });
-
-    socket.on("signOutTablet", (data) => {
-      const token = data.token;
-      console.log("DATA", data);
-      let tabletSocket;
-      for (let socket of global.io.of("/").sockets.values()) if (socket.data && socket.data.token == token) tabletSocket = socket;
-
-      tabletSocket.emit("signOutTablet");
-      console.log("I HAVE EMITTED");
-    });
+    // When teacher signs out of the tablet
+    socket.on("signOutTablet", (data) => onSignOutTablet(data));
   });
 };
 

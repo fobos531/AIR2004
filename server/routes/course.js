@@ -26,6 +26,7 @@ const courseController = require("../controllers/course");
  *      '200':
  *        description: A successful response
  */
+
 router.post("/add", courseController.add);
 
 /**
@@ -41,6 +42,7 @@ router.post("/add", courseController.add);
  *      '400':
  *        description: An unsuccessful repsonse
  */
+
 router.get("/:id/details", courseController.getSingle);
 
 /**
@@ -54,6 +56,7 @@ router.get("/:id/details", courseController.getSingle);
  *      '200':
  *        description: A successful response
  */
+
 router.get("/", courseController.getAll);
 
 module.exports = router;
