@@ -3,6 +3,7 @@ const initialState = {
   token: null,
   name: null,
   surname: null,
+  courseInProgress: null,
 };
 
 const userReducer = (state = initialState, action) => {
@@ -10,6 +11,7 @@ const userReducer = (state = initialState, action) => {
   switch (action.type) {
     case "SIGN_IN": {
       return {
+        ...state,
         email: action.user.email,
         token: action.user.token,
         name: action.user.name,
@@ -18,6 +20,12 @@ const userReducer = (state = initialState, action) => {
     }
     case "SIGN_OUT": {
       return initialState;
+    }
+    case "SET_COURSE_IN_PROGRESS": {
+      return {
+        ...state,
+        courseInProgress: action.courseInProgress,
+      };
     }
     default:
       return state;

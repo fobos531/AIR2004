@@ -50,10 +50,10 @@ exports.loginTablet = async (req, res) => {
     tabletSocket.emit("loginSuccess", { ...user, token });
 
     // Remove the auth token from the socket
-    tabletSocket.data.token = null;
+    //  tabletSocket.data.token = null;
 
     // Send response to the mobile app
-    res.status(200).json({ success: true });
+    res.status(200).json({ success: true, data: { tabletSocketToken: authToken } });
   } catch (error) {
     console.log(error);
     res.status(400).json({ success: false, error });
