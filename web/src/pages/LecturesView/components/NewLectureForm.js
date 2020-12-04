@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { TextField, Button, Typography, Snackbar, InputLabel, MenuItem, Select } from "@material-ui/core";
+import { TextField, Button, Typography, Snackbar, MenuItem } from "@material-ui/core";
 import { useForm } from "react-hook-form";
 import Alert from "../../../components/Alert";
 import ReactHookFormSelect from "./ReactHookFormSelect";
 import * as Yup from "yup";
+import { useHistory } from "react-router-dom";
 
 import api from "../../../api/api";
 
@@ -34,12 +35,6 @@ const NewLectureForm = () => {
     mode: "onChange",
   });
 
-  /* {
-    mode: "onChange",
-    resolver: yupResolver(validationSchema),
-    defaultValues: initialValues,
-  } */
-
   const [allCourses, setAllCourses] = useState([]);
   useEffect(() => {
     api.get("/course").then((response) => {
@@ -47,7 +42,7 @@ const NewLectureForm = () => {
       setAllCourses(response.data.data);
     });
   }, []);
-
+  const history = useHistory();
   const onSubmit = (data) => {
     console.log(data);
     api
@@ -63,21 +58,12 @@ const NewLectureForm = () => {
         setSnackBarData({ isOpen: true, response: false });
         reset();
       });
+      history.push('/lectures');
   };
   console.log("SNACKBAR response", SnackbarData.response);
 
-  const [type, setType] = React.useState("");
-  // const [course, setCourse] = React.useState('');
   const [dateFrom, setdateFrom] = React.useState("");
   const [dateTo, setdateTo] = React.useState("");
-  /* 
-  const handleChangeCourse = (event) => {
-    setCourse(event.target.value);
-  }; */
-
-  const handleChangeType = (event) => {
-    setType(event.target.value);
-  };
 
   const handleChangeDateFrom = (event) => {
     setdateFrom(event.target.value);
@@ -89,11 +75,10 @@ const NewLectureForm = () => {
     console.log("to: ", dateTo);
   };
 
-  const [selectedDate, setSelectedDate] = React.useState(new Date("2014-08-18T21:11:54"));
-
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)} className={classes.form}>
+
         <ReactHookFormSelect
           id="course"
           name="course"
@@ -124,36 +109,99 @@ const NewLectureForm = () => {
           <MenuItem value={"Seminar"}>Seminar</MenuItem>
           <MenuItem value={"Lab"}>Lab</MenuItem>
         </ReactHookFormSelect>
-        {/*         <TextField
+
+        <div className={classes.dateTime}>
+          <TextField
+            variant="outlined"
+            margin="normal"
+            label="From"
+            type="date"
+            defaultValue="2020-01-01"
+            inputRef={register}
+            id="dateFrom"
+            onChange={handleChangeDateFrom}
+          />
+          {errors.timeStart?.message && (
+            <Typography>{errors.timeStart.message}</Typography>
+          )}
+          <TextField
+            variant="outlined"
+            margin="normal"
+            label="To"
+            type="date"
+            inputRef={register}
+            id="dateTo"
+            onChange={handleChangeDateTo}
+          />
+          {errors.timeEnd?.message && (
+            <Typography>{errors.timeEnd.message}</Typography>
+          )}
+        </div>
+
+        <ReactHookFormSelect
+          id="day"
+          name="day"
+          label="Day of week"
+          control={control}
           variant="outlined"
           margin="normal"
-          label="Time start"
-          type="date"
-          defaultValue="2020-01-01"
-          required
-          inputRef={register}
+          defaultValue="None"
           fullWidth
-          id="timeStart"
-          onChange={handleChangeDateFrom}
-        />
-        {errors.timeStart?.message && (
-          <Typography>{errors.timeStart.message}</Typography>
-        )}
-        <TextField
+        >
+          <MenuItem value={"Monday"}>Monday</MenuItem>
+          <MenuItem value={"Tuesday"}>Tuesday</MenuItem>
+          <MenuItem value={"Wednesday"}>Wednesday</MenuItem>
+          <MenuItem value={"Thursday"}>Thursday</MenuItem>
+          <MenuItem value={"Friday"}>Friday</MenuItem>
+        </ReactHookFormSelect>
+
+        <div className={classes.dateTime}>
+          <TextField
+            variant="outlined"
+            margin="normal"
+            label="Time start"
+            type="time"
+            defaultValue="08:00"
+            required
+            inputRef={register}
+            id="timeStart"
+            onChange={handleChangeDateFrom}
+          />
+          {errors.timeStart?.message && (
+            <Typography>{errors.timeStart.message}</Typography>
+          )}
+          <TextField
+            variant="outlined"
+            margin="normal"
+            label="Time end"
+            type="time"
+            defaultValue="10:00"
+            required
+            inputRef={register}
+            id="timeEnd"
+            onChange={handleChangeDateTo}
+          />
+          {errors.timeEnd?.message && (
+            <Typography>{errors.timeEnd.message}</Typography>
+          )}
+        </div>
+
+        <ReactHookFormSelect
+          id="lectureRoom"
+          name="lectureRoom"
+          label="Lecture room"
+          control={control}
           variant="outlined"
           margin="normal"
-          label="Time end"
-          type="date"
-          defaultValue="2020-01-01"
-          required
-          inputRef={register}
+          defaultValue="None"
           fullWidth
-          id="timeEnd"
-          onChange={handleChangeDateTo}
-        />
-        {errors.timeEnd?.message && (
-          <Typography>{errors.timeEnd.message}</Typography>
-        )} */}
+        >
+          <MenuItem value={"D1"}>D1</MenuItem>
+          <MenuItem value={"D2"}>D2</MenuItem>
+          <MenuItem value={"D3"}>D3</MenuItem>
+          <MenuItem value={"D15"}>D15</MenuItem>
+          <MenuItem value={"D16"}>D16</MenuItem>
+        </ReactHookFormSelect>
 
         <Button type="submit" fullWidth variant="contained" color="primary" className={classes.submit}>
           Add new lecture
@@ -161,8 +209,8 @@ const NewLectureForm = () => {
       </form>
       <Snackbar open={SnackbarData.isOpen} autoHideDuration={4000} onClose={handleSnackBarClose}>
         {SnackbarData.response != null && (
-          <Alert onClose={handleSnackBarClose} severity={SnackbarData.response == false ? "error" : "success"}>
-            {SnackbarData.response == false ? "Unable to add a new lecture! Please check your data!" : "Lecture successfully added!"}
+          <Alert onClose={handleSnackBarClose} severity={SnackbarData.response === false ? "error" : "success"}>
+            {SnackbarData.response === false ? "Unable to add a new lecture! Please check your data!" : "Lecture successfully added!"}
           </Alert>
         )}
       </Snackbar>
@@ -179,11 +227,9 @@ const useStyles = makeStyles((theme) => ({
     overflow: "auto",
     flexDirection: "column",
   },
-
   Paper: {
     height: "fit-content",
   },
-
   form: {
     width: "60%",
     marginTop: theme.spacing(1),
@@ -200,4 +246,9 @@ const useStyles = makeStyles((theme) => ({
   selectEmpty: {
     marginTop: theme.spacing(2),
   },
+  dateTime: {
+    display: "flex",
+    justifyContent: "space-between",
+    width: "auto"
+  }
 }));
