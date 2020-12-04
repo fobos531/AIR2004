@@ -9,6 +9,9 @@ const useStyles = makeStyles((theme) => ({
   fixedHeightPaper: {
     height: 240,
   },
+  grid: {
+    width: "100%"
+  },
   Paper: {
     height: "fit-content",
     margin: "2%",
@@ -22,7 +25,9 @@ const useStyles = makeStyles((theme) => ({
     width: "20%",
   },
   container: {
-    margin: "5% 256px"
+    //margin: "5% 256px"
+    marginLeft: 256, 
+    marginTop: 64
   },
 }));
 

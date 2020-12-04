@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
-import { Typography } from "@material-ui/core";
 import clsx from "clsx";
-import NewLectureForm from "./components/NewLectureForm";
 import LecturesDataTable from "./components/LecturesDataTable";
 import api from "../../api/api";
 import { useStyles } from "./styles";
