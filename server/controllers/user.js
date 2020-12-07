@@ -1,6 +1,7 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const User = require("../models/user");
+const Course = require("../models/course");
 
 exports.login = async (req, res) => {
   const { email, password } = req.body;
@@ -49,10 +50,10 @@ exports.loginTablet = async (req, res) => {
     tabletSocket.emit("loginSuccess", { ...user, token });
 
     // Remove the auth token from the socket
-    tabletSocket.data.token = null;
+    //  tabletSocket.data.token = null;
 
     // Send response to the mobile app
-    res.status(200).json({ success: true });
+    res.status(200).json({ success: true, data: { tabletSocketToken: authToken } });
   } catch (error) {
     console.log(error);
     res.status(400).json({ success: false, error });
@@ -95,6 +96,18 @@ exports.getAllUsers = async (req, res) => {
   }
 };
 
+exports.getSingle = async (req, res) => {
+  try {
+    const token = req.header("Authorization").replace("Bearer ", "");
+    let user = jwt.verify(token, process.env.JWT_SECRET);
+    user = await User.findOne({ email: user.email }).populate("enrolledCourses").populate("assignedCourses");
+    const data = user.toJSON();
+    res.status(200).json({ success: true, data });
+  } catch (error) {
+    res.status(400).json({ success: false, error });
+  }
+};
+
 exports.verify = async (req, res) => {
   try {
     const token = req.header("Authorization").replace("Bearer ", "");
@@ -102,5 +115,48 @@ exports.verify = async (req, res) => {
     res.status(200).json({ success: true, user });
   } catch (error) {
     res.status(400).json({ success: false, error: "Invalid or missing token!" });
+  }
+};
+
+exports.enroll = async (req, res) => {
+  try {
+    const token = req.header("Authorization").replace("Bearer ", "");
+    let student = jwt.verify(token, process.env.JWT_SECRET);
+
+    student = await User.findOne({ jmbag: student.jmbag });
+    const course = await Course.findOne({ passcode: req.body.passcode });
+
+    student.enrolledCourses = student.enrolledCourses.concat(course._id);
+    course.enrolledStudents = course.enrolledStudents.concat(student._id);
+    const data = { student, course };
+
+    await student.save();
+    await course.save();
+
+    res.status(200).json({ success: true, data });
+  } catch (error) {
+    res.status(400).json({ success: false, error });
+  }
+};
+
+exports.assignCourse = async (req, res) => {
+  try {
+    const token = req.header("Authorization").replace("Bearer ", "");
+    let teacher = jwt.verify(token, process.env.JWT_SECRET);
+
+    teacher = await User.findOne({ email: teacher.email });
+
+    const course = await Course.findOne({ passcode: req.body.passcode });
+
+    teacher.assignedCourses = teacher.assignedCourses.concat(course._id);
+    course.assignedTeachers = course.assignedTeachers.concat(teacher._id);
+    const data = { teacher, course };
+
+    await teacher.save();
+    await course.save();
+
+    res.status(200).json({ success: true, data });
+  } catch (error) {
+    res.status(400).json({ success: false, error });
   }
 };

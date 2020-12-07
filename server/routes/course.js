@@ -8,7 +8,7 @@ const courseController = require("../controllers/course");
  *  post:
  *    tags:
  *    - "/course/"
- *    summary: Add a new course 
+ *    summary: Add a new course
  *    parameters:
  *    - name: "body"
  *      in: "body"
@@ -26,6 +26,7 @@ const courseController = require("../controllers/course");
  *      '200':
  *        description: A successful response
  */
+
 router.post("/add", courseController.add);
 
 /**
@@ -34,11 +35,28 @@ router.post("/add", courseController.add);
  *  get:
  *    tags:
  *    - "/course/"
- *    summary: Get all courses 
+ *    summary: Get detailed information about the course with a specified id
+ *    responses:
+ *      '200':
+ *        description: A successful response
+ *      '400':
+ *        description: An unsuccessful repsonse
+ */
+
+router.get("/:id/details", courseController.getSingle);
+
+/**
+ * @swagger
+ * /course/:
+ *  get:
+ *    tags:
+ *    - "/course/"
+ *    summary: Get all courses
  *    responses:
  *      '200':
  *        description: A successful response
  */
+
 router.get("/", courseController.getAll);
 
 module.exports = router;

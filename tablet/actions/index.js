@@ -10,3 +10,10 @@ export const signOut = () => {
     type: "SIGN_OUT",
   };
 };
+
+export const setCourseInProgress = (courseInProgress) => {
+  return {
+    type: "SET_COURSE_IN_PROGRESS",
+    courseInProgress,
+  };
+};
