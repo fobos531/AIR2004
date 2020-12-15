@@ -24,11 +24,9 @@ const CoursesDataTable = ({ courses }) => {
   
   courses.map((course) => {
     ids.push(course.id);
-    let _course = [course.name, course.passcode, course.allowedAbsences, course.enrolledStudents.length, ];
+    let _course = [course.name, course.passcode, course.allowedAbsences, course.enrolledStudents.length];
     data.push(_course);
   });
-
-  console.log('aa: ', ids);
 
   return (
     <>

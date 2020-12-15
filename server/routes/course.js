@@ -41,4 +41,10 @@ router.post("/add", courseController.add);
  */
 router.get("/", courseController.getAll);
 
+/**
+ * @swagger
+ */
+
+router.delete("/:id", courseController.delete);
+
 module.exports = router;
