@@ -59,4 +59,10 @@ router.get("/:id/details", courseController.getSingle);
 
 router.get("/", courseController.getAll);
 
+/**
+ * @swagger
+ */
+
+router.delete("/:id", courseController.delete);
+
 module.exports = router;
