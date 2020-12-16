@@ -1,7 +1,10 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const passwordGenerator = require("generate-password");
+const sgMail = require("@sendgrid/mail");
 const User = require("../models/user");
 const Course = require("../models/course");
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 exports.login = async (req, res) => {
   const { email, password } = req.body;
@@ -72,6 +75,33 @@ exports.register = async (req, res) => {
       password: hashedPassword,
       userType: role,
     }).save();
+    res.status(200).json({ success: true });
+  } catch (error) {
+    res.status(400).json({ success: false, error });
+  }
+};
+
+exports.resetPassword = async (req, res) => {
+  try {
+    const user = await User.findOne({ email: req.body.email });
+    const newPassword = passwordGenerator.generate({
+      length: 10,
+      numbers: true,
+    });
+    if (!user) throw "User not found";
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    user.password = hashedPassword;
+    const msg = {
+      to: `${req.body.email}`,
+      from: `air2004.2020@gmail.com`,
+      replyTo: "air2004.2020@gmail.com",
+      subject: "Unittend - Your new password",
+      text: `Hello, we've successfully changed your password, and it's ${newPassword}\nEnjoy!\nSincerely, Unittend team`,
+      html: `<p>Hello, we've successfully changed your password, and it's ${newPassword}\nEnjoy!\nSincerely, Unittend team</p>`,
+    };
+    await sgMail.send(msg);
+    await user.save();
     res.status(200).json({ success: true });
   } catch (error) {
     res.status(400).json({ success: false, error });
