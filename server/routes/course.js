@@ -36,6 +36,10 @@ router.post("/add", courseController.add);
  *    tags:
  *    - "/course/"
  *    summary: Get detailed information about the course with a specified id
+ *    parameters:
+ *    - name: "id"
+ *      in: "path"
+ *      description: "Course ID"
  *    responses:
  *      '200':
  *        description: A successful response
@@ -58,9 +62,20 @@ router.get("/:id/details", courseController.getSingle);
  */
 
 router.get("/", courseController.getAll);
-
 /**
  * @swagger
+ * /course/:
+ *  delete:
+ *    tags:
+ *    - "/course/"
+ *    summary: Delete course with the given ID
+ *    parameters:
+ *    - name: "id"
+ *      in: "path"
+ *      description: "Course ID"
+ *    responses:
+ *      '200':
+ *        description: A successful response
  */
 
 router.delete("/:id", courseController.delete);
