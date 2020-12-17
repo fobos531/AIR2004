@@ -131,6 +131,31 @@ router.get("/verify", userController.verify);
 
 /**
  * @swagger
+ * /user/resetPassword:
+ *  post:
+ *    tags:
+ *    - "/user/"
+ *    summary: Reset a user's (student/teacher) password
+ *    parameters:
+ *    - name: "body"
+ *      in: "body"
+ *      description: "Email used to register"
+ *      schema:
+ *        type: "object"
+ *        properties:
+ *          email:
+ *            type: "string"
+ *    responses:
+ *      '200':
+ *        description: An successful response
+ *      '400':
+ *        description: An unsuccessful response containing the error description
+ */
+
+router.post("/resetPassword", userController.resetPassword);
+
+/**
+ * @swagger
  * /user/{role}/register:
  *  post:
  *    tags:
