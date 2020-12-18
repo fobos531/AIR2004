@@ -1,14 +1,30 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import QRCodeScanner from "react-native-qrcode-scanner";
 import { Dimensions, View } from "react-native";
 import { Text } from 'react-native-paper';
+import { showMessage, hideMessage } from "react-native-flash-message";
 
 import api from "../../utils/api";
 
-import AttendanceSubmitSuccessful from './components/AttendanceSubmitSuccessful';
-
 const QR = ({ navigation }) => {
   const[attendanceSubmited, setAttendanceSubmited] = useState(null);
+
+  useEffect(() => {
+    if(attendanceSubmited){
+      showMessage({
+        message: "Thank you!",
+        description: "Your attendance has been saved!",
+        type: "success",
+        duration: 5000,
+        icon: "success"
+      });
+
+      setTimeout(() => {
+        navigation.pop();
+      }, 1500);
+      
+    }
+  });
 
   const onScanned = (e) => {
     const scannedData = (e.data);
@@ -22,16 +38,9 @@ const QR = ({ navigation }) => {
     setAttendanceSubmited(true);
   };
 
-  const popScreen = () => {
-    navigation.pop();
-  }
-
   return (
     <View>
-      {attendanceSubmited === null && (<QRCodeScanner onRead={onScanned} showMarker={true} cameraStyle={{ height: Dimensions.get("window").height }} />)} 
-      
-      {attendanceSubmited === true && (<AttendanceSubmitSuccessful onPop={() => popScreen()}/>)}
-      
+      <QRCodeScanner onRead={onScanned} showMarker={true} cameraStyle={{ height: Dimensions.get("window").height }} />     
     </View>
   );
 };
