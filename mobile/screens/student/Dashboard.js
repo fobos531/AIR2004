@@ -164,7 +164,7 @@ const Dashboard = ({ navigation }) => {
                   keyExtractor={(item) => item.id}
                   data={mockData}
                   renderItem={({item}) => 
-                    <AttendanceItem id={item.id} attendanceTime={item.attendanceTime} courseName={item.courseName}/>
+                    <AttendanceItem item={item}/>
                   }
                 />
 

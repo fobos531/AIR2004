@@ -68,7 +68,7 @@ function getHeaderTitle(route) {
     case 'Dashboard':
       return 'Dashboard';
     case 'Attendance':
-      return 'Attendance';
+      return 'Your Attendance';
     case 'Statistics':
       return 'Statistics';
   }
