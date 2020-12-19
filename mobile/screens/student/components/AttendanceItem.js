@@ -46,11 +46,3 @@ const AttendanceItem = ({item}) => {
 
 
 export default AttendanceItem;
-
-
-<Card style={{marginLeft: 10, marginRight: 10, marginTop: 7}}>
-                  <Card.Content>
-                    <Paragraph>10:01 AM</Paragraph>
-                    <Paragraph style={{fontWeight: "bold"}}>Software Analysis and Design</Paragraph>
-                  </Card.Content>
-                </Card>

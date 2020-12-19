@@ -66,7 +66,7 @@ const Attendance = () => {
   ]; 
 
   return (
-    <View style={{margin: 12}}>
+    <View style={{margin: 12, marginBottom: 60}}>
 
       <View style={{flexDirection: "row"}}>
         <Text style={{fontSize: 17, marginLeft: 10, marginBottom: 15, marginTop: 5}}>Filter by: </Text>

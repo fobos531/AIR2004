@@ -7,6 +7,8 @@ import userReducer from "./reducers/user";
 import Navigation from "./navigation";
 import signInOutMiddleware from "./middleware/signInOut";
 
+import FlashMessage from "react-native-flash-message";
+
 const store = createStore(userReducer, applyMiddleware(signInOutMiddleware));
 
 const App = () => {
@@ -17,6 +19,7 @@ const App = () => {
           <Navigation />
         </NavigationContainer>
       </PaperProvider>
+      <FlashMessage position="top" />
     </Provider>
   );
 };

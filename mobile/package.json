@@ -24,6 +24,7 @@
     "react-native-dotenv": "^2.4.2",
     "react-native-dropdown-picker": "^3.7.1",
     "react-native-elements": "^3.0.0-alpha.1",
+    "react-native-flash-message": "^0.1.18",
     "react-native-gesture-handler": "^1.8.0",
     "react-native-paper": "^4.3.0",
     "react-native-permissions": "^3.0.0-beta.2",

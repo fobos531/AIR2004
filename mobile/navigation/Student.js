@@ -12,11 +12,12 @@ import Statistics from "../screens/student/Statistics";
 
 import { signOut } from "../actions";
 
-import { TouchableOpacity, View } from "react-native";
-import { Title, Button } from "react-native-paper";
+import {  View } from "react-native";
 import QR from "../screens/student/QR";
+import CourseStatistics from '../screens/student/CourseStatistics';
 
 const Stack = createStackNavigator();
+
 const Tabs = createMaterialBottomTabNavigator();
 
 const StudentTabNavigation = () => {
@@ -102,6 +103,31 @@ const Student = () => {
           headerTintColor: 'white', 
           headerStyle: { backgroundColor: '#6202EE' },
         }}
+      /> 
+
+      <Stack.Screen 
+        name="Statistics" 
+        component={StudentTabNavigation} 
+        options={({ route }) => ({
+          headerTitle: getHeaderTitle(route),
+          headerTintColor: 'white', 
+          headerStyle: { backgroundColor: '#6202EE' },
+          headerRight: () => (
+            <View style={{marginRight: 15}}>
+              <MaterialIcons name="logout" size={26} color={"white"} onPress={() => dispatch(signOut())}/>
+            </View>
+          )
+        })}
+      />
+
+      <Stack.Screen
+        name="CourseStatistics"
+        component={CourseStatistics}
+        options={({ route }) => ({
+          headerTitle: "Statistics: " + route.params.selectedCourse,
+          headerTintColor: 'white', 
+          headerStyle: { backgroundColor: '#6202EE' },
+        })}
       /> 
 
     </Stack.Navigator>
