@@ -2,11 +2,13 @@ import React, { useState } from "react";
 import { View, StyleSheet, FlatList, Platform } from "react-native";
 import { Text } from "react-native-paper";
 import DropDownPicker from 'react-native-dropdown-picker';
+import {Picker} from '@react-native-picker/picker';
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import AttendanceItem from "../student/components/AttendanceItem";
 
 const Attendance = () => {
+  const[selectedFilter, setSelectedFilter] = useState("Courses");
 
   const mockData=[
     {
@@ -71,20 +73,22 @@ const Attendance = () => {
       <View style={{flexDirection: "row"}}>
         <Text style={{fontSize: 17, marginLeft: 10, marginBottom: 15, marginTop: 5}}>Filter by: </Text>
         
-        <View style={{marginLeft: 10, zIndex: 2}}>
-          <DropDownPicker
-            items={[
-                {label: 'course', value: 'course'},
-                {label: 'attended', value: 'attended'},
-                {label: 'missed', value: 'missed'},
-                {label: 'last week', value: 'lastWeek'},
-                {label: 'last month', value: 'lastMonth'},
-            ]}
-            defaultValue="course"
-            containerStyle={{width: 130, height: 40}}
-            itemStyle={{justifyContent: 'flex-start'}}
-            onChangeItem={item => console.log(item.label, item.value)}
-          />
+        <View style={{marginLeft: 10, marginTop: -6}}>
+          <Picker
+            selectedValue={selectedFilter}
+            style={{height: 50, width: 160}}
+            mode={"dialog"}
+            onValueChange={(itemValue, itemIndex) => {
+              setSelectedFilter(itemValue);
+            }}
+          >
+            
+            <Picker.Item label="Courses" value="courses" />
+            <Picker.Item label="Attended" value="attended" />
+            <Picker.Item label="Missed" value="missed" />
+            <Picker.Item label="Last week" value="lastWeek" />
+            <Picker.Item label="Last month" value="lastMonth" />
+          </Picker>
         </View>
       </View>
       
