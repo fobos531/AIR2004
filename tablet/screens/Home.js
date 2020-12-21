@@ -1,14 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
 import { View, StyleSheet, ScrollView, Text } from "react-native";
 import { Button, Headline, Dialog, Portal } from "react-native-paper";
-import axios from "axios";
 import { useSelector, useDispatch } from "react-redux";
+
 import CourseButton from "./components/CourseButton";
 import { setCourseInProgress } from "../actions/index";
-
-const api = axios.create({
-  baseURL: "http://192.168.1.5:8080/api",
-});
+import api from "../utils/api";
 
 const Home = ({ socket, navigation }) => {
   const [assignedCourses, setAssignedCourses] = useState();
@@ -20,18 +17,19 @@ const Home = ({ socket, navigation }) => {
   const showDialog = () => setVisible(true);
   const hideDialog = () => setVisible(false);
 
-  console.log("ASSIGNED COURSES", assignedCourses);
-  const config = {
-    headers: {
-      Authorization: `Bearer ${user.token}`,
-    },
-  };
-
   useEffect(() => {
-    api.get("/user/details", config).then((data) => {
-      setAssignedCourses(data.data.data.assignedCourses);
-    });
-  }, []);
+    console.log(user.token);
+    console.log(api.defaults.baseURL);
+    api
+      .get("/user/details")
+      .then(({ data }) => {
+        console.log(data);
+        setAssignedCourses(data.data.assignedCourses);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, [user.token]);
 
   const handleSelectLectureType = (lectureType) => {
     socket.emit("selectedLectureType", { lectureType, userToken: user.token, courseName: selectedCourseName });

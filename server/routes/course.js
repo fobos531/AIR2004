@@ -62,6 +62,7 @@ router.get("/:id/details", courseController.getSingle);
  */
 
 router.get("/", courseController.getAll);
+
 /**
  * @swagger
  * /course/:
