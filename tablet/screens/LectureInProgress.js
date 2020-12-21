@@ -36,8 +36,7 @@ const LectureInProgress = ({ courseName, lectureType, socket, tabletToken }) => 
     });
 
     // When the QR code has been successfuly scanned, send message to the server to generate a new one
-    socket.on("scanSucess", (data) => {
-      setCode(null);
+    socket.on("scanSucess", () => {
       setSuccessfulScan(true);
       setTimeout(() => socket.emit("generateQR", { lectureId: "5fc271812380d73fb1423d1d", token: tabletToken.token }), 2000);
     });
@@ -48,7 +47,7 @@ const LectureInProgress = ({ courseName, lectureType, socket, tabletToken }) => 
       <View style={styles.qrContainer}>
         <Text style={styles.text}>Please scan the QR code using Unittend application to mark your attendance</Text>
         {successfulScan && <AnimatedCheckmark />}
-        {code && <QRCode value={code} style={styles.qr} size={Dimensions.get("screen").height * 0.45} />}
+        <QRCode value={code} style={styles.qr} size={Dimensions.get("screen").height * 0.45} />
       </View>
     );
 
