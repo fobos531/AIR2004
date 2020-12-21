@@ -24,6 +24,21 @@ const QR = ({ navigation }) => {
       }, 1500);
       
     }
+
+    if(!attendanceSubmited){
+      showMessage({
+        message: "Error occured!",
+        description: "Please contact professor to submit your attendance manually!",
+        type: "danger",
+        duration: 5000,
+        icon: "danger"
+      });
+
+      setTimeout(() => {
+        navigation.pop();
+      }, 1500);
+      
+    }
   });
 
   const onScanned = (e) => {
