@@ -22,7 +22,7 @@ const websocket = (server) => {
     socket.on("startTrackingAttendance", (data) => onStartTracking(data));
 
     // Sent by the tablet to the server to generate a new QR code for attendance
-    socket.on("generateQR", ({ lectureId, token }) => createAttendance(lectureId, token));
+    socket.on("generateQR", ({ lectureId, token }) => createAttendance(socket, lectureId, token));
   });
 };
 
