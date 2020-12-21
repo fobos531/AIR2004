@@ -17,3 +17,10 @@ export const setCourseInProgress = (courseInProgress) => {
     courseInProgress,
   };
 };
+
+export const createLecture = (lecture) => {
+  return {
+    type: "CREATE_LECTURE",
+    lecture,
+  };
+};

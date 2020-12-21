@@ -4,12 +4,12 @@ import { Button, Headline, Dialog, Portal } from "react-native-paper";
 import { useSelector, useDispatch } from "react-redux";
 
 import CourseButton from "./components/CourseButton";
-import { setCourseInProgress } from "../actions/index";
+import { createLecture, setCourseInProgress } from "../actions/index";
 import api from "../utils/api";
 
 const Home = ({ socket, navigation }) => {
   const [assignedCourses, setAssignedCourses] = useState();
-  const [selectedCourseName, setSelectedCourseName] = useState("");
+  const [selectedCourse, setSelectedCourse] = useState("");
   const user = useSelector((state) => state);
   const dispatch = useDispatch();
   const [visible, setVisible] = useState(false);
@@ -18,8 +18,6 @@ const Home = ({ socket, navigation }) => {
   const hideDialog = () => setVisible(false);
 
   useEffect(() => {
-    console.log(user.token);
-    console.log(api.defaults.baseURL);
     api
       .get("/user/details")
       .then(({ data }) => {
@@ -29,11 +27,13 @@ const Home = ({ socket, navigation }) => {
       .catch((error) => {
         console.log(error);
       });
+
+    socket.on("selectedLecture", (lecture) => dispatch(createLecture(lecture)));
   }, [user.token]);
 
   const handleSelectLectureType = (lectureType) => {
-    socket.emit("selectedLectureType", { lectureType, userToken: user.token, courseName: selectedCourseName });
-    dispatch(setCourseInProgress({ lectureType, courseName: selectedCourseName }));
+    socket.emit("selectedLectureType", { lectureType, userToken: user.token, course: selectedCourse });
+    dispatch(setCourseInProgress({ lectureType, courseName: selectedCourse.name }));
     hideDialog();
   };
 
@@ -44,12 +44,7 @@ const Home = ({ socket, navigation }) => {
         <View style={styles.courses}>
           {assignedCourses != undefined &&
             assignedCourses.map((course) => (
-              <CourseButton
-                key={course.id}
-                name={course.name}
-                showDialog={showDialog}
-                setCourse={() => setSelectedCourseName(course.name)}
-              />
+              <CourseButton key={course.id} name={course.name} showDialog={showDialog} setCourse={() => setSelectedCourse(course)} />
             ))}
         </View>
         <Portal>

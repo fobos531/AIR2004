@@ -8,7 +8,7 @@ const attendanceController = require("../controllers/attendance");
  *  post:
  *    tags:
  *    - "/attendance/"
- *    summary: Add a new attendance 
+ *    summary: Add a new attendance
  *    parameters:
  *    - name: "body"
  *      in: "body"
@@ -34,12 +34,35 @@ router.post("/add", attendanceController.add);
  *  get:
  *    tags:
  *    - "/attendance/"
- *    summary: Get all attendances 
+ *    summary: Get all attendances
  *    responses:
  *      '200':
  *        description: A successful response
  */
 router.get("/", attendanceController.getAll);
 
+/**
+ * @swagger
+ * /attendance/mark:
+ *  post:
+ *    tags:
+ *    - "/attendance/"
+ *    summary: Mark attendance
+ *    parameters:
+ *    - name: "body"
+ *      in: "body"
+ *      description: "Attendance's data"
+ *      schema:
+ *        type: "object"
+ *        properties:
+ *          code:
+ *            type: "string"
+ *          user:
+ *            type: "string"
+ *    responses:
+ *      '200':
+ *        description: A successful response
+ */
+router.post("/mark", attendanceController.markAttendance);
 
 module.exports = router;

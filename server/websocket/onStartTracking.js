@@ -1,7 +1,7 @@
-const onSignOutTablet = ({ token }) => {
+const onStartTracking = ({ token }) => {
   let tabletSocket;
   for (let socket of global.io.of("/").sockets.values()) if (socket.data && socket.data.token == token) tabletSocket = socket;
-  if (tabletSocket) tabletSocket.emit("signOutTablet");
+  tabletSocket.emit("startTrackingAttendance");
 };
 
-module.exports = onSignOutTablet;
+module.exports = onStartTracking;

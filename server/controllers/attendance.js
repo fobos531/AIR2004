@@ -22,3 +22,20 @@ exports.getAll = async (req, res) => {
     res.status(400).json({ success: false, error });
   }
 };
+
+exports.markAttendance = async (req, res) => {
+  const { code, user } = req.body;
+
+  try {
+    // Update attendance document with the code
+    await Attendance.findOneAndUpdate({ code }, { $set: { user } });
+
+    // Send response to the tablet
+
+    // TODO
+
+    res.status(200).json({ success: true });
+  } catch (error) {
+    res.status(400).json({ success: false, error });
+  }
+};

@@ -53,7 +53,14 @@ const Navigation = () => {
           </Stack.Screen>
         ) : (
           <Stack.Screen name="LectureInProgress" options={screenOptions}>
-            {() => <LectureInProgress courseName={user.courseInProgress.courseName} lectureType={user.courseInProgress.lectureType} />}
+            {() => (
+              <LectureInProgress
+                courseName={user.courseInProgress.courseName}
+                lectureType={user.courseInProgress.lectureType}
+                socket={socket.current}
+                tabletToken={JSON.parse(token)}
+              />
+            )}
           </Stack.Screen>
         )}
       </Stack.Navigator>
