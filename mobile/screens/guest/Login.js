@@ -43,10 +43,12 @@ const Login = ({ navigation }) => {
     api
       .post("/user/login", { email, password })
       .then(({ data }) => {
+        console.log(data);
         setShowLoadingIndicatorLogin(false);
         dispatch(signIn(data.user));
       })
-      .catch(() => {
+      .catch((error) => {
+        console.log(error);
         setShowLoadingIndicatorLogin(false);
         Alert.alert("Invalid credentials!");
       });

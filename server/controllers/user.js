@@ -39,7 +39,7 @@ exports.login = async (req, res) => {
 exports.loginTablet = async (req, res) => {
   try {
     // Validate JWT
-    const token = req.header("Authorization").replace("Bearer ", "");
+    const token = req.header("Authorization")?.replace("Bearer ", "");
     const user = jwt.verify(token, process.env.JWT_SECRET);
 
     // Validate authentication token from QR code
@@ -58,7 +58,6 @@ exports.loginTablet = async (req, res) => {
     // Send response to the mobile app
     res.status(200).json({ success: true, data: { tabletSocketToken: authToken } });
   } catch (error) {
-    console.log(error);
     res.status(400).json({ success: false, error });
   }
 };
@@ -127,6 +126,7 @@ exports.getAllUsers = async (req, res) => {
 };
 
 exports.getSingle = async (req, res) => {
+  console.log("object");
   try {
     const token = req.header("Authorization").replace("Bearer ", "");
     let user = jwt.verify(token, process.env.JWT_SECRET);

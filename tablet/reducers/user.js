@@ -4,10 +4,10 @@ const initialState = {
   name: null,
   surname: null,
   courseInProgress: null,
+  lecture: null,
 };
 
 const userReducer = (state = initialState, action) => {
-  console.log(action);
   switch (action.type) {
     case "SIGN_IN": {
       return {
@@ -27,6 +27,13 @@ const userReducer = (state = initialState, action) => {
         courseInProgress: action.courseInProgress,
       };
     }
+    case "CREATE_LECTURE": {
+      return {
+        ...state,
+        lecture: action.lecture,
+      };
+    }
+
     default:
       return state;
   }

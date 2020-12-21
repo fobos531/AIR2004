@@ -1,11 +1,55 @@
-import React from "react";
-import { useSelector } from "react-redux";
-import { View, StyleSheet } from "react-native";
-import { Headline, Text } from "react-native-paper";
+import React, { useState, useEffect } from "react";
 import AnimatedLoader from "react-native-animated-loader";
+import { View, StyleSheet, Dimensions, Text } from "react-native";
+import { useSelector } from "react-redux";
+import { Headline } from "react-native-paper";
+import QRCode from "react-native-qrcode-svg";
+import AnimatedCheckmark from "../components/AnimatedCheckmark";
 
-const LectureInProgress = ({ courseName, lectureType }) => {
+const LectureInProgress = ({ courseName, lectureType, socket, tabletToken }) => {
   const user = useSelector((state) => state);
+
+  const [tracking, setTracking] = useState(false);
+  const [code, setCode] = useState(null);
+  const [lecture, setLecture] = useState(null);
+  const [successfulScan, setSuccessfulScan] = useState(false);
+
+  useEffect(() => {
+    socket.on("startTrackingAttendance", () => {
+      console.log(user.token);
+      // console.log("lectureID", lecture.id);
+      socket.emit("generateQR", { lectureId: "5fc271812380d73fb1423d1d", token: tabletToken.token });
+      // setTracking(true);
+    });
+
+    socket.on("selectedLecture", (lecture) => {
+      console.log("lecture", lecture);
+      setLecture(lecture);
+    });
+
+    // The new QR code generated and sent by the server
+    socket.on("attendanceCode", ({ code }) => {
+      console.log("CODE", code);
+      setSuccessfulScan(false);
+      setCode(code);
+      setTracking(true);
+    });
+
+    // When the QR code has been successfuly scanned, send message to the server to generate a new one
+    socket.on("scanSucess", () => {
+      setSuccessfulScan(true);
+      setTimeout(() => socket.emit("generateQR", { lectureId: "5fc271812380d73fb1423d1d", token: tabletToken.token }), 2000);
+    });
+  }, []);
+
+  if (tracking)
+    return (
+      <View style={styles.qrContainer}>
+        <Text style={styles.text}>Please scan the QR code using Unittend application to mark your attendance</Text>
+        {successfulScan && <AnimatedCheckmark />}
+        <QRCode value={code} style={styles.qr} size={Dimensions.get("screen").height * 0.45} />
+      </View>
+    );
 
   return (
     <View style={styles.container}>
@@ -25,6 +69,17 @@ const LectureInProgress = ({ courseName, lectureType }) => {
 };
 
 const styles = StyleSheet.create({
+  qrContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: "-8%",
+  },
+  text: {
+    fontSize: 24,
+    marginBottom: 40,
+    fontWeight: "bold",
+  },
   container: {
     flexDirection: "column",
     justifyContent: "space-around",
