@@ -1,5 +1,3 @@
-/* eslint-disable prettier/prettier */
-/* eslint-disable quotes */
 import React, { useState } from "react";
 import {
   StyleSheet,
@@ -88,7 +86,7 @@ const Login = ({ navigation }) => {
               <Image style={styles.logo} source={require("../../assets/logo.png")} />
             </View>
 
-            <View style={{ marginTop: 60 }}>
+            <View>
               <TextInput style={styles.textInput} label="E-mail" value={email} mode="outlined" onChangeText={(email) => setEmail(email)} />
 
               <TextInput
