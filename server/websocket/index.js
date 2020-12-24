@@ -4,9 +4,23 @@ const onSignOutTablet = require("./onSignOutTablet");
 const onStartTracking = require("./onStartTracking");
 const createAttendance = require("./utils/createAttendance");
 
+const tabletNamespace = require("./tablet");
+const teacherNamespace = require("./teacher");
+
 const websocket = (server) => {
   global.io = require("socket.io")(server);
   console.log("WebSocket server started!");
+
+  const teacher = io.of("/teacher");
+  const tablet = io.of("/tablet");
+
+  // Namespace to which the teacher connects using mobile app
+  // Contains logic of all socket messages that are sent to the mobile application by the teacher
+  teacher.on("connection", teacherNamespace);
+
+  // Namespace to which the tablet application conencts to
+  // Contains logic for all socket messages that are sent to the tablet to the server.
+  tablet.on("connection", tabletNamespace);
 
   global.io.on("connect", (socket) => {
     // When tablet app connects, generate random token and send it back

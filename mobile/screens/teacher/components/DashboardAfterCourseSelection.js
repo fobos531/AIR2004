@@ -27,7 +27,7 @@ const DashboardAfterCourseSelection = ({ socket }) => {
           mode="outlined"
           icon={() => <FontAwesomeIcons name="graduation-cap" size={16} />}
         >
-          {user.courseSelectedOnTablet.course.name} | {user.courseSelectedOnTablet.lectureType}
+          {user.courseSelectedOnTablet.course.name} | {user.courseSelectedOnTablet.lecture.type}
         </Chip>
       </View>
 
@@ -42,8 +42,8 @@ const DashboardAfterCourseSelection = ({ socket }) => {
           mode="contained"
           icon={() => <MaterialCommunityIcons name="plus" size={35} color="#fff" />}
           onPress={() => {
-            console.log("start tracking attendance");
-            socket.emit("startTrackingAttendance", { token: user.tabletSocketToken });
+            console.log("start tracking");
+            socket.emit("start tracking", { lecture: user.courseSelectedOnTablet.lecture.id });
           }}
         >
           START TRACKING ATTENDANCE

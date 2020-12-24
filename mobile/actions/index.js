@@ -11,17 +11,17 @@ export const signOut = () => {
   };
 };
 
-export const signInTablet = (tabletSocketToken) => {
+export const signInTablet = (attendanceToken) => {
   return {
     type: "SIGN_IN_TABLET",
-    tabletSocketToken
+    attendanceToken,
   };
 };
 
 export const setCourseSelectedOnTablet = (courseSelectedOnTablet) => {
   return {
     type: "SET_COURSE_SELECTED_ON_TABLET",
-    courseSelectedOnTablet
+    courseSelectedOnTablet,
   };
 };
 
@@ -30,4 +30,3 @@ export const signOutTablet = () => {
     type: "SIGN_OUT_TABLET",
   };
 };
-

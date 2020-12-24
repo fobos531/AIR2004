@@ -11,6 +11,8 @@ import Login from "../screens/Login";
 import Home from "../screens/Home";
 import api from "../utils/api";
 
+import { setAttendanceToken } from "../actions";
+
 const Stack = createStackNavigator();
 
 const Navigation = () => {
@@ -20,22 +22,39 @@ const Navigation = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    socket.current = io(WSS_URL);
+    // Connect to the websocket server
+    socket.current = io(WSS_URL + "/tablet");
 
-    socket.current.on("tokenReceived", (data) => {
-      console.log(data);
-      setToken(JSON.stringify(data));
-    });
+    // The attendanceToken will be received after connecting to the server
+    socket.current.on("attendance token generated", (attendanceToken) => dispatch(setAttendanceToken(attendanceToken)));
 
-    socket.current.on("loginSuccess", (data) => {
+    // When teacher scans the login QR code and successfully signs in
+    socket.current.on("login success", (data) => {
       console.log(data);
       api.defaults.headers.common["Authorization"] = `Bearer ${data.token}`;
       dispatch(signIn(data));
     });
 
-    socket.current.on("signOutTablet", () => {
-      dispatch(signOut());
+    // When teacher clicks on "Start tracking attendance" on the mobile app
+    socket.current.on("attendance code", (data) => {
+      console.log("CODE", data);
+      setToken(data.code);
     });
+
+    // asocket.current.on("tokenReceived", (data) => {
+    //   console.log(data);
+    //   setToken(JSON.stringify(data));
+    // });
+
+    // socket.current.on("loginSuccess", (data) => {
+    //   console.log(data);
+    //   api.defaults.headers.common["Authorization"] = `Bearer ${data.token}`;
+    //   dispatch(signIn(data));
+    // });
+
+    // socket.current.on("signOutTablet", () => {
+    //   dispatch(signOut());
+    // });
 
     return () => socket.current.disconnect();
   }, []);
@@ -44,9 +63,7 @@ const Navigation = () => {
     <NavigationContainer>
       <Stack.Navigator>
         {user.token === null ? (
-          <Stack.Screen name="Login" options={screenOptions}>
-            {(props) => <Login {...props} tabletToken={token} />}
-          </Stack.Screen>
+          <Stack.Screen name="Login" options={screenOptions} component={Login} />
         ) : user.courseInProgress === null ? (
           <Stack.Screen name="Home" options={screenOptions}>
             {(props) => <Home {...props} socket={socket.current} />}
@@ -58,7 +75,7 @@ const Navigation = () => {
                 courseName={user.courseInProgress.courseName}
                 lectureType={user.courseInProgress.lectureType}
                 socket={socket.current}
-                tabletToken={JSON.parse(token)}
+                tabletToken={token}
               />
             )}
           </Stack.Screen>

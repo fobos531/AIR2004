@@ -2,7 +2,6 @@ import React, { useEffect, useRef } from "react";
 import { View, StyleSheet } from "react-native";
 import { Button, Text, FAB, Chip } from "react-native-paper";
 import { useSelector, useDispatch } from "react-redux";
-import { io } from "socket.io-client";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { signOutTablet } from "../../../actions";
 

@@ -43,21 +43,18 @@ exports.loginTablet = async (req, res) => {
     const user = jwt.verify(token, process.env.JWT_SECRET);
 
     // Validate authentication token from QR code
-    const authToken = req.body.token;
+    const attendanceToken = req.body.attendanceToken;
 
-    let tabletSocket;
-    for (let socket of global.io.of("/").sockets.values()) if (socket.data && socket.data.token == authToken) tabletSocket = socket;
-    if (!tabletSocket) throw "Authentication token is invalid";
-
-    // Send response to the tablet where user signed in
-    tabletSocket.emit("loginSuccess", { ...user, token });
-
-    // Remove the auth token from the socket
-    //  tabletSocket.data.token = null;
+    // Send response to the tablet where the teacher signed in
+    global.io
+      .of("/tablet")
+      .to(attendanceToken)
+      .emit("login success", { ...user, token, attendanceToken });
 
     // Send response to the mobile app
-    res.status(200).json({ success: true, data: { tabletSocketToken: authToken } });
+    res.status(200).json({ success: true });
   } catch (error) {
+    console.log(error);
     res.status(400).json({ success: false, error });
   }
 };

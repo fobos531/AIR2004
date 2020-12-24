@@ -8,7 +8,7 @@ import { createLecture, setCourseInProgress } from "../actions/index";
 import api from "../utils/api";
 
 const Home = ({ socket, navigation }) => {
-  const [assignedCourses, setAssignedCourses] = useState();
+  const [assignedCourses, setAssignedCourses] = useState([]);
   const [selectedCourse, setSelectedCourse] = useState("");
   const user = useSelector((state) => state);
   const dispatch = useDispatch();
@@ -32,7 +32,7 @@ const Home = ({ socket, navigation }) => {
   }, [user.token]);
 
   const handleSelectLectureType = (lectureType) => {
-    socket.emit("selectedLectureType", { lectureType, userToken: user.token, course: selectedCourse });
+    socket.emit("lecture selected", { lectureType, selectedCourse });
     dispatch(setCourseInProgress({ lectureType, courseName: selectedCourse.name }));
     hideDialog();
   };
@@ -42,10 +42,9 @@ const Home = ({ socket, navigation }) => {
       <View style={styles.container}>
         <Headline style={styles.headline}>Your courses</Headline>
         <View style={styles.courses}>
-          {assignedCourses != undefined &&
-            assignedCourses.map((course) => (
-              <CourseButton key={course.id} name={course.name} showDialog={showDialog} setCourse={() => setSelectedCourse(course)} />
-            ))}
+          {assignedCourses.map((course) => (
+            <CourseButton key={course.id} name={course.name} showDialog={showDialog} setCourse={() => setSelectedCourse(course)} />
+          ))}
         </View>
         <Portal>
           <Dialog visible={visible} onDismiss={hideDialog} style={styles.dialog}>

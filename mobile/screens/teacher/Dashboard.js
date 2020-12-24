@@ -15,20 +15,21 @@ const Dashboard = ({ navigation }) => {
   const socket = useRef();
 
   useEffect(() => {
-    socket.current = io(WSS_URL, {
+    console.log("user.attendanceToken", user.attendanceToken);
+    socket.current = io(WSS_URL + "/teacher", {
       query: {
-        userToken: user.token,
+        attendanceToken: user.attendanceToken,
       },
     });
-    socket.current.on("selectedLectureType", (data) => {
+    socket.current.on("lecture selected", (data) => {
       console.log("MOBILE RECEIVED", data);
       dispatch(setCourseSelectedOnTablet(data));
     });
 
     return () => socket.current.disconnect();
-  }, []);
+  }, [user.attendanceToken]);
 
-  console.log("USER STATE", user.tabletSocketToken);
+  console.log("USER STATE", user.attendanceToken);
   return (
     <View>
       <Text style={styles.title}>
@@ -38,14 +39,14 @@ const Dashboard = ({ navigation }) => {
         </Text>
       </Text>
       <View style={styles.container}>
-        {user.tabletSocketToken == null ? (
+        {user.attendanceToken == null ? (
           <DashboardAfterLogin />
         ) : user.courseSelectedOnTablet == null ? (
           <DashboardAfterTabletLogin socket={socket.current} />
         ) : (
           <DashboardAfterCourseSelection socket={socket.current} />
         )}
-        {user.tabletSocketToken == null && (
+        {user.attendanceToken == null && (
           <FAB
             style={styles.fab}
             small

@@ -1,16 +1,12 @@
-import React, { useEffect, useRef, useState } from "react";
+import React from "react";
 import { View, Text, StyleSheet, Dimensions, Image } from "react-native";
-
 import QRCode from "react-native-qrcode-svg";
+import { useSelector } from "react-redux";
 
-const Login = ({ tabletToken }) => {
-  const [token, setToken] = useState(null);
+const Login = () => {
+  const attendanceToken = useSelector((state) => state.attendanceToken);
 
-  useEffect(() => {
-    setToken(tabletToken);
-  });
-
-  if (!token)
+  if (!attendanceToken)
     return (
       <View>
         <Text>Loading...</Text>
@@ -20,7 +16,7 @@ const Login = ({ tabletToken }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.text}>Please scan the QR code to login</Text>
-      <QRCode value={token} style={styles.qr} size={Dimensions.get("screen").height * 0.45} />
+      <QRCode value={attendanceToken} style={styles.qr} size={Dimensions.get("screen").height * 0.45} />
       <Image style={styles.logo} source={require("../assets/logo.png")} />
     </View>
   );

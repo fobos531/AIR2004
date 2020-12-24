@@ -5,6 +5,7 @@ const initialState = {
   surname: null,
   courseInProgress: null,
   lecture: null,
+  attendanceToken: null,
 };
 
 const userReducer = (state = initialState, action) => {
@@ -16,6 +17,7 @@ const userReducer = (state = initialState, action) => {
         token: action.user.token,
         name: action.user.name,
         surname: action.user.surname,
+        attendanceToken: action.user.attendanceToken,
       };
     }
     case "SIGN_OUT": {
@@ -33,6 +35,12 @@ const userReducer = (state = initialState, action) => {
         lecture: action.lecture,
       };
     }
+
+    case "SET_ATTENDANCE_TOKEN":
+      return {
+        ...state,
+        attendanceToken: action.attendanceToken,
+      };
 
     default:
       return state;

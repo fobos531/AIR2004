@@ -24,3 +24,10 @@ export const createLecture = (lecture) => {
     lecture,
   };
 };
+
+export const setAttendanceToken = (attendanceToken) => {
+  return {
+    type: "SET_ATTENDANCE_TOKEN",
+    attendanceToken,
+  };
+};
