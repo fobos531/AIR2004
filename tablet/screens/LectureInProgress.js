@@ -39,12 +39,21 @@ const LectureInProgress = ({ courseName, lectureType, socket, tabletToken }) => 
     // });
   }, []);
 
-  if (tabletToken)
+  useEffect(() => {
+    setSuccessfulScan(true);
+    setTimeout(() => setSuccessfulScan(false), 2000);
+  }, [tabletToken]);
+
+  if (tabletToken.code)
     return (
       <View style={styles.qrContainer}>
         <Text style={styles.text}>Please scan the QR code using Unittend application to mark your attendance</Text>
         {successfulScan && <AnimatedCheckmark />}
-        <QRCode value={tabletToken} style={styles.qr} size={Dimensions.get("screen").height * 0.45} />
+        <QRCode
+          value={JSON.stringify({ code: tabletToken.code, attendanceToken: user.attendanceToken, lecture: tabletToken.lecture })}
+          style={styles.qr}
+          size={Dimensions.get("screen").height * 0.45}
+        />
       </View>
     );
 

@@ -24,21 +24,21 @@ exports.getAll = async (req, res) => {
 };
 
 exports.markAttendance = async (req, res) => {
-  const { code, user } = req.body;
+  const { code, user, lecture, attendanceToken } = req.body;
 
+  // Salje se sljedece: userId, qrCode, attendanceToken, lectureId
+  // TODO: provjere je li vec zabiljezen attendance za taj document, postoji li attendance document s tim codeom
   console.log(req.body);
 
   try {
     // Update attendance document with the code
     await Attendance.findOneAndUpdate({ code }, { $set: { user } });
 
-    // Send response to the tablet
-    let tabletSocket;
-    for (let socket of global.io.of("/").sockets.values()) if (socket.codes?.includes(code)) tabletSocket = socket;
-    if (tabletSocket) {
-      tabletSocket.codes = tabletSocket.codes.filter((c) => c === code);
-      tabletSocket.emit("scanSucess");
-    }
+    // Generate new qr code and send it to the tablet
+    const attendance = await new Attendance({ lecture }).save();
+    global.io.of("/tablet").to(attendanceToken).emit("attendance code", { code: attendance.qrCode });
+
+    // Send the marked attendance to the teacher
 
     res.status(200).json({ success: true });
   } catch (error) {

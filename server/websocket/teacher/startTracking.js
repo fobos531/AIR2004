@@ -6,7 +6,7 @@ const startTracking = async (socket, data) => {
   const lecture = data.lecture;
   const attendance = await new Attendance({ lecture }).save();
 
-  global.io.of("/tablet").to(attendanceToken).emit("attendance code", { code: attendance.qrCode });
+  global.io.of("/tablet").to(attendanceToken).emit("attendance code", { code: attendance.qrCode, lecture: lecture, attendanceToken });
 };
 
 module.exports = startTracking;

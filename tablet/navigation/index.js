@@ -16,7 +16,7 @@ import { setAttendanceToken } from "../actions";
 const Stack = createStackNavigator();
 
 const Navigation = () => {
-  const [token, setToken] = useState(null);
+  const [token, setToken] = useState({});
   const user = useSelector((state) => state);
   const socket = useRef();
   const dispatch = useDispatch();
@@ -38,7 +38,7 @@ const Navigation = () => {
     // When teacher clicks on "Start tracking attendance" on the mobile app
     socket.current.on("attendance code", (data) => {
       console.log("CODE", data);
-      setToken(data.code);
+      setToken(data);
     });
 
     // asocket.current.on("tokenReceived", (data) => {
