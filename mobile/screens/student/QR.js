@@ -59,9 +59,10 @@ const QR = ({ navigation }) => {
       .catch((error) => {
         showMessage({
           message: "Error occured!",
-          description: "Please contact professor to submit your attendance manually!",
+          description:
+            "You either scanned an invalid QR code or you have already marked your attendance to this lecture. If you think this is an error, please ask the teacher for assitance.",
           type: "danger",
-          duration: 5000,
+          duration: 7000,
           icon: "danger",
         });
         console.log(error);

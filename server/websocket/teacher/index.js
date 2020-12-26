@@ -8,7 +8,7 @@ const teacherNamespace = (socket) => {
   // When mobile app connects join the attendanceToken room
   socket.join(attendanceToken);
 
-  //
+  // If teacher has opened the "Attendance" tab, send all attendances
   if (fetchLectureAttendance) sendAllAttendances(socket, fetchLectureAttendance);
 
   // When teacher clicks sign out of the tablet button or when he stops the tracking

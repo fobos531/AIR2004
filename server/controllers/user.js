@@ -124,7 +124,6 @@ exports.getAllUsers = async (req, res) => {
 };
 
 exports.getSingle = async (req, res) => {
-  console.log("object");
   try {
     const token = req.header("Authorization").replace("Bearer ", "");
     let user = jwt.verify(token, process.env.JWT_SECRET);

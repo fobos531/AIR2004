@@ -1,9 +1,3 @@
-const onConnect = require("./onConnect");
-const onSelectedLectureType = require("./onSelectedLectureType");
-const onSignOutTablet = require("./onSignOutTablet");
-const onStartTracking = require("./onStartTracking");
-const createAttendance = require("./utils/createAttendance");
-
 const tabletNamespace = require("./tablet");
 const teacherNamespace = require("./teacher");
 
