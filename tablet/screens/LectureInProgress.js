@@ -9,35 +9,7 @@ import AnimatedCheckmark from "../components/AnimatedCheckmark";
 const LectureInProgress = ({ courseName, lectureType, socket, tabletToken }) => {
   const user = useSelector((state) => state);
 
-  const [tracking, setTracking] = useState(false);
-  const [code, setCode] = useState(null);
-  const [lecture, setLecture] = useState(null);
   const [successfulScan, setSuccessfulScan] = useState(false);
-
-  useEffect(() => {
-    // socket.on("startTrackingAttendance", () => {
-    //   console.log(user.token);
-    //   // console.log("lectureID", lecture.id);
-    //   socket.emit("generateQR", { lectureId: "5fc271812380d73fb1423d1d", token: tabletToken.token });
-    //   // setTracking(true);
-    // });
-    // socket.on("selectedLecture", (lecture) => {
-    //   console.log("lecture", lecture);
-    //   setLecture(lecture);
-    // });
-    // // The new QR code generated and sent by the server
-    // socket.on("attendanceCode", ({ code }) => {
-    //   console.log("CODE", code);
-    //   setSuccessfulScan(false);
-    //   setCode(code);
-    //   setTracking(true);
-    // });
-    // // When the QR code has been successfuly scanned, send message to the server to generate a new one
-    // socket.on("scanSucess", () => {
-    //   setSuccessfulScan(true);
-    //   setTimeout(() => socket.emit("generateQR", { lectureId: "5fc271812380d73fb1423d1d", token: tabletToken.token }), 2000);
-    // });
-  }, []);
 
   useEffect(() => {
     setSuccessfulScan(true);

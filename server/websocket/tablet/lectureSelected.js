@@ -4,6 +4,8 @@ const lectureSelected = async (socket, data) => {
   const lectureType = data.lectureType;
   const courseId = data.selectedCourse.id;
 
+  console.log(data);
+
   // Create the lecture
   const lecture = await new Lecture({ course: courseId._id, type: lectureType }).save();
 

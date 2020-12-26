@@ -30,7 +30,6 @@ const Navigation = () => {
 
     // When teacher scans the login QR code and successfully signs in
     socket.current.on("login success", (data) => {
-      console.log(data);
       api.defaults.headers.common["Authorization"] = `Bearer ${data.token}`;
       dispatch(signIn(data));
     });
@@ -41,20 +40,12 @@ const Navigation = () => {
       setToken(data);
     });
 
-    // asocket.current.on("tokenReceived", (data) => {
-    //   console.log(data);
-    //   setToken(JSON.stringify(data));
-    // });
-
-    // socket.current.on("loginSuccess", (data) => {
-    //   console.log(data);
-    //   api.defaults.headers.common["Authorization"] = `Bearer ${data.token}`;
-    //   dispatch(signIn(data));
-    // });
-
-    // socket.current.on("signOutTablet", () => {
-    //   dispatch(signOut());
-    // });
+    // When teacher signs out or clicks "Stop tracking attendance"
+    socket.current.on("sign out tablet", () => {
+      dispatch(signOut());
+      socket.current.disconnect();
+      socket.current.connect();
+    });
 
     return () => socket.current.disconnect();
   }, []);

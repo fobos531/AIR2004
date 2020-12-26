@@ -3,7 +3,7 @@ import { View, StyleSheet } from "react-native";
 import { Text, FAB, Provider as PaperProvider } from "react-native-paper";
 import { useSelector, useDispatch } from "react-redux";
 import { io } from "socket.io-client";
-import { setCourseSelectedOnTablet } from "../../actions";
+import { setCourseSelectedOnTablet, signOutTablet, startTracking } from "../../actions";
 import DashboardAfterLogin from "./components/DashboardAfterLogin";
 import DashboardAfterTabletLogin from "./components/DashboardAfterTabletLogin";
 import DashboardAfterCourseSelection from "./components/DashboardAfterCourseSelection";
@@ -15,21 +15,29 @@ const Dashboard = ({ navigation }) => {
   const socket = useRef();
 
   useEffect(() => {
-    console.log("user.attendanceToken", user.attendanceToken);
     socket.current = io(WSS_URL + "/teacher", {
       query: {
         attendanceToken: user.attendanceToken,
       },
     });
     socket.current.on("lecture selected", (data) => {
-      console.log("MOBILE RECEIVED", data);
+      console.log("LECTURE", data);
       dispatch(setCourseSelectedOnTablet(data));
     });
 
     return () => socket.current.disconnect();
   }, [user.attendanceToken]);
 
-  console.log("USER STATE", user.attendanceToken);
+  const handleSignOut = () => {
+    socket.current.emit("sign out tablet", { attendanceToken: user.attendanceToken });
+    dispatch(signOutTablet());
+  };
+
+  const handleStartTracking = () => {
+    dispatch(startTracking());
+    socket.current.emit("start tracking", { lecture: user.courseSelectedOnTablet.lecture.id });
+  };
+
   return (
     <View>
       <Text style={styles.title}>
@@ -42,20 +50,12 @@ const Dashboard = ({ navigation }) => {
         {user.attendanceToken == null ? (
           <DashboardAfterLogin />
         ) : user.courseSelectedOnTablet == null ? (
-          <DashboardAfterTabletLogin socket={socket.current} />
+          <DashboardAfterTabletLogin handleSignOut={handleSignOut} />
         ) : (
-          <DashboardAfterCourseSelection socket={socket.current} />
+          <DashboardAfterCourseSelection handleSignOut={handleSignOut} handleStartTracking={handleStartTracking} />
         )}
         {user.attendanceToken == null && (
-          <FAB
-            style={styles.fab}
-            small
-            label="SIGN IN ON TABLET"
-            icon="qrcode"
-            color="black"
-            onPress={() => console.log("Pressed")}
-            onPress={() => navigation.push("QRScan")}
-          />
+          <FAB style={styles.fab} small label="SIGN IN ON TABLET" icon="qrcode" color="black" onPress={() => navigation.push("QRScan")} />
         )}
       </View>
     </View>

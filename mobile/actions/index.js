@@ -30,3 +30,9 @@ export const signOutTablet = () => {
     type: "SIGN_OUT_TABLET",
   };
 };
+
+export const startTracking = () => {
+  return {
+    type: "START_TRACKING",
+  };
+};

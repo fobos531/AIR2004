@@ -5,6 +5,7 @@ const initialState = {
   userType: null,
   attendanceToken: null,
   courseSelectedOnTablet: null,
+  trackingStarted: false,
 };
 
 const userReducer = (state = initialState, action) => {
@@ -24,17 +25,26 @@ const userReducer = (state = initialState, action) => {
       };
     case "SIGN_OUT":
       return initialState;
+
     case "SIGN_OUT_TABLET":
       return {
         ...state,
         attendanceToken: null,
         courseSelectedOnTablet: null,
       };
+
     case "SET_COURSE_SELECTED_ON_TABLET":
       return {
         ...state,
         courseSelectedOnTablet: action.courseSelectedOnTablet,
       };
+
+    case "START_TRACKING":
+      return {
+        ...state,
+        trackingStarted: true,
+      };
+
     default:
       return state;
   }

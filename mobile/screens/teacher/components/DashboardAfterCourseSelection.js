@@ -2,17 +2,14 @@ import React, { useEffect } from "react";
 import { View, StyleSheet } from "react-native";
 import { Button, Text, FAB, Chip } from "react-native-paper";
 import { useSelector, useDispatch } from "react-redux";
-import { signOutTablet } from "../../../actions/index";
+import { signOutTablet, startTracking } from "../../../actions/index";
 import FontAwesomeIcons from "react-native-vector-icons/FontAwesome";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import { checkLocationAccuracy } from "react-native-permissions";
 
-const DashboardAfterCourseSelection = ({ socket }) => {
+const DashboardAfterCourseSelection = ({ handleSignOut, handleStartTracking }) => {
   const user = useSelector((state) => state);
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    console.log(user.courseSelectedOnTablet);
-  }, [user.courseSelectedOnTablet]);
 
   return (
     <>
@@ -31,24 +28,40 @@ const DashboardAfterCourseSelection = ({ socket }) => {
         </Chip>
       </View>
 
-      <View style={{ ...styles.stepContainer, marginTop: 25 }}>
-        <Text style={{ fontWeight: "bold", fontSize: 20 }}>Start tracking attendance</Text>
-        <Text style={{ ...styles.font, marginTop: 10, marginBottom: 10, lineHeight: 20 }}>
-          If the lecture is finished, click this button to start tracking yout student's attendance. QR codes will start to generate on the
-          tablet.
-        </Text>
-        <Button
-          style={{ marginTop: 20, marginBottom: 27 }}
-          mode="contained"
-          icon={() => <MaterialCommunityIcons name="plus" size={35} color="#fff" />}
-          onPress={() => {
-            console.log("start tracking");
-            socket.emit("start tracking", { lecture: user.courseSelectedOnTablet.lecture.id });
-          }}
-        >
-          START TRACKING ATTENDANCE
-        </Button>
-      </View>
+      {!user.trackingStarted && (
+        <View style={{ ...styles.stepContainer, marginTop: 25 }}>
+          <Text style={{ fontWeight: "bold", fontSize: 20 }}>Start tracking attendance</Text>
+          <Text style={{ ...styles.font, marginTop: 10, marginBottom: 10, lineHeight: 20 }}>
+            If the lecture is finished, click this button to start tracking yout student's attendance. QR codes will start to generate on
+            the tablet.
+          </Text>
+          <Button
+            style={{ marginTop: 20, marginBottom: 27 }}
+            mode="contained"
+            icon={() => <MaterialCommunityIcons name="plus" size={35} color="#fff" />}
+            onPress={handleStartTracking}
+          >
+            START TRACKING ATTENDANCE
+          </Button>
+        </View>
+      )}
+
+      {user.trackingStarted && (
+        <View style={{ ...styles.stepContainer, marginTop: 25 }}>
+          <Text style={{ fontWeight: "bold", fontSize: 20 }}>Stop tracking attendance</Text>
+          <Text style={{ ...styles.font, marginTop: 10, marginBottom: 10, lineHeight: 20 }}>
+            If all students have marked their attendance, click stop attendance.
+          </Text>
+          <Button
+            style={{ marginTop: 20, marginBottom: 27 }}
+            mode="contained"
+            icon={() => <MaterialCommunityIcons name="plus" size={35} color="#fff" />}
+            onPress={handleSignOut}
+          >
+            STOP TRACKING ATTENDANCE
+          </Button>
+        </View>
+      )}
 
       <View style={{ ...styles.stepContainer, marginTop: 25 }}>
         <Text style={{ fontWeight: "bold", fontSize: 20 }}>Sign out</Text>
@@ -59,11 +72,7 @@ const DashboardAfterCourseSelection = ({ socket }) => {
           style={{ marginTop: 20, marginBottom: 27 }}
           mode="contained"
           icon={() => <MaterialCommunityIcons name="plus" size={35} color="#fff" />}
-          onPress={() => {
-            console.log("I WAS PRESSED");
-            socket.emit("signOutTablet", { token: user.tabletSocketToken });
-            dispatch(signOutTablet());
-          }}
+          onPress={handleSignOut}
         >
           SIGN OUT
         </Button>
@@ -106,6 +115,5 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#731ff0",
     marginTop: 10,
-    marginLeft: 20,
   },
 });

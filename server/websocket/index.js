@@ -22,22 +22,22 @@ const websocket = (server) => {
   // Contains logic for all socket messages that are sent to the tablet to the server.
   tablet.on("connection", tabletNamespace);
 
-  global.io.on("connect", (socket) => {
-    // When tablet app connects, generate random token and send it back
-    onConnect(socket);
+  //   global.io.on("connect", (socket) => {
+  //     // When tablet app connects, generate random token and send it back
+  //     onConnect(socket);
 
-    // When teacher selects the lecture type on the tablet, notify his mobile app
-    socket.on("selectedLectureType", (data) => onSelectedLectureType(socket, data));
+  //     // When teacher selects the lecture type on the tablet, notify his mobile app
+  //     socket.on("selectedLectureType", (data) => onSelectedLectureType(socket, data));
 
-    // When teacher signs out of the tablet
-    socket.on("signOutTablet", (data) => onSignOutTablet(data));
+  //     // When teacher signs out of the tablet
+  //     socket.on("signOutTablet", (data) => onSignOutTablet(data));
 
-    // When teacher starts tracking attendance
-    socket.on("startTrackingAttendance", (data) => onStartTracking(data));
+  //     // When teacher starts tracking attendance
+  //     socket.on("startTrackingAttendance", (data) => onStartTracking(data));
 
-    // Sent by the tablet to the server to generate a new QR code for attendance
-    socket.on("generateQR", ({ lectureId, token }) => createAttendance(socket, lectureId, token));
-  });
+  //     // Sent by the tablet to the server to generate a new QR code for attendance
+  //     socket.on("generateQR", ({ lectureId, token }) => createAttendance(socket, lectureId, token));
+  //   });
 };
 
 module.exports = websocket;

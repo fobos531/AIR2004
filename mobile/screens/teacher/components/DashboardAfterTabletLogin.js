@@ -1,15 +1,9 @@
 import React, { useEffect, useRef } from "react";
 import { View, StyleSheet } from "react-native";
 import { Button, Text, FAB, Chip } from "react-native-paper";
-import { useSelector, useDispatch } from "react-redux";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import { signOutTablet } from "../../../actions";
 
-const DashboardAfterTabletLogin = ({ socket }) => {
-  const dispatch = useDispatch();
-
-  const user = useSelector((state) => state);
-
+const DashboardAfterTabletLogin = ({ handleSignOut }) => {
   return (
     <>
       <View style={{ marginTop: 25 }}>
@@ -25,11 +19,7 @@ const DashboardAfterTabletLogin = ({ socket }) => {
           style={{ marginTop: 27, marginBottom: 27 }}
           mode="contained"
           icon={() => <MaterialCommunityIcons name="plus" size={35} color="#fff" />}
-          onPress={() => {
-            console.log("I WAS PRESSED");
-            socket.emit("signOutTablet", { token: user.tabletSocketToken });
-            dispatch(signOutTablet());
-          }}
+          onPress={handleSignOut}
         >
           SIGN OUT
         </Button>
