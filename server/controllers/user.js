@@ -1,7 +1,10 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const passwordGenerator = require("generate-password");
+const sgMail = require("@sendgrid/mail");
 const User = require("../models/user");
 const Course = require("../models/course");
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 exports.login = async (req, res) => {
   const { email, password } = req.body;
@@ -36,24 +39,20 @@ exports.login = async (req, res) => {
 exports.loginTablet = async (req, res) => {
   try {
     // Validate JWT
-    const token = req.header("Authorization").replace("Bearer ", "");
+    const token = req.header("Authorization")?.replace("Bearer ", "");
     const user = jwt.verify(token, process.env.JWT_SECRET);
 
     // Validate authentication token from QR code
-    const authToken = req.body.token;
+    const attendanceToken = req.body.attendanceToken;
 
-    let tabletSocket;
-    for (let socket of global.io.of("/").sockets.values()) if (socket.data && socket.data.token == authToken) tabletSocket = socket;
-    if (!tabletSocket) throw "Authentication token is invalid";
-
-    // Send response to the tablet where user signed in
-    tabletSocket.emit("loginSuccess", { ...user, token });
-
-    // Remove the auth token from the socket
-    //  tabletSocket.data.token = null;
+    // Send response to the tablet where the teacher signed in
+    global.io
+      .of("/tablet")
+      .to(attendanceToken)
+      .emit("login success", { ...user, token, attendanceToken });
 
     // Send response to the mobile app
-    res.status(200).json({ success: true, data: { tabletSocketToken: authToken } });
+    res.status(200).json({ success: true });
   } catch (error) {
     console.log(error);
     res.status(400).json({ success: false, error });
@@ -72,6 +71,33 @@ exports.register = async (req, res) => {
       password: hashedPassword,
       userType: role,
     }).save();
+    res.status(200).json({ success: true });
+  } catch (error) {
+    res.status(400).json({ success: false, error });
+  }
+};
+
+exports.resetPassword = async (req, res) => {
+  try {
+    const user = await User.findOne({ email: req.body.email });
+    const newPassword = passwordGenerator.generate({
+      length: 10,
+      numbers: true,
+    });
+    if (!user) throw "User not found";
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    user.password = hashedPassword;
+    const msg = {
+      to: `${req.body.email}`,
+      from: `air2004.2020@gmail.com`,
+      replyTo: "air2004.2020@gmail.com",
+      subject: "Unittend - Your new password",
+      text: `Hello, we've successfully changed your password, and it's ${newPassword}\nEnjoy!\nSincerely, Unittend team`,
+      html: `<p>Hello, we've successfully changed your password, and it's ${newPassword}\nEnjoy!\nSincerely, Unittend team</p>`,
+    };
+    await sgMail.send(msg);
+    await user.save();
     res.status(200).json({ success: true });
   } catch (error) {
     res.status(400).json({ success: false, error });
@@ -97,6 +123,7 @@ exports.getAllUsers = async (req, res) => {
 };
 
 exports.getSingle = async (req, res) => {
+  console.log("object");
   try {
     const token = req.header("Authorization").replace("Bearer ", "");
     let user = jwt.verify(token, process.env.JWT_SECRET);

@@ -1,18 +1,15 @@
 import React, { useState, useEffect, useRef } from "react";
 import { View, StyleSheet, ScrollView, Text } from "react-native";
 import { Button, Headline, Dialog, Portal } from "react-native-paper";
-import axios from "axios";
 import { useSelector, useDispatch } from "react-redux";
-import CourseButton from "./components/CourseButton";
-import { setCourseInProgress } from "../actions/index";
 
-const api = axios.create({
-  baseURL: "http://192.168.1.5:8080/api",
-});
+import CourseButton from "./components/CourseButton";
+import { createLecture, setCourseInProgress } from "../actions/index";
+import api from "../utils/api";
 
 const Home = ({ socket, navigation }) => {
-  const [assignedCourses, setAssignedCourses] = useState();
-  const [selectedCourseName, setSelectedCourseName] = useState("");
+  const [assignedCourses, setAssignedCourses] = useState([]);
+  const [selectedCourse, setSelectedCourse] = useState("");
   const user = useSelector((state) => state);
   const dispatch = useDispatch();
   const [visible, setVisible] = useState(false);
@@ -20,22 +17,23 @@ const Home = ({ socket, navigation }) => {
   const showDialog = () => setVisible(true);
   const hideDialog = () => setVisible(false);
 
-  console.log("ASSIGNED COURSES", assignedCourses);
-  const config = {
-    headers: {
-      Authorization: `Bearer ${user.token}`,
-    },
-  };
-
   useEffect(() => {
-    api.get("/user/details", config).then((data) => {
-      setAssignedCourses(data.data.data.assignedCourses);
-    });
-  }, []);
+    api
+      .get("/user/details")
+      .then(({ data }) => {
+        console.log(data);
+        setAssignedCourses(data.data.assignedCourses);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
+    socket.on("selectedLecture", (lecture) => dispatch(createLecture(lecture)));
+  }, [user.token]);
 
   const handleSelectLectureType = (lectureType) => {
-    socket.emit("selectedLectureType", { lectureType, userToken: user.token, courseName: selectedCourseName });
-    dispatch(setCourseInProgress({ lectureType, courseName: selectedCourseName }));
+    socket.emit("lecture selected", { lectureType, selectedCourse });
+    dispatch(setCourseInProgress({ lectureType, courseName: selectedCourse.name }));
     hideDialog();
   };
 
@@ -44,15 +42,9 @@ const Home = ({ socket, navigation }) => {
       <View style={styles.container}>
         <Headline style={styles.headline}>Your courses</Headline>
         <View style={styles.courses}>
-          {assignedCourses != undefined &&
-            assignedCourses.map((course) => (
-              <CourseButton
-                key={course.id}
-                name={course.name}
-                showDialog={showDialog}
-                setCourse={() => setSelectedCourseName(course.name)}
-              />
-            ))}
+          {assignedCourses.map((course) => (
+            <CourseButton key={course.id} name={course.name} showDialog={showDialog} setCourse={() => setSelectedCourse(course)} />
+          ))}
         </View>
         <Portal>
           <Dialog visible={visible} onDismiss={hideDialog} style={styles.dialog}>

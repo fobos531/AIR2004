@@ -14,10 +14,10 @@ const attendanceSchema = mongoose.Schema({
     type: String,
     required: true,
     unique: true,
-    default: cryptoRandomString({ length: 15 }),
+    default: () => cryptoRandomString({ length: 15 }),
   },
 });
 
-attendanceSchema.index({ lecture: 1, user: 1 }, { unique: true });
+// attendanceSchema.index({ lecture: 1, user: 1 }, { unique: true }); -> KASNIJE VRATI TO
 
 module.exports = mongoose.model("Attendance", attendanceSchema);

@@ -1,6 +1,6 @@
-import axios from 'axios';
-import {API_URL} from '@env';
+import axios from "axios";
+import { API_URL } from "../constants";
 
 export default axios.create({
-  baseURL: "http://192.168.43.150:8080/api",
+  baseURL: API_URL,
 });
