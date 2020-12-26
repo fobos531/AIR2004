@@ -1,10 +1,15 @@
 const startTracking = require("./startTracking");
 const signOutTablet = require("./signOutTablet");
+const sendAllAttendances = require("./sendAllAttendances");
 
 const teacherNamespace = (socket) => {
-  // When mobile app connects
-  const { attendanceToken } = socket.handshake.query;
+  const { attendanceToken, fetchLectureAttendance } = socket.handshake.query;
+
+  // When mobile app connects join the attendanceToken room
   socket.join(attendanceToken);
+
+  //
+  if (fetchLectureAttendance) sendAllAttendances(socket, fetchLectureAttendance);
 
   // When teacher clicks sign out of the tablet button or when he stops the tracking
   socket.on("sign out tablet", (data) => signOutTablet(data));

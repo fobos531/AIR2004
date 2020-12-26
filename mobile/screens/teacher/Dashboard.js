@@ -21,7 +21,6 @@ const Dashboard = ({ navigation }) => {
       },
     });
     socket.current.on("lecture selected", (data) => {
-      console.log("LECTURE", data);
       dispatch(setCourseSelectedOnTablet(data));
     });
 

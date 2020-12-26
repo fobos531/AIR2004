@@ -1,16 +1,44 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { View, StyleSheet } from "react-native";
 import { Button, Colors, Text } from "react-native-paper";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { ActivityIndicator, FAB, Paragraph } from "react-native-paper";
 import StudentAttendanceCard from "./components/StudentAttendanceCard";
 import { ScrollView } from "react-native-gesture-handler";
-import { SafeAreaView } from "react-native";
+import { io } from "socket.io-client";
+import { WSS_URL } from "../../constants";
 
 const Attendance = () => {
   const dispatch = useDispatch();
+  const user = useSelector((state) => state);
+  const [attendances, setAttendances] = useState([]);
 
   const [fabOpen, setFabOpen] = useState(false);
+  const socket = useRef();
+
+  useEffect(() => {
+    // if (!user.courseSelectedOnTablet?.lecture) return;
+
+    socket.current = io(WSS_URL + "/teacher", {
+      query: {
+        attendanceToken: user.attendanceToken,
+        fetchLectureAttendance: user.courseSelectedOnTablet.lecture.id,
+      },
+    });
+    socket.current.on("lecture selected", (data) => {
+      dispatch(setCourseSelectedOnTablet(data));
+    });
+
+    socket.current.on("all attendances", (data) => {
+      setAttendances(data);
+    });
+
+    socket.current.on("new attendance", (data) => {
+      setAttendances((old) => [data, ...old]);
+    });
+
+    return () => socket.current.disconnect();
+  }, []);
 
   return (
     <View>
@@ -42,15 +70,9 @@ const Attendance = () => {
           <ActivityIndicator animating={true} size={40} style={{ paddingVertical: 10 }} />
         </View>
         <ScrollView>
-          <StudentAttendanceCard />
-          <StudentAttendanceCard />
-          <StudentAttendanceCard />
-          <StudentAttendanceCard />
-          <StudentAttendanceCard />
-          <StudentAttendanceCard />
-          <StudentAttendanceCard />
-          <StudentAttendanceCard />
-          <StudentAttendanceCard />
+          {attendances.map((attendance) => (
+            <StudentAttendanceCard key={attendance.id} data={attendance} />
+          ))}
         </ScrollView>
       </View>
     </View>
