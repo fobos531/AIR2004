@@ -50,7 +50,7 @@ const DashboardAfterCourseSelection = ({ handleSignOut, handleStartTracking }) =
         <View style={{ ...styles.stepContainer, marginTop: 25 }}>
           <Text style={{ fontWeight: "bold", fontSize: 20 }}>Stop tracking attendance</Text>
           <Text style={{ ...styles.font, marginTop: 10, marginBottom: 10, lineHeight: 20 }}>
-            If all students have marked their attendance, click stop attendance.
+            If all students have marked their attendance, click the button below.
           </Text>
           <Button
             style={{ marginTop: 20, marginBottom: 27 }}

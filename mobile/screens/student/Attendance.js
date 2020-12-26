@@ -1,7 +1,6 @@
 import React, { useState } from "react";
-import { View, StyleSheet, FlatList, Platform } from "react-native";
+import { View, StyleSheet, FlatList } from "react-native";
 import { Text } from "react-native-paper";
-import DropDownPicker from 'react-native-dropdown-picker';
 import {Picker} from '@react-native-picker/picker';
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 

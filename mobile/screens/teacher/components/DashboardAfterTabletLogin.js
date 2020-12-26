@@ -1,13 +1,14 @@
-import React, { useEffect, useRef } from "react";
+import React from "react";
 import { View, StyleSheet } from "react-native";
-import { Button, Text, FAB, Chip } from "react-native-paper";
+import { Button, Text } from "react-native-paper";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 const DashboardAfterTabletLogin = ({ handleSignOut }) => {
   return (
     <>
       <View style={{ marginTop: 25 }}>
-        <Text style={styles.font}>You are signed in on a tablet in a lecture room.</Text>
+        <Text style={{ ...styles.font, marginBottom: 20 }}>You are signed in on a tablet in a lecture room.</Text>
+        <Text style={styles.font}>Please select the course on the tablet you would like to mark attendance for.</Text>
       </View>
 
       <View style={{ ...styles.stepContainer, marginTop: 25 }}>
@@ -38,15 +39,12 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
   },
-
   font: {
     fontSize: 15,
   },
-
   title: {
     fontSize: 24,
   },
-
   stepContainer: {
     marginTop: 10,
     borderBottomWidth: 1,

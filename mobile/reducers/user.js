@@ -1,4 +1,5 @@
 const initialState = {
+  userId: null,
   name: null,
   surname: null,
   token: null,
@@ -13,6 +14,7 @@ const userReducer = (state = initialState, action) => {
     case "SIGN_IN":
       return {
         ...state,
+        userId: action.user.userId,
         name: action.user.name,
         surname: action.user.surname,
         token: action.user.token,

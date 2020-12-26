@@ -16,6 +16,10 @@ const attendanceSchema = mongoose.Schema({
     unique: true,
     default: () => cryptoRandomString({ length: 15 }),
   },
+  modifiedAt: {
+    type: Date,
+    default: Date.now,
+  },
 });
 
 // attendanceSchema.index({ lecture: 1, user: 1 }, { unique: true }); -> KASNIJE VRATI TO

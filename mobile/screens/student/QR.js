@@ -5,25 +5,26 @@ import { Text } from "react-native-paper";
 import { showMessage, hideMessage } from "react-native-flash-message";
 
 import api from "../../utils/api";
+import { useSelector } from "react-redux";
 
 const QR = ({ navigation }) => {
   const [attendanceSubmited, setAttendanceSubmited] = useState(null);
 
+  const user = useSelector((state) => state.userId);
+
   useEffect(() => {
-    if (attendanceSubmited) {
-      showMessage({
-        message: "Thank you!",
-        description: "Your attendance has been saved!",
-        type: "success",
-        duration: 5000,
-        icon: "success",
-      });
-
-      setTimeout(() => {
-        navigation.pop();
-      }, 1500);
-    }
-
+    // if (attendanceSubmited) {
+    //   showMessage({
+    //     message: "Thank you!",
+    //     description: "Your attendance has been saved!",
+    //     type: "success",
+    //     duration: 5000,
+    //     icon: "success",
+    //   });
+    //   setTimeout(() => {
+    //     navigation.pop();
+    //   }, 1500);
+    // }
     // if(!attendanceSubmited){
     //   showMessage({
     //     message: "Error occured!",
@@ -32,31 +33,43 @@ const QR = ({ navigation }) => {
     //     duration: 5000,
     //     icon: "danger"
     //   });
-
     //   setTimeout(() => {
     //     navigation.pop();
     //   }, 1500);
-
     // }
   });
 
   const onScanned = (e) => {
-    const scannedData = e.data;
-    console.log(scannedData);
+    const qrCodeData = JSON.parse(e.data);
+    console.log(qrCodeData);
+
+    console.log("USER ID", user);
 
     api
-      .post("/attendance/mark")
+      .post("/attendance/mark", { ...qrCodeData, user })
       .then(({ data }) => {
-        console.log(data);
-        setAttendanceSubmited(true);
+        showMessage({
+          message: "Thank you!",
+          description: "Your attendance has been saved!",
+          type: "success",
+          duration: 5000,
+          icon: "success",
+        });
       })
       .catch((error) => {
+        showMessage({
+          message: "Error occured!",
+          description:
+            "You either scanned an invalid QR code or you have already marked your attendance to this lecture. If you think this is an error, please ask the teacher for assitance.",
+          type: "danger",
+          duration: 7000,
+          icon: "danger",
+        });
         console.log(error);
+      })
+      .finally(() => {
+        navigation.pop();
       });
-
-    /*Na temelju dobivenog responsea od API-a provjeriti da li je prisustvo uspješno evidentirano*/
-
-    /*Ako je uspješno evidentirano -> postavi attendanceSubmited na true*/
   };
 
   return (

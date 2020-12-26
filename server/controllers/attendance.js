@@ -1,11 +1,8 @@
 const Attendance = require("../models/attendance");
-const User = require("../models/user");
 
 exports.add = async (req, res) => {
   try {
-    await new Attendance({
-      ...req.body,
-    }).save();
+    await new Attendance({ ...req.body }).save();
     res.status(200).json({ success: true });
   } catch (error) {
     res.status(400).json({ success: false, error });
@@ -27,16 +24,25 @@ exports.markAttendance = async (req, res) => {
   const { code: qrCode, user, lecture, attendanceToken } = req.body;
 
   try {
+    // Check if that user has already marked attendance on that lecture
+    const alreadyMarked = await Attendance.findOne({ lecture, user });
+    if (alreadyMarked) return res.status(400).json({ success: false });
+
     // Update attendance document with the code
-    const attendance = await Attendance.findOneAndUpdate({ qrCode, user: null }, { $set: { user } }, { new: true });
+    const attendance = await Attendance.findOneAndUpdate({ qrCode, user: null }, { $set: { user, modifiedAt: Date.now() } }, { new: true });
+
+    // If the update didn't succeed (the qrCode is either invalid or it has been already used) return 400
     if (!attendance) return res.status(400).json({ success: false });
 
-    // Generate new qr code and send it to the tablet
+    // Generate new attendance (qrCode) entry
     const newAttendance = await new Attendance({ lecture }).save();
+
+    // Send the new attendance qrCode to the tablet
     global.io.of("/tablet").to(attendanceToken).emit("attendance code", { code: newAttendance.qrCode });
 
-    // Send the marked attendance to the teacher
-    // const user = await User
+    // Send the attendance to the mobile app along with the user data who marked the attendance
+    const markedAttendance = await Attendance.findById(attendance.id).populate("user", "name surname");
+    global.io.of("/teacher").to(attendanceToken).emit("new attendance", markedAttendance);
 
     res.status(200).json({ success: true });
   } catch (error) {

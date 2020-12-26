@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, StyleSheet, FlatList, Dimensions } from "react-native";
+import { View, StyleSheet, FlatList } from "react-native";
 import {  
   Text, 
   Surface, 
@@ -8,7 +8,6 @@ import {
 } from "react-native-paper";
 import { useSelector } from "react-redux";
 import { LineChart } from "react-native-chart-kit";
-import DropDownPicker from 'react-native-dropdown-picker';
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import AttendanceItem from "../student/components/AttendanceItem";
