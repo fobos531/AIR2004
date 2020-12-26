@@ -17,7 +17,7 @@ const Attendance = () => {
   const socket = useRef();
 
   useEffect(() => {
-    // if (!user.courseSelectedOnTablet?.lecture) return;
+    if (!user.courseSelectedOnTablet) return;
 
     socket.current = io(WSS_URL + "/teacher", {
       query: {
@@ -39,6 +39,18 @@ const Attendance = () => {
 
     return () => socket.current.disconnect();
   }, []);
+
+  if (!user.courseSelectedOnTablet)
+    return (
+      <View style={styles.container}>
+        <View>
+          <Text style={{ textAlign: "center", fontSize: 20, fontWeight: "500", marginBottom: 20 }}>Marking attendance is not stared!</Text>
+          <Text style={{ textAlign: "center" }}>
+            Please go to the dashboard and click "Sign in on tablet" button to sign in on a tablet in a lecture room.
+          </Text>
+        </View>
+      </View>
+    );
 
   return (
     <View>
@@ -70,6 +82,7 @@ const Attendance = () => {
           <ActivityIndicator animating={true} size={40} style={{ paddingVertical: 10 }} />
         </View>
         <ScrollView>
+          {!attendances.length && <Text style={{ textAlign: "center" }}>There are no marked attendances yet!</Text>}
           {attendances.map((attendance) => (
             <StudentAttendanceCard key={attendance.id} data={attendance} />
           ))}
@@ -82,9 +95,9 @@ const Attendance = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    width: "100%",
     justifyContent: "center",
     alignItems: "center",
+    padding: 35,
   },
   title: {
     fontSize: 20,

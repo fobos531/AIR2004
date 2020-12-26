@@ -51,14 +51,14 @@ const Dashboard = ({ navigation }) => {
   };
 
   return (
-    <View>
+    <View style={styles.container}>
       <Text style={styles.title}>
         Hi,{" "}
         <Text style={styles.textBold}>
           {user.name} {user.surname}!
         </Text>
       </Text>
-      <View style={styles.container}>
+      <View style={styles.dashboardContainer}>
         <DashBoardContainer />
         {user.attendanceToken == null && (
           <FAB style={styles.fab} small label="SIGN IN ON TABLET" icon="qrcode" color="black" onPress={() => navigation.push("QRScan")} />
@@ -70,6 +70,9 @@ const Dashboard = ({ navigation }) => {
 
 const styles = StyleSheet.create({
   container: {
+    padding: 10,
+  },
+  dashboardContainer: {
     padding: "4%",
     width: "100%",
     height: "100%",

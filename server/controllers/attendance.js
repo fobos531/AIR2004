@@ -1,11 +1,8 @@
 const Attendance = require("../models/attendance");
-const User = require("../models/user");
 
 exports.add = async (req, res) => {
   try {
-    await new Attendance({
-      ...req.body,
-    }).save();
+    await new Attendance({ ...req.body }).save();
     res.status(200).json({ success: true });
   } catch (error) {
     res.status(400).json({ success: false, error });
@@ -28,11 +25,7 @@ exports.markAttendance = async (req, res) => {
 
   try {
     // Update attendance document with the code
-    const attendance = await Attendance.findOneAndUpdate(
-      { qrCode, user: null },
-      { $set: { user, modifiedAt: Date.now() } },
-      { new: true }
-    ).sort("modifiedAt");
+    const attendance = await Attendance.findOneAndUpdate({ qrCode, user: null }, { $set: { user, modifiedAt: Date.now() } }, { new: true });
 
     // If the update didn't succeed (the qrCode is either invalid or it has been already used) return 400
     if (!attendance) return res.status(400).json({ success: false });
