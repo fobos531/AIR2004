@@ -23,6 +23,8 @@ exports.getAll = async (req, res) => {
 exports.markAttendance = async (req, res) => {
   const { code: qrCode, user, lecture, attendanceToken } = req.body;
 
+  console.log(req.body);
+
   try {
     // Update attendance document with the code
     const attendance = await Attendance.findOneAndUpdate({ qrCode, user: null }, { $set: { user, modifiedAt: Date.now() } }, { new: true });
