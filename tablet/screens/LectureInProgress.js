@@ -1,11 +1,33 @@
-import React from "react";
-import { useSelector } from "react-redux";
-import { View, StyleSheet } from "react-native";
-import { Headline, Text } from "react-native-paper";
+import React, { useState, useEffect } from "react";
 import AnimatedLoader from "react-native-animated-loader";
+import { View, StyleSheet, Dimensions, Text } from "react-native";
+import { useSelector } from "react-redux";
+import { Headline } from "react-native-paper";
+import QRCode from "react-native-qrcode-svg";
+import AnimatedCheckmark from "../components/AnimatedCheckmark";
 
-const LectureInProgress = ({ courseName, lectureType }) => {
+const LectureInProgress = ({ courseName, lectureType, socket, tabletToken }) => {
   const user = useSelector((state) => state);
+
+  const [successfulScan, setSuccessfulScan] = useState(false);
+
+  useEffect(() => {
+    setSuccessfulScan(true);
+    setTimeout(() => setSuccessfulScan(false), 2000);
+  }, [tabletToken]);
+
+  if (tabletToken.code)
+    return (
+      <View style={styles.qrContainer}>
+        <Text style={styles.text}>Please scan the QR code using Unittend application to mark your attendance</Text>
+        {successfulScan && <AnimatedCheckmark />}
+        <QRCode
+          value={JSON.stringify({ code: tabletToken.code, attendanceToken: user.attendanceToken, lecture: tabletToken.lecture })}
+          style={styles.qr}
+          size={Dimensions.get("screen").height * 0.45}
+        />
+      </View>
+    );
 
   return (
     <View style={styles.container}>
@@ -25,6 +47,17 @@ const LectureInProgress = ({ courseName, lectureType }) => {
 };
 
 const styles = StyleSheet.create({
+  qrContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: "-8%",
+  },
+  text: {
+    fontSize: 24,
+    marginBottom: 40,
+    fontWeight: "bold",
+  },
   container: {
     flexDirection: "column",
     justifyContent: "space-around",

@@ -17,3 +17,17 @@ export const setCourseInProgress = (courseInProgress) => {
     courseInProgress,
   };
 };
+
+export const createLecture = (lecture) => {
+  return {
+    type: "CREATE_LECTURE",
+    lecture,
+  };
+};
+
+export const setAttendanceToken = (attendanceToken) => {
+  return {
+    type: "SET_ATTENDANCE_TOKEN",
+    attendanceToken,
+  };
+};

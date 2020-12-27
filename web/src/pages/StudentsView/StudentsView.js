@@ -36,7 +36,7 @@ const StudentsView = () => {
         </Button>
         <Grid item>
           <Paper
-            className={`${fixedHeightPaper} ${classes.Paper}`}
+            className={`${fixedHeightPaper} ${classes.Paper} ${classes.grid}`}
             elevation={3}
           >
             {allStudents && <StudentsDataTable students={allStudents} />}

@@ -1,21 +1,20 @@
-const onConnect = require("./onConnect");
-const onSelectedLectureType = require("./onSelectedLectureType");
-const onSignOutTablet = require("./onSignOutTablet");
+const tabletNamespace = require("./tablet");
+const teacherNamespace = require("./teacher");
 
 const websocket = (server) => {
   global.io = require("socket.io")(server);
   console.log("WebSocket server started!");
 
-  global.io.on("connect", (socket) => {
-    // When tablet app connects, generate random token and send it back
-    onConnect(socket);
+  const teacher = io.of("/teacher");
+  const tablet = io.of("/tablet");
 
-    // When teacher selects the lecture type on the tablet, notify his mobile app
-    socket.on("selectedLectureType", (data) => onSelectedLectureType(data));
+  // Namespace to which the teacher connects using mobile app
+  // Contains logic of all socket messages that are sent from the mobile application by the teacher
+  teacher.on("connection", teacherNamespace);
 
-    // When teacher signs out of the tablet
-    socket.on("signOutTablet", (data) => onSignOutTablet(data));
-  });
+  // Namespace to which the tablet application conencts to
+  // Contains logic for all socket messages that are sent from the tablet to the server.
+  tablet.on("connection", tabletNamespace);
 };
 
 module.exports = websocket;

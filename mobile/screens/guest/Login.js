@@ -10,11 +10,14 @@ import {
   ActivityIndicator,
   Alert,
 } from "react-native";
+
 import { Dialog, Portal, TextInput, Button, Provider as PaperProvider } from "react-native-paper";
 import { useDispatch } from "react-redux";
 
 import api from "../../utils/api";
 import { signIn } from "../../actions";
+import AnimatedCheckmark from "./components/AnimatedCheckmark";
+import AnimatedDotsLoader from "./components/AnimatedLoader";
 
 const Login = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -22,9 +25,10 @@ const Login = ({ navigation }) => {
   const [emailChangePassword, setEmailChangePassword] = useState("");
   const [password, setPassword] = useState("");
   const [showHidePassword, setShowHidePassword] = useState(false);
-
-  const [showLoadingIndicatorForgotPassword, setShowLoadingIndicatorForgotPassword] = useState(false);
   const [showLoadingIndicatorLogin, setShowLoadingIndicatorLogin] = useState(false);
+
+  const [animatedLoaderVisible, setAnimatedLoaderVisible] = useState(false);
+  const [animatedCheckmarkVisible, setAnimatedCheckMarkVisible] = useState(false);
   const [visible, toggleVisible] = useState(false);
 
   const handleShowHidePassword = () => {
@@ -34,26 +38,43 @@ const Login = ({ navigation }) => {
   const handleLoginRequest = () => {
     setShowLoadingIndicatorLogin(true);
 
-    setTimeout(() => {
-      setShowLoadingIndicatorLogin(false);
-      toggleVisible(false);
+    toggleVisible(false);
 
-      api
+    api
       .post("/user/login", { email, password })
-      .then(({ data }) => dispatch(signIn(data.user)))
-      .catch(() => Alert.alert("Invalid credentials!"));
-
-    }, 4000);
+      .then(({ data }) => {
+        console.log(data);
+        setShowLoadingIndicatorLogin(false);
+        dispatch(signIn(data.user));
+      })
+      .catch((error) => {
+        console.log(error);
+        setShowLoadingIndicatorLogin(false);
+        Alert.alert("Invalid credentials!");
+      });
   };
 
-  const handleSubmitChangePassword = () => {
-    setShowLoadingIndicatorForgotPassword(true);
-
-    setTimeout(() => {
-      setShowLoadingIndicatorForgotPassword(false);
-      toggleVisible(false);
-    }, 4000);
-
+  const handleResetPassword = () => {
+    setAnimatedLoaderVisible(true);
+    api
+      .post("/user/resetPassword", { email: emailChangePassword })
+      .then((data) => {
+        setAnimatedLoaderVisible(false);
+        console.log("DATA", data);
+        if (data.data.success == true) {
+          setAnimatedCheckMarkVisible(true);
+          setTimeout(() => {
+            setAnimatedCheckMarkVisible(false);
+            toggleVisible(false);
+          }, 1500);
+        }
+      })
+      .catch((error) => {
+        setAnimatedLoaderVisible(false);
+        if (error.response.status == 400) {
+          alert("There has been an error processing your request, please check your input!");
+        }
+      });
     //TO DO -> spajanje na backend
     console.log("Sending request for changing password...");
   };
@@ -67,7 +88,7 @@ const Login = ({ navigation }) => {
               <Image style={styles.logo} source={require("../../assets/logo.png")} />
             </View>
 
-            <View style={{ marginTop: 60 }}>
+            <View>
               <TextInput style={styles.textInput} label="E-mail" value={email} mode="outlined" onChangeText={(email) => setEmail(email)} />
 
               <TextInput
@@ -92,10 +113,7 @@ const Login = ({ navigation }) => {
                 SIGN IN
               </Button>
 
-              <View style={{marginTop: 10}}>
-                {showLoadingIndicatorLogin && <ActivityIndicator size="large" color="#0000ff" />}
-              </View>
-
+              <View style={{ marginTop: 10 }}>{showLoadingIndicatorLogin && <ActivityIndicator size="large" color="#0000ff" />}</View>
             </View>
 
             <View style={styles.textContainer}>
@@ -122,16 +140,17 @@ const Login = ({ navigation }) => {
                       marginRight: 20,
                     }}
                   >
-                    <Dialog.Title>Change password</Dialog.Title>
-                    {showLoadingIndicatorForgotPassword && <ActivityIndicator size="large" color="#0000ff" />}
+                    <Dialog.Title>Reset password</Dialog.Title>
                   </View>
                   <Dialog.Content>
                     <TextInput
-                      label="Enter your E-mail"
+                      label="Enter your email"
                       value={emailChangePassword}
                       mode="outlined"
                       onChangeText={(emailChangePassword) => setEmailChangePassword(emailChangePassword)}
                     />
+                    {animatedLoaderVisible && <AnimatedDotsLoader />}
+                    {animatedCheckmarkVisible && <AnimatedCheckmark />}
                   </Dialog.Content>
                   <Dialog.Actions>
                     <Button
@@ -142,7 +161,7 @@ const Login = ({ navigation }) => {
                     >
                       Close
                     </Button>
-                    <Button onPress={() => handleSubmitChangePassword()}>Reset Password</Button>
+                    <Button onPress={() => handleResetPassword()}>Reset Password</Button>
                   </Dialog.Actions>
                 </Dialog>
               </Portal>
@@ -189,8 +208,8 @@ const styles = StyleSheet.create({
   },
 
   loginIndicator: {
-    position: "absolute"
-  }
+    position: "absolute",
+  },
 });
 
 export default Login;
