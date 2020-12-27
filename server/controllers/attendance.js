@@ -1,4 +1,12 @@
+const jwt = require("jsonwebtoken");
 const Attendance = require("../models/attendance");
+const User = require("../models/user");
+const moment = require("moment");
+const attendance = require("../models/attendance");
+
+function getDayName(date, locale) {
+  return date.toLocaleDateString(locale, { weekday: "long" }).toUpperCase();
+}
 
 exports.add = async (req, res) => {
   try {
@@ -11,8 +19,35 @@ exports.add = async (req, res) => {
 
 exports.getAll = async (req, res) => {
   try {
-    const allAttendances = await Attendance.find();
-    const data = allAttendances.map((attendance) => attendance.toJSON());
+    const token = req.header("Authorization").replace("Bearer ", "");
+    let studentTokenData = jwt.verify(token, process.env.JWT_SECRET);
+
+    let student = await User.find({ jmbag: studentTokenData.jmbag });
+
+    const allAttendances = await Attendance.find({
+      user: student[0]._id,
+    }).populate({
+      path: "lecture",
+      populate: {
+        path: "course",
+      },
+    });
+
+    const data = allAttendances
+      .map((attendance) => {
+        if (attendance.lecture !== null && attendance.lecture !== undefined) {
+          return {
+            id: attendance._id,
+            date: moment(attendance.modifiedAt).format("DD"),
+            month: moment(attendance.modifiedAt).format("MMMM").substr(0, 3),
+            day: getDayName(attendance.modifiedAt, "en-US"),
+            courseName: attendance.lecture.course.name,
+            attendanceTime: moment(attendance.modifiedAt).format("HH:mm"),
+            present: true,
+          };
+        }
+      })
+      .filter((item) => item !== undefined);
 
     res.status(200).json({ success: true, data });
   } catch (error) {
@@ -29,7 +64,11 @@ exports.markAttendance = async (req, res) => {
     if (alreadyMarked) return res.status(400).json({ success: false });
 
     // Update attendance document with the code
-    const attendance = await Attendance.findOneAndUpdate({ qrCode, user: null }, { $set: { user, modifiedAt: Date.now() } }, { new: true });
+    const attendance = await Attendance.findOneAndUpdate(
+      { qrCode, user: null },
+      { $set: { user, modifiedAt: Date.now() } },
+      { new: true }
+    );
 
     // If the update didn't succeed (the qrCode is either invalid or it has been already used) return 400
     if (!attendance) return res.status(400).json({ success: false });
@@ -38,11 +77,20 @@ exports.markAttendance = async (req, res) => {
     const newAttendance = await new Attendance({ lecture }).save();
 
     // Send the new attendance qrCode to the tablet
-    global.io.of("/tablet").to(attendanceToken).emit("attendance code", { code: newAttendance.qrCode });
+    global.io
+      .of("/tablet")
+      .to(attendanceToken)
+      .emit("attendance code", { code: newAttendance.qrCode });
 
     // Send the attendance to the mobile app along with the user data who marked the attendance
-    const markedAttendance = await Attendance.findById(attendance.id).populate("user", "name surname");
-    global.io.of("/teacher").to(attendanceToken).emit("new attendance", markedAttendance);
+    const markedAttendance = await Attendance.findById(attendance.id).populate(
+      "user",
+      "name surname"
+    );
+    global.io
+      .of("/teacher")
+      .to(attendanceToken)
+      .emit("new attendance", markedAttendance);
 
     res.status(200).json({ success: true });
   } catch (error) {
