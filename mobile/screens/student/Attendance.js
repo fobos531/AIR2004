@@ -9,9 +9,12 @@ import AttendanceItem from "../student/components/AttendanceItem";
 
 import api from "../../utils/api";
 
+const moment = require("moment");
+
 const Attendance = () => {
   const [selectedFilter, setSelectedFilter] = useState("Courses");
   const [attendanceData, setAttendanceData] = useState([]);
+  const [filteredData, setFilteredData] = useState([]);
 
   const user = useSelector((state) => state);
 
@@ -25,7 +28,102 @@ const Attendance = () => {
       })
       .then(({ data }) => setAttendanceData(data.data))
       .catch((error) => console.log(error));
+
+    setFilteredData(attendanceData);
   }, []);
+
+  const onChangeFilter = (filterValue) => {
+    setSelectedFilter(filterValue);
+
+    switch (filterValue) {
+      case "Courses":
+        console.log("Courses.");
+
+        setFilteredData(
+          attendanceData.sort((a, b) =>
+            moment(a.fullDate).isBefore(b.fullDate)
+              ? -1
+              : moment(a.fullDate).isAfter(b.fullDate)
+              ? 1
+              : 0
+          )
+        );
+        break;
+
+      case "Attended":
+        console.log("Attended.");
+        setFilteredData(
+          attendanceData
+            .filter((item) => item.present === true)
+            .sort((a, b) =>
+              moment(a.fullDate).isBefore(b.fullDate)
+                ? -1
+                : moment(a.fullDate).isAfter(b.fullDate)
+                ? 1
+                : 0
+            )
+        );
+        break;
+
+      case "Missed":
+        console.log("Missed.");
+        setFilteredData(
+          attendanceData
+            .filter((item) => item.present === false)
+            .sort((a, b) =>
+              moment(a.fullDate).isBefore(b.fullDate)
+                ? -1
+                : moment(a.fullDate).isAfter(b.fullDate)
+                ? 1
+                : 0
+            )
+        );
+        break;
+
+      case "LastWeek": {
+        console.log("LastWeek!");
+
+        setFilteredData(
+          attendanceData
+            .filter(
+              (item) =>
+                moment().subtract(7, "days").isBefore(item.fullDate) &&
+                moment().isAfter(item.fullDate)
+            )
+            .sort((a, b) =>
+              moment(a.fullDate).isBefore(b.fullDate)
+                ? -1
+                : moment(a.fullDate).isAfter(b.fullDate)
+                ? 1
+                : 0
+            )
+        );
+
+        break;
+      }
+
+      case "LastMonth":
+        console.log("LastMonth.");
+
+        setFilteredData(
+          attendanceData
+            .filter(
+              (item) =>
+                moment().isSame(item.fullDate, "month") &&
+                moment().isSame(item.fullDate, "year")
+            )
+            .sort((a, b) =>
+              moment(a.fullDate).isBefore(b.fullDate)
+                ? -1
+                : moment(a.fullDate).isAfter(b.fullDate)
+                ? 1
+                : 0
+            )
+        );
+
+        break;
+    }
+  };
 
   return (
     <View style={{ margin: 12, marginBottom: 60 }}>
@@ -46,8 +144,8 @@ const Attendance = () => {
             selectedValue={selectedFilter}
             style={{ height: 50, width: 160 }}
             mode={"dialog"}
-            onValueChange={(itemValue, itemIndex) => {
-              setSelectedFilter(itemValue);
+            onValueChange={(itemValue) => {
+              onChangeFilter(itemValue);
             }}
           >
             <Picker.Item label="Courses" value="Courses" />
@@ -59,10 +157,10 @@ const Attendance = () => {
         </View>
       </View>
 
-      {attendanceData.length !== 0 ? (
+      {filteredData.length !== 0 ? (
         <FlatList
           keyExtractor={(item) => item.id}
-          data={attendanceData}
+          data={filteredData}
           renderItem={({ item }) => <AttendanceItem item={item} />}
         />
       ) : (

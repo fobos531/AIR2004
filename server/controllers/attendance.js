@@ -38,6 +38,7 @@ exports.getAll = async (req, res) => {
         if (attendance.lecture !== null && attendance.lecture !== undefined) {
           return {
             id: attendance._id,
+            fullDate: attendance.modifiedAt,
             date: moment(attendance.modifiedAt).format("DD"),
             month: moment(attendance.modifiedAt).format("MMMM").substr(0, 3),
             day: getDayName(attendance.modifiedAt, "en-US"),
