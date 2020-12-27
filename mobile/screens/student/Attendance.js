@@ -50,11 +50,11 @@ const Attendance = () => {
               setSelectedFilter(itemValue);
             }}
           >
-            <Picker.Item label="Courses" value="courses" />
-            <Picker.Item label="Attended" value="attended" />
-            <Picker.Item label="Missed" value="missed" />
-            <Picker.Item label="Last week" value="lastWeek" />
-            <Picker.Item label="Last month" value="lastMonth" />
+            <Picker.Item label="Courses" value="Courses" />
+            <Picker.Item label="Attended" value="Attended" />
+            <Picker.Item label="Missed" value="Missed" />
+            <Picker.Item label="Last week" value="LastWeek" />
+            <Picker.Item label="Last month" value="LastMonth" />
           </Picker>
         </View>
       </View>

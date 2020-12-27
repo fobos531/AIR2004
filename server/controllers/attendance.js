@@ -42,7 +42,9 @@ exports.getAll = async (req, res) => {
             month: moment(attendance.modifiedAt).format("MMMM").substr(0, 3),
             day: getDayName(attendance.modifiedAt, "en-US"),
             courseName: attendance.lecture.course.name,
-            attendanceTime: moment(attendance.modifiedAt).format("HH:mm"),
+            attendanceTime: moment(attendance.modifiedAt)
+              .subtract(1, "hours")
+              .format("HH:mm"),
             present: true,
           };
         }
