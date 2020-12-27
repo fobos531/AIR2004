@@ -65,7 +65,6 @@ const QR = ({ navigation }) => {
           duration: 7000,
           icon: "danger",
         });
-        console.log(error);
       })
       .finally(() => {
         navigation.pop();
