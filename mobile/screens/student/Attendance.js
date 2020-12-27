@@ -26,10 +26,19 @@ const Attendance = () => {
           "Content-Type": "application/json",
         },
       })
-      .then(({ data }) => setAttendanceData(data.data))
+      .then(({ data }) => {
+        setAttendanceData(data.data);
+        setFilteredData(
+          data.data.sort((a, b) =>
+            moment(a.fullDate).isBefore(b.fullDate)
+              ? -1
+              : moment(a.fullDate).isAfter(b.fullDate)
+              ? 1
+              : 0
+          )
+        );
+      })
       .catch((error) => console.log(error));
-
-    setFilteredData(attendanceData);
   }, []);
 
   const onChangeFilter = (filterValue) => {

@@ -18,6 +18,8 @@ import QR from "../screens/student/QR";
 import * as Biometrics from "../utils/biometrics";
 import BiometricAuthenticationDialog from "../screens/common/components/BiometricAuthenticationDialog";
 
+import CourseStatistics from "../screens/student/CourseStatistics";
+
 const Stack = createStackNavigator();
 
 const Tabs = createMaterialBottomTabNavigator();
@@ -30,7 +32,9 @@ const StudentTabNavigation = () => {
         component={Dashboard}
         options={{
           tabBarLabel: "Dashboard",
-          tabBarIcon: ({ color }) => <FontAwesomeIcons name="home" color={color} size={22} />,
+          tabBarIcon: ({ color }) => (
+            <FontAwesomeIcons name="home" color={color} size={22} />
+          ),
         }}
       />
 
@@ -39,7 +43,9 @@ const StudentTabNavigation = () => {
         component={Attendance}
         options={{
           tabBarLabel: "Attendance",
-          tabBarIcon: ({ color }) => <FontAwesomeIcons name="list" color={color} size={22} />,
+          tabBarIcon: ({ color }) => (
+            <FontAwesomeIcons name="list" color={color} size={22} />
+          ),
         }}
       />
 
@@ -48,7 +54,9 @@ const StudentTabNavigation = () => {
         component={Statistics}
         options={{
           tabBarLabel: "Statistics",
-          tabBarIcon: ({ color }) => <FontAwesomeIcons name="chart-pie" color={color} size={22} />,
+          tabBarIcon: ({ color }) => (
+            <FontAwesomeIcons name="chart-pie" color={color} size={22} />
+          ),
         }}
       />
     </Tabs.Navigator>
@@ -125,7 +133,13 @@ const Student = ({ navigation }) => {
             headerTintColor: "white",
             headerStyle: { backgroundColor: "#6202EE" },
             headerRight: () => (
-              <View style={{ marginRight: 12, display: "flex", flexDirection: "row" }}>
+              <View
+                style={{
+                  marginRight: 12,
+                  display: "flex",
+                  flexDirection: "row",
+                }}
+              >
                 <MaterialIcons
                   name="settings"
                   size={26}
@@ -135,7 +149,12 @@ const Student = ({ navigation }) => {
                   }}
                 />
                 <BlankSpacer width={20} />
-                <MaterialIcons name="logout" size={26} color={"white"} onPress={() => dispatch(signOut())} />
+                <MaterialIcons
+                  name="logout"
+                  size={26}
+                  color={"white"}
+                  onPress={() => dispatch(signOut())}
+                />
               </View>
             ),
           })}
@@ -157,6 +176,35 @@ const Student = ({ navigation }) => {
             headerTintColor: "white",
             headerStyle: { backgroundColor: "#6202EE" },
           }}
+        />
+        <Stack.Screen
+          name="Statistics"
+          component={StudentTabNavigation}
+          options={({ route }) => ({
+            headerTitle: getHeaderTitle(route),
+            headerTintColor: "white",
+            headerStyle: { backgroundColor: "#6202EE" },
+            headerRight: () => (
+              <View style={{ marginRight: 15 }}>
+                <MaterialIcons
+                  name="logout"
+                  size={26}
+                  color={"white"}
+                  onPress={() => dispatch(signOut())}
+                />
+              </View>
+            ),
+          })}
+        />
+
+        <Stack.Screen
+          name="CourseStatistics"
+          component={CourseStatistics}
+          options={({ route }) => ({
+            headerTitle: "Statistics: " + route.params.selectedCourse,
+            headerTintColor: "white",
+            headerStyle: { backgroundColor: "#6202EE" },
+          })}
         />
       </Stack.Navigator>
     );

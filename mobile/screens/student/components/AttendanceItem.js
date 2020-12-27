@@ -1,5 +1,5 @@
 import React from "react";
-import { View, StyleSheet } from "react-native";
+import { View } from "react-native";
 import { Card, Paragraph } from "react-native-paper";
 import Feather from "react-native-vector-icons/Feather";
 
@@ -61,6 +61,10 @@ const AttendanceItem = ({ item }) => {
             <View style={{ position: "absolute", right: 10, top: 7 }}>
               {item.present && <Feather name="check-circle" size={30} />}
               {!item.present && <Feather name="x-circle" size={30} />}
+            </View>
+
+            <View style={{ position: "absolute", right: 10, bottom: 7 }}>
+              <Paragraph>{item.lectureType}</Paragraph>
             </View>
           </Card.Content>
         </Card>
