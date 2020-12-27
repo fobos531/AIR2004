@@ -7,6 +7,7 @@ import TeachersView from "./pages/TeachersView/TeachersView";
 import TeachersViewAdd from "./pages/TeachersViewAdd/TeachersViewAdd";
 import CoursesView from "./pages/CoursesView/CoursesView";
 import CoursesViewAdd from "./pages/CoursesViewAdd/CoursesViewAdd";
+import CoursesViewEdit from "./pages/CoursesViewEdit/CoursesViewEdit";
 import LecturesView from "./pages/LecturesView/LecturesView";
 import LecturesViewAdd from "./pages/LecturesViewAdd/LecturesViewAdd";
 import Login from "./pages/Login/Login";
@@ -47,6 +48,11 @@ const App = () => {
         <PrivateRoute path="/courses/add">
           <Dashboard>
             <CoursesViewAdd />
+          </Dashboard>
+        </PrivateRoute>
+        <PrivateRoute path="/courses/edit">
+          <Dashboard>
+            <CoursesViewEdit />
           </Dashboard>
         </PrivateRoute>
         <PrivateRoute exact path="/lectures">

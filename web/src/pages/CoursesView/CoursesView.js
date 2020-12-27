@@ -6,7 +6,7 @@ import clsx from "clsx";
 import CoursesDataTable from "./components/CoursesDataTable";
 import api from "../../api/api";
 import { useStyles } from "./styles";
-import { useHistory } from "react-router-dom"
+import { useHistory } from "react-router-dom";
 
 const CoursesView = () => {
   const classes = useStyles();

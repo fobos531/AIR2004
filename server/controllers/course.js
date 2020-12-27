@@ -12,6 +12,17 @@ exports.add = async (req, res) => {
   }
 };
 
+exports.update = async (req, res) => {
+  try {
+    const course = await Course.findById(req.params.id);
+    Object.assign(course, req.body);
+    course.save();
+    res.status(200).json({ success: true, course });
+  } catch (error) {
+    res.status(400).json({ success: false, error });
+  }
+}
+
 exports.getAll = async (req, res) => {
   try {
     const allCourses = await Course.find();

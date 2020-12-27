@@ -43,8 +43,24 @@ router.get("/", courseController.getAll);
 
 /**
  * @swagger
+ * /course/:id
+ *  delete:
+ *    tags:
+ *    - "/course/"
+ *    summary: Delete course by id
  */
 
 router.delete("/:id", courseController.delete);
+
+/**
+ * @swagger
+ * /course/:id
+ *  update:
+ *    tags:
+ *    - "/course/"
+ *    summary: Update course by id
+ */
+
+router.post("/update/:id", courseController.update);
 
 module.exports = router;
