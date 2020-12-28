@@ -1,12 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  View,
-  StyleSheet,
-  ActivityIndicator,
-  FlatList,
-  ScrollView,
-  Dimensions,
-} from "react-native";
+import { View, StyleSheet, FlatList, ScrollView } from "react-native";
 import {
   Button,
   Text,
@@ -17,11 +10,13 @@ import {
   TextInput,
   Provider as PaperProvider,
   FAB,
-  Card,
 } from "react-native-paper";
 import { LineChart } from "react-native-chart-kit";
 import { useSelector } from "react-redux";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import { showMessage, hideMessage } from "react-native-flash-message";
+
+const moment = require("moment");
 
 import CourseItem from "../student/components/CourseItem";
 import AttendanceItem from "../student/components/AttendanceItem";
@@ -32,7 +27,7 @@ const theme = {
   ...DefaultTheme,
   colors: {
     ...DefaultTheme.colors,
-    surface: "rgb(238, 238, 238)",
+    surface: "rgb(255, 255, 255)",
   },
 };
 
@@ -54,11 +49,11 @@ const chartConfig = {
 };
 
 const Dashboard = ({ navigation }) => {
-  const [showLoadingIndicator, setShowLoadingIndicator] = useState(false);
   const [coursePasscode, setCoursePasscode] = useState("");
   const [visible, toggleVisible] = useState(false);
   const [enrolledCourses, setEnrolledCourses] = useState([]);
   const [refresh, setRefresh] = useState(false);
+  const [attendanceData, setAttendanceData] = useState([]);
 
   const user = useSelector((state) => state);
 
@@ -72,6 +67,32 @@ const Dashboard = ({ navigation }) => {
       })
       .then(({ data }) => {
         setEnrolledCourses(data.data.enrolledCourses);
+      })
+      .catch((error) => console.log(error));
+
+    api
+      .get("/attendance", {
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+          "Content-Type": "application/json",
+        },
+      })
+      .then(({ data }) => {
+        setAttendanceData(
+          data.data.filter((item) => {
+            moment().isSame(item.fullDate, "day") &&
+              moment().isSame(item.fullDate, "month") &&
+              moment()
+                .isSame(item.fullDate, "year")
+                .sort((a, b) =>
+                  moment(a.fullDate).isBefore(b.fullDate)
+                    ? -1
+                    : moment(a.fullDate).isAfter(b.fullDate)
+                    ? 1
+                    : 0
+                );
+          })
+        );
       })
       .catch((error) => console.log(error));
   }, []);
@@ -99,34 +120,47 @@ const Dashboard = ({ navigation }) => {
   };
 
   const handleSubmitAddCourse = () => {
-    setShowLoadingIndicator(true);
-
     const body = { passcode: coursePasscode };
 
-    setTimeout(() => {
-      setShowLoadingIndicator(false);
-      toggleVisible(false);
+    toggleVisible(false);
 
-      api
-        .post("/user/enroll", body, {
-          headers: {
-            Authorization: `Bearer ${user.token}`,
-            "Content-Type": "application/json",
-          },
-        })
-        .then(({ data }) => {
-          console.log("ADDED COURSE", data.data.course);
-          setEnrolledCourses(enrolledCourses.concat(data.data.course));
-        })
-        .catch((error) => console.log(error));
+    api
+      .post("/user/enroll", body, {
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+          "Content-Type": "application/json",
+        },
+      })
+      .then(({ data }) => {
+        console.log("ADDED COURSE", data.data.course);
+        toggleVisible(false);
+        setEnrolledCourses(enrolledCourses.concat(data.data.course));
+        showMessage({
+          message: "Thank you!",
+          description: `You have been successfully added to course ${data.data.course}!`,
+          type: "success",
+          duration: 5000,
+          icon: "success",
+        });
+      })
+      .catch((error) => {
+        console.log(error);
+        showMessage({
+          message: "Error occured!",
+          description:
+            "Please contact professor to add you manually or try again later!",
+          type: "danger",
+          duration: 5000,
+          icon: "danger",
+        });
+      });
 
-      setCoursePasscode("");
-    }, 4000);
+    setCoursePasscode("");
   };
 
   return (
     <PaperProvider>
-      <View style={styles.container}>
+      <ScrollView style={styles.container}>
         <Text style={styles.title}>
           Hi,{" "}
           <Text style={{ fontWeight: "bold" }}>
@@ -140,7 +174,7 @@ const Dashboard = ({ navigation }) => {
             style={{ ...styles.graphContainer, marginTop: 20 }}
             theme={theme}
           >
-            <ScrollView>
+            <ScrollView nestedScrollEnabled={true}>
               <Text
                 style={
                   (styles.font,
@@ -188,7 +222,11 @@ const Dashboard = ({ navigation }) => {
         </View>
 
         <View style={{ marginTop: 15 }}>
-          <Surface style={styles.graphContainer} theme={theme}>
+          <Surface
+            style={{ ...styles.graphContainer, height: 200 }}
+            theme={theme}
+            nestedScrollEnabled={true}
+          >
             <Text
               style={
                 (styles.font,
@@ -205,6 +243,7 @@ const Dashboard = ({ navigation }) => {
 
             {mockData.length !== 0 ? (
               <FlatList
+                nestedScrollEnabled={true}
                 keyExtractor={(item) => item.id}
                 data={mockData}
                 renderItem={({ item }) => <AttendanceItem item={item} />}
@@ -219,7 +258,11 @@ const Dashboard = ({ navigation }) => {
         </View>
 
         <View style={{ marginTop: 15 }}>
-          <Surface style={styles.graphContainer} theme={theme}>
+          <Surface
+            style={{ ...styles.graphContainer, height: 200, marginBottom: 100 }}
+            theme={theme}
+            nestedScrollEnabled={true}
+          >
             <Text
               style={
                 (styles.font,
@@ -236,6 +279,7 @@ const Dashboard = ({ navigation }) => {
 
             {enrolledCourses.length !== 0 ? (
               <FlatList
+                nestedScrollEnabled={true}
                 keyExtractor={(item) => item.id}
                 data={enrolledCourses}
                 extraData={enrolledCourses.length}
@@ -275,9 +319,6 @@ const Dashboard = ({ navigation }) => {
               }}
             >
               <Dialog.Title>Enter course join password:</Dialog.Title>
-              {showLoadingIndicator && (
-                <ActivityIndicator size="large" color="#0000ff" />
-              )}
             </View>
             <Dialog.Content>
               <TextInput
@@ -302,7 +343,7 @@ const Dashboard = ({ navigation }) => {
             </Dialog.Actions>
           </Dialog>
         </Portal>
-      </View>
+      </ScrollView>
 
       <FAB
         style={styles.fab}
@@ -321,6 +362,7 @@ const styles = StyleSheet.create({
     padding: "4%",
     width: "100%",
     height: "100%",
+    backgroundColor: "#fff",
   },
 
   title: {
@@ -330,7 +372,7 @@ const styles = StyleSheet.create({
 
   graphContainer: {
     marginTop: 5,
-    height: 150,
+    height: 300,
     elevation: 4,
   },
 
