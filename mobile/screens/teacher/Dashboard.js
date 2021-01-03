@@ -29,7 +29,7 @@ const Dashboard = ({ navigation }) => {
   }, [user.attendanceToken]);
 
   const handleSignOut = () => {
-    socket.current.emit("sign out tablet", { attendanceToken: user.attendanceToken });
+    socket.current.emit("sign out tablet", { attendanceToken: user.attendanceToken, lecture: user.courseSelectedOnTablet.lecture.id });
     dispatch(signOutTablet());
   };
 
