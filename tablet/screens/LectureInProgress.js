@@ -1,17 +1,22 @@
 import React, { useState, useEffect } from "react";
-import AnimatedLoader from "react-native-animated-loader";
 import { View, StyleSheet, Dimensions, Text } from "react-native";
+import AnimatedLoader from "react-native-animated-loader";
 import { useSelector } from "react-redux";
 import { Headline } from "react-native-paper";
 import QRCode from "react-native-qrcode-svg";
+
 import AnimatedCheckmark from "../components/AnimatedCheckmark";
 
-const LectureInProgress = ({ courseName, lectureType, socket, tabletToken }) => {
+const LectureInProgress = ({ courseName, lectureType, tabletToken }) => {
+  const [successfulScan, setSuccessfulScan] = useState(false);
+  const [firstQR, setFirstQR] = useState(true);
   const user = useSelector((state) => state);
 
-  const [successfulScan, setSuccessfulScan] = useState(false);
-
   useEffect(() => {
+    // If this is the first shown QR code, don't show the success animation
+    if (firstQR && tabletToken.code) return setFirstQR(false);
+
+    // If the QR code has been regenerated, it means the previous one has been successfuly scanned - show the success animation
     setSuccessfulScan(true);
     setTimeout(() => setSuccessfulScan(false), 2000);
   }, [tabletToken]);
