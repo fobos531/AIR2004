@@ -1,17 +1,42 @@
 import React, { useState } from "react";
-import { StyleSheet, View, Text, TouchableWithoutFeedback, TouchableOpacity, Keyboard, Image, Alert } from "react-native";
-import { Provider as PaperProvider, TextInput, Button } from "react-native-paper";
-
+import { StyleSheet, View, Text, TouchableWithoutFeedback, TouchableOpacity, Keyboard, Image, Alert, ScrollView } from "react-native";
+import { TextInput, Button, Provider as PaperProvider, HelperText } from "react-native-paper";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 import api from "../../utils/api";
 
+import PhoneInput from "phone-number-with-country-code";
+
+const RegistrationSchema = Yup.object({
+  email: Yup.string().email("Please enter a valid email!").required("This field is required!"),
+  name: Yup.string().required("This field is required!"),
+  surname: Yup.string().required("This field is required!"),
+  password: Yup.string().required("This field is required!"),
+  jmbag: Yup.string()
+    .matches(/^[0-9]*$/, "JMBAG must only contain numbers!")
+    .length(10, "JMBAG must be exactly 10 digits long!")
+    .required("This field is required!"),
+  phoneNumber: Yup.string()
+    .matches(/^[0-9]*$/, "Phone number must be in format 00385xxxxxxx")
+    .min(10, "Phone number must be min 10 digits long!")
+    .max(15, "Phone number may be max 15 digits long!")
+    .required("This field is required!"),
+});
+
 const Registration = ({ navigation }) => {
-  const [input, setInput] = useState({
-    email: "",
-    name: "",
-    surname: "",
-    password: "",
-    jmbag: "",
-    phoneNumber: "",
+  const formik = useFormik({
+    initialValues: {
+      email: "",
+      name: "",
+      surname: "",
+      password: "",
+      jmbag: "",
+      phoneNumber: "",
+    },
+    validationSchema: RegistrationSchema,
+    onSubmit: (values) => {
+      handleRegistrationRequest(values);
+    },
   });
 
   const [showHidePassword, setShowHidePassword] = useState(false);
@@ -20,9 +45,9 @@ const Registration = ({ navigation }) => {
     setShowHidePassword(!showHidePassword);
   };
 
-  const handleRegistrationRequest = () => {
+  const handleRegistrationRequest = (values) => {
     api
-      .post("/user/student/register", input)
+      .post("/user/student/register", values)
       .then(({ data }) => {
         if (data.success) {
           Alert.alert("Succcessfully created a new account!");
@@ -31,89 +56,115 @@ const Registration = ({ navigation }) => {
       })
       .catch((error) => {
         console.log(error.response);
-        Alert.alert("Error");
+        Alert.alert("There was an issue registering your account. Please try again.");
       });
   };
 
   return (
     <PaperProvider>
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <View style={styles.container}>
-          <View>
-            <Image style={styles.logo} source={require("../../assets/logo.png")} />
+      <ScrollView>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <View style={styles.container}>
+            <View>
+              <Image style={styles.logo} source={require("../../assets/logo.png")} />
+            </View>
+
+            <View style={{ marginTop: 60 }}>
+              <TextInput
+                style={styles.textInput}
+                label="First Name"
+                value={formik.name}
+                mode="outlined"
+                onChangeText={formik.handleChange("name")}
+                onBlur={formik.handleBlur("name")}
+              />
+              <HelperText type="error" visible={formik.errors.name}>
+                {formik.errors.name}
+              </HelperText>
+
+              <TextInput
+                style={styles.textInput}
+                label="Last name"
+                value={formik.surname}
+                mode="outlined"
+                onChangeText={formik.handleChange("surname")}
+                onBlur={formik.handleBlur("surname")}
+              />
+              <HelperText type="error" visible={formik.errors.surname}>
+                {formik.errors.surname}
+              </HelperText>
+
+              <TextInput
+                style={styles.textInput}
+                label="E-mail"
+                value={formik.email}
+                mode="outlined"
+                onChangeText={formik.handleChange("email")}
+                onBlur={formik.handleBlur("email")}
+              />
+              <HelperText type="error" visible={formik.errors.email}>
+                {formik.errors.email}
+              </HelperText>
+
+              <TextInput
+                style={styles.textInput}
+                secureTextEntry={showHidePassword === true ? false : true}
+                label="Password"
+                value={formik.password}
+                mode="outlined"
+                onChangeText={formik.handleChange("password")}
+                onBlur={formik.handleBlur("password")}
+                right={
+                  <TextInput.Icon
+                    style={styles.eyeIcon}
+                    name={showHidePassword === true ? "eye" : "eye-off"}
+                    onPress={handleShowHidePassword}
+                  />
+                }
+              />
+              <HelperText type="error" visible={formik.errors.password}>
+                {formik.errors.password}
+              </HelperText>
+
+              <TextInput
+                style={styles.textInput}
+                label="JMBAG"
+                value={formik.jmbag}
+                mode="outlined"
+                onChangeText={formik.handleChange("jmbag")}
+                onBlur={formik.handleBlur("jmbag")}
+              />
+              <HelperText type="error" visible={formik.errors.jmbag}>
+                {formik.errors.jmbag}
+              </HelperText>
+
+              <TextInput
+                style={styles.textInput}
+                label="Phone Number"
+                value={formik.phoneNumber}
+                mode="outlined"
+                onChangeText={formik.handleChange("phoneNumber")}
+                onBlur={formik.handleBlur("phoneNumber")}
+              />
+              <HelperText type="error" visible={formik.errors.phoneNumber}>
+                {formik.errors.phoneNumber}
+              </HelperText>
+            </View>
+
+            <View style={styles.signButton}>
+              <Button contentStyle={{ height: 46 }} mode="contained" onPress={formik.handleSubmit}>
+                SIGN UP
+              </Button>
+            </View>
+
+            <View style={styles.textContainer}>
+              <TouchableOpacity onPress={() => navigation.push("Login")}>
+                <Text>Already have an account?</Text>
+              </TouchableOpacity>
+            </View>
           </View>
-
-          <View style={{ marginTop: 60 }}>
-            <TextInput
-              style={styles.textInput}
-              label="First Name"
-              value={input.name}
-              mode="outlined"
-              onChangeText={(name) => setInput((old) => ({ ...old, name }))}
-            />
-
-            <TextInput
-              style={styles.textInput}
-              label="Surname"
-              value={input.surname}
-              mode="outlined"
-              onChangeText={(surname) => setInput((old) => ({ ...old, surname }))}
-            />
-
-            <TextInput
-              style={styles.textInput}
-              label="E-mail"
-              value={input.email}
-              mode="outlined"
-              onChangeText={(email) => setInput((old) => ({ ...old, email }))}
-            />
-
-            <TextInput
-              style={styles.textInput}
-              secureTextEntry={showHidePassword === true ? false : true}
-              label="Password"
-              value={input.password}
-              mode="outlined"
-              onChangeText={(password) => setInput((old) => ({ ...old, password }))}
-              right={
-                <TextInput.Icon
-                  style={styles.eyeIcon}
-                  name={showHidePassword === true ? "eye" : "eye-off"}
-                  onPress={handleShowHidePassword}
-                />
-              }
-            />
-
-            <TextInput
-              style={styles.textInput}
-              label="JMBAG"
-              value={input.jmbag}
-              mode="outlined"
-              onChangeText={(jmbag) => setInput((old) => ({ ...old, jmbag }))}
-            />
-
-            <TextInput
-              style={styles.textInput}
-              label="Phone Number"
-              value={input.phoneNumber}
-              mode="outlined"
-              onChangeText={(phoneNumber) => setInput((old) => ({ ...old, phoneNumber }))}
-            />
-          </View>
-
-          <View style={styles.signButton}>
-            <Button contentStyle={{ height: 46 }} mode="contained" onPress={handleRegistrationRequest}>
-              SIGN UP
-            </Button>
-          </View>
-
-          <View style={styles.textContainer}>
-            <TouchableOpacity onPress={() => navigation.push("Login")}>
-              <Text>Already have an account?</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </TouchableWithoutFeedback>
+        </TouchableWithoutFeedback>
+      </ScrollView>
     </PaperProvider>
   );
 };

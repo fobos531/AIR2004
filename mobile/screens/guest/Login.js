@@ -10,20 +10,24 @@ import {
   ActivityIndicator,
   Alert,
 } from "react-native";
-
-import { Dialog, Portal, TextInput, Button, Provider as PaperProvider } from "react-native-paper";
 import { useDispatch } from "react-redux";
+import { Dialog, Portal, HelperText, TextInput, Button, Provider as PaperProvider } from "react-native-paper";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 
 import api from "../../utils/api";
 import { signIn } from "../../actions";
 import AnimatedCheckmark from "./components/AnimatedCheckmark";
 import AnimatedDotsLoader from "./components/AnimatedLoader";
 
+const LoginSchema = Yup.object({
+  email: Yup.string().email("Please enter a valid email!").required("This field is required!"),
+  password: Yup.string().required("This field is required!"),
+});
+
 const Login = ({ navigation }) => {
   const dispatch = useDispatch();
-  const [email, setEmail] = useState("");
   const [emailChangePassword, setEmailChangePassword] = useState("");
-  const [password, setPassword] = useState("");
   const [showHidePassword, setShowHidePassword] = useState(false);
   const [showLoadingIndicatorLogin, setShowLoadingIndicatorLogin] = useState(false);
 
@@ -31,13 +35,24 @@ const Login = ({ navigation }) => {
   const [animatedCheckmarkVisible, setAnimatedCheckMarkVisible] = useState(false);
   const [visible, toggleVisible] = useState(false);
 
+  const formik = useFormik({
+    initialValues: {
+      email: "",
+      password: "",
+    },
+    validationSchema: LoginSchema,
+    onSubmit: (values) => {
+      handleLoginRequest(values);
+    },
+  });
+
   const handleShowHidePassword = () => {
     setShowHidePassword(!showHidePassword);
   };
 
-  const handleLoginRequest = () => {
+  const handleLoginRequest = (values) => {
+    const { email, password } = values;
     setShowLoadingIndicatorLogin(true);
-
     toggleVisible(false);
 
     api
@@ -75,8 +90,6 @@ const Login = ({ navigation }) => {
           alert("There has been an error processing your request, please check your input!");
         }
       });
-    //TO DO -> spajanje na backend
-    console.log("Sending request for changing password...");
   };
 
   return (
@@ -89,15 +102,26 @@ const Login = ({ navigation }) => {
             </View>
 
             <View>
-              <TextInput style={styles.textInput} label="E-mail" value={email} mode="outlined" onChangeText={(email) => setEmail(email)} />
+              <TextInput
+                style={styles.textInput}
+                label="E-mail"
+                value={formik.email}
+                mode="outlined"
+                onChangeText={formik.handleChange("email")}
+                onBlur={formik.handleBlur("email")}
+              />
+              <HelperText type="error" visible={formik.errors.email}>
+                {formik.errors.email}
+              </HelperText>
 
               <TextInput
                 style={styles.textInput}
                 secureTextEntry={showHidePassword === true ? false : true}
                 label="Password"
-                value={password}
+                value={formik.password}
                 mode="outlined"
-                onChangeText={(password) => setPassword(password)}
+                onChangeText={formik.handleChange("password")}
+                onBlur={formik.handleBlur("password")}
                 right={
                   <TextInput.Icon
                     style={styles.eyeIcon}
@@ -106,10 +130,13 @@ const Login = ({ navigation }) => {
                   />
                 }
               />
+              <HelperText type="error" visible={formik.errors.password}>
+                {formik.errors.password}
+              </HelperText>
             </View>
 
             <View style={styles.signButton}>
-              <Button contentStyle={{ height: 46 }} mode="contained" onPress={handleLoginRequest}>
+              <Button contentStyle={{ height: 46 }} mode="contained" onPress={formik.handleSubmit}>
                 SIGN IN
               </Button>
 
