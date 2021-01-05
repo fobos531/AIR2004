@@ -46,8 +46,6 @@ const Attendance = () => {
 
     switch (filterValue) {
       case "Courses":
-        console.log("Courses.");
-
         setFilteredData(
           attendanceData.sort((a, b) =>
             moment(a.fullDate).isBefore(b.fullDate)
@@ -60,7 +58,6 @@ const Attendance = () => {
         break;
 
       case "Attended":
-        console.log("Attended.");
         setFilteredData(
           attendanceData
             .filter((item) => item.present === true)
@@ -75,7 +72,6 @@ const Attendance = () => {
         break;
 
       case "Missed":
-        console.log("Missed.");
         setFilteredData(
           attendanceData
             .filter((item) => item.present === false)
@@ -90,8 +86,6 @@ const Attendance = () => {
         break;
 
       case "LastWeek": {
-        console.log("LastWeek!");
-
         setFilteredData(
           attendanceData
             .filter(
@@ -112,8 +106,6 @@ const Attendance = () => {
       }
 
       case "LastMonth":
-        console.log("LastMonth.");
-
         setFilteredData(
           attendanceData
             .filter(
@@ -135,7 +127,7 @@ const Attendance = () => {
   };
 
   return (
-    <View style={{ margin: 12, marginBottom: 60 }}>
+    <View style={styles.container}>
       <View style={{ flexDirection: "row" }}>
         <Text
           style={{
@@ -184,9 +176,7 @@ const Attendance = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    margin: 12,
   },
 });
 
