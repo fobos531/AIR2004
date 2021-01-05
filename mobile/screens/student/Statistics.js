@@ -24,7 +24,7 @@ const theme = {
   ...DefaultTheme,
   colors: {
     ...DefaultTheme.colors,
-    surface: "rgb(238, 238, 238)",
+    surface: "rgb(255, 255, 255)",
   },
 };
 
@@ -50,7 +50,7 @@ const Statistics = ({ navigation }) => {
   return (
     <PaperProvider>
       <View style={styles.container}>
-        <View style={{ marginTop: 15 }}>
+        <View>
           <Surface style={styles.courseContainer} theme={theme}>
             <Text
               style={
@@ -87,7 +87,8 @@ const Statistics = ({ navigation }) => {
                           marginLeft: 10,
                           marginRight: 10,
                           marginTop: 7,
-                          marginBottom: 5,
+                          marginBottom: 7,
+                          elevation: 4,
                         }}
                       >
                         <Card.Content>
@@ -122,12 +123,6 @@ const styles = StyleSheet.create({
 
   courseContainer: {
     marginTop: 5,
-    elevation: 4,
-  },
-
-  attendanceContainer: {
-    marginTop: 15,
-    height: 150,
     elevation: 4,
   },
 
