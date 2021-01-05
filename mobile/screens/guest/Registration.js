@@ -5,8 +5,6 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import api from "../../utils/api";
 
-import PhoneInput from "phone-number-with-country-code";
-
 const RegistrationSchema = Yup.object({
   email: Yup.string().email("Please enter a valid email!").required("This field is required!"),
   name: Yup.string().required("This field is required!"),
