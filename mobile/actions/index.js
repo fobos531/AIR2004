@@ -36,3 +36,11 @@ export const startTracking = () => {
     type: "START_TRACKING",
   };
 };
+
+export const setTheme = (themePref) => {
+  console.log("THEME PREF ACTION", themePref);
+  return {
+    type: "SET_THEME",
+    themePref,
+  };
+};

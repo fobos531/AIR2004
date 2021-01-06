@@ -7,6 +7,7 @@ const initialState = {
   attendanceToken: null,
   courseSelectedOnTablet: null,
   trackingStarted: false,
+  themePreference: null,
 };
 
 const userReducer = (state = initialState, action) => {
@@ -45,6 +46,13 @@ const userReducer = (state = initialState, action) => {
       return {
         ...state,
         trackingStarted: true,
+      };
+
+    case "SET_THEME":
+      console.log("THEME REDUCER", action.themePref);
+      return {
+        ...state,
+        themePreference: action.themePref,
       };
 
     default:
