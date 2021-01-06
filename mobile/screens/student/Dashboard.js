@@ -1,5 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { View, StyleSheet, FlatList, ScrollView } from "react-native";
+import {
+  View,
+  StyleSheet,
+  FlatList,
+  ScrollView,
+  Dimensions,
+} from "react-native";
 import {
   Button,
   Text,
@@ -11,10 +17,10 @@ import {
   Provider as PaperProvider,
   FAB,
 } from "react-native-paper";
-import { LineChart } from "react-native-chart-kit";
+import { LineChart, BarChart } from "react-native-chart-kit";
 import { useSelector } from "react-redux";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import { showMessage, hideMessage } from "react-native-flash-message";
+import { showMessage } from "react-native-flash-message";
 
 const moment = require("moment");
 
@@ -31,29 +37,12 @@ const theme = {
   },
 };
 
-const chartConfig = {
-  backgroundColor: "#a1a09f",
-  backgroundGradientFrom: "#949494",
-  backgroundGradientTo: "#949494",
-  decimalPlaces: 2, // optional, defaults to 2dp
-  color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-  labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-  style: {
-    borderRadius: 16,
-  },
-  propsForDots: {
-    r: "6",
-    strokeWidth: "2",
-    stroke: "#757575",
-  },
-};
-
 const Dashboard = ({ navigation }) => {
   const [coursePasscode, setCoursePasscode] = useState("");
   const [visible, toggleVisible] = useState(false);
   const [enrolledCourses, setEnrolledCourses] = useState([]);
-  const [refresh, setRefresh] = useState(false);
-  const [attendanceData, setAttendanceData] = useState([]);
+  const [todayAttendanceData, setTodayAttendanceData] = useState([]);
+  const [lastWeekAttendanceData, setLastWeekAttendanceData] = useState([]);
 
   const user = useSelector((state) => state);
 
@@ -78,7 +67,7 @@ const Dashboard = ({ navigation }) => {
         },
       })
       .then(({ data }) => {
-        setAttendanceData(
+        setTodayAttendanceData(
           data.data.filter((item) => {
             moment().isSame(item.fullDate, "day") &&
               moment().isSame(item.fullDate, "month") &&
@@ -93,32 +82,35 @@ const Dashboard = ({ navigation }) => {
                 );
           })
         );
+
+        setLastWeekAttendanceData(
+          data.data.filter(
+            (item) =>
+              moment().subtract(7, "days").isBefore(item.fullDate) &&
+              moment().isAfter(item.fullDate)
+          )
+        );
       })
       .catch((error) => console.log(error));
   }, []);
 
-  const mockData = [
-    {
-      id: "1",
-      attendanceTime: "10:01",
-      courseName: "Software Analysis and Design",
-    },
-    {
-      id: "2",
-      attendanceTime: "13:48",
-      courseName: "Foreign Trade",
-    },
-  ];
-
   const graphData = {
-    labels: ["M", "T", "W", "T", "F"],
+    labels: ["MON", "TUE", "WED", "THU", "FRI"],
     datasets: [
       {
-        data: [4, 2, 5, 5, 1],
+        data: [
+          lastWeekAttendanceData.filter((item) => item.day === "MONDAY").length,
+          lastWeekAttendanceData.filter((item) => item.day === "TUESDAY")
+            .length,
+          lastWeekAttendanceData.filter((item) => item.day === "WEDNESDAY")
+            .length,
+          lastWeekAttendanceData.filter((item) => item.day === "THURSDAY")
+            .length,
+          lastWeekAttendanceData.filter((item) => item.day === "FRIDAY").length,
+        ],
       },
     ],
   };
-
   const handleSubmitAddCourse = () => {
     const body = { passcode: coursePasscode };
 
@@ -137,7 +129,7 @@ const Dashboard = ({ navigation }) => {
         setEnrolledCourses(enrolledCourses.concat(data.data.course));
         showMessage({
           message: "Thank you!",
-          description: `You have been successfully added to course ${data.data.course}!`,
+          description: `You have been successfully added to course ${data.data.course.name}!`,
           type: "success",
           duration: 5000,
           icon: "success",
@@ -174,50 +166,67 @@ const Dashboard = ({ navigation }) => {
             style={{ ...styles.graphContainer, marginTop: 20 }}
             theme={theme}
           >
-            <ScrollView nestedScrollEnabled={true}>
-              <Text
-                style={
-                  (styles.font,
-                  {
-                    marginLeft: 12,
-                    marginTop: 12,
-                    fontWeight: "bold",
-                    color: "#626262",
-                  })
-                }
+            <Text
+              style={
+                (styles.font,
+                {
+                  marginLeft: 12,
+                  marginTop: 12,
+                  fontWeight: "bold",
+                  color: "#626262",
+                })
+              }
+            >
+              Recent attendance
+            </Text>
+
+            <Text
+              style={
+                (styles.font, { marginLeft: 12, color: "#000", fontSize: 34 })
+              }
+            >
+              {lastWeekAttendanceData.length}
+            </Text>
+
+            <Text style={(styles.font, { marginLeft: 12, color: "#000" })}>
+              in the last week
+            </Text>
+
+            {lastWeekAttendanceData.length > 0 ? (
+              <View
+                style={{
+                  marginTop: 10,
+                  marginLeft: -10,
+                  padding: 10,
+                }}
               >
-                Recent attendance
-              </Text>
-
-              <Text
-                style={
-                  (styles.font, { marginLeft: 12, color: "#000", fontSize: 34 })
-                }
-              >
-                12
-              </Text>
-
-              <Text style={(styles.font, { marginLeft: 12, color: "#000" })}>
-                in the last week
-              </Text>
-
-              {mockData.length !== 0 ? (
-                <View style={{ margin: 10, padding: 10, alignItems: "center" }}>
-                  <LineChart
-                    data={graphData}
-                    width={280}
-                    height={165}
-                    chartConfig={chartConfig}
-                    bezier
-                  />
-                </View>
-              ) : (
-                <View style={{ marginLeft: 20 }}>
-                  <MaterialCommunityIcons name="cloud-sync-outline" size={26} />
-                  <Text style={styles.font}>No data found!</Text>
-                </View>
-              )}
-            </ScrollView>
+                <BarChart
+                  data={graphData}
+                  showBarTops={true}
+                  showValuesOnTopOfBars={true}
+                  withInnerLines={false}
+                  segments={5}
+                  withHorizontalLabels={false}
+                  width={320}
+                  height={220}
+                  withCustomBarColorFromData={true}
+                  flatColor={true}
+                  chartConfig={{
+                    backgroundGradientFrom: "#Ffffff",
+                    backgroundGradientTo: "#ffffff",
+                    data: graphData.datasets,
+                    decimalPlaces: 2,
+                    color: () => "#731ff0",
+                    labelColor: () => "#6a6a6a",
+                  }}
+                />
+              </View>
+            ) : (
+              <View style={{ marginLeft: 20 }}>
+                <MaterialCommunityIcons name="cloud-sync-outline" size={26} />
+                <Text style={styles.font}>No data found!</Text>
+              </View>
+            )}
           </Surface>
         </View>
 
@@ -241,7 +250,7 @@ const Dashboard = ({ navigation }) => {
               Your attendance today
             </Text>
 
-            {mockData.length !== 0 ? (
+            {todayAttendanceData.length !== 0 ? (
               <FlatList
                 nestedScrollEnabled={true}
                 keyExtractor={(item) => item.id}
@@ -372,7 +381,7 @@ const styles = StyleSheet.create({
 
   graphContainer: {
     marginTop: 5,
-    height: 300,
+    height: 350,
     elevation: 4,
   },
 

@@ -33,25 +33,23 @@ exports.getAll = async (req, res) => {
       },
     });
 
-    const data = allAttendances
-      .map((attendance) => {
-        if (attendance.lecture !== null && attendance.lecture !== undefined) {
-          return {
-            id: attendance._id,
-            fullDate: attendance.modifiedAt,
-            date: moment(attendance.modifiedAt).format("DD"),
-            month: moment(attendance.modifiedAt).format("MMMM").substr(0, 3),
-            day: getDayName(attendance.modifiedAt, "en-US"),
-            courseName: attendance.lecture.course.name,
-            lectureType: attendance.lecture.type,
-            attendanceTime: moment(attendance.modifiedAt)
-              .subtract(1, "hours")
-              .format("HH:mm"),
-            present: true,
-          };
-        }
-      })
-      .filter((item) => item !== undefined);
+    const data = allAttendances.map((attendance) => {
+      if (attendance.lecture !== null && attendance.lecture !== undefined) {
+        return {
+          id: attendance._id,
+          fullDate: attendance.modifiedAt,
+          date: moment(attendance.modifiedAt).format("DD"),
+          month: moment(attendance.modifiedAt).format("MMMM").substr(0, 3),
+          day: getDayName(attendance.modifiedAt, "en-US"),
+          courseName: attendance.lecture.course.name,
+          lectureType: attendance.lecture.type,
+          attendanceTime: moment(attendance.modifiedAt)
+            .subtract(1, "hours")
+            .format("HH:mm"),
+          present: true,
+        };
+      }
+    });
 
     res.status(200).json({ success: true, data });
   } catch (error) {
