@@ -108,10 +108,8 @@ const Attendance = () => {
       case "LastMonth":
         setFilteredData(
           attendanceData
-            .filter(
-              (item) =>
-                moment().isSame(item.fullDate, "month") &&
-                moment().isSame(item.fullDate, "year")
+            .filter((item) =>
+              moment().subtract(1, "month").isSame(item.fullDate, "month")
             )
             .sort((a, b) =>
               moment(a.fullDate).isBefore(b.fullDate)
