@@ -21,7 +21,6 @@ const Home = ({ socket, navigation }) => {
     api
       .get("/user/details")
       .then(({ data }) => {
-        console.log(data);
         setAssignedCourses(data.data.assignedCourses);
       })
       .catch((error) => {
