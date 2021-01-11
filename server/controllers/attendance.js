@@ -2,7 +2,6 @@ const jwt = require("jsonwebtoken");
 const Attendance = require("../models/attendance");
 const User = require("../models/user");
 const moment = require("moment");
-const attendance = require("../models/attendance");
 
 function getDayName(date, locale) {
   return date.toLocaleDateString(locale, { weekday: "long" }).toUpperCase();

@@ -17,10 +17,8 @@ const attendanceController = require("../controllers/attendance");
  *        type: "object"
  *        properties:
  *          lecture:
- *            type: "number"
+ *            type: "string"
  *          user:
- *            type: "number"
- *          qrCode:
  *            type: "string"
  *    responses:
  *      '200':
