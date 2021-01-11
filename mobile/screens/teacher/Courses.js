@@ -3,12 +3,15 @@ import { View, StyleSheet } from "react-native";
 import { Button, Text } from "react-native-paper";
 import { useDispatch } from "react-redux";
 
+import ManualAttendance from './components/ManualAttendance';
+
 const Courses = () => {
   const dispatch = useDispatch();
 
   return (
     <View style={styles.container}>
-      <Text>Courses screen.</Text>
+      {/* <Text>Courses screens.</Text> */}
+      <ManualAttendance />
     </View>
   );
 };
@@ -20,7 +23,6 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
     }
-    
 });
 
 export default Courses;
