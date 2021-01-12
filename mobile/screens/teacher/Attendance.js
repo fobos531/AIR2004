@@ -44,7 +44,7 @@ const Attendance = () => {
     return (
       <View style={styles.container}>
         <View>
-          <Text style={{ textAlign: "center", fontSize: 20, fontWeight: "500", marginBottom: 20 }}>Marking attendance is not stared!</Text>
+          <Text style={{ textAlign: "center", fontSize: 20, fontWeight: "500", marginBottom: 20 }}>Attendance marking is not started!</Text>
           <Text style={{ textAlign: "center" }}>
             Please go to the dashboard and click "Sign in on tablet" button to sign in on a tablet in a lecture room.
           </Text>

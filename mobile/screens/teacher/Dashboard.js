@@ -29,7 +29,7 @@ const Dashboard = ({ navigation }) => {
   }, [user.attendanceToken]);
 
   const handleSignOut = () => {
-    socket.current.emit("sign out tablet", { attendanceToken: user.attendanceToken });
+    socket.current.emit("sign out tablet", { attendanceToken: user.attendanceToken, lecture: user.courseSelectedOnTablet.lecture.id });
     dispatch(signOutTablet());
   };
 
@@ -96,8 +96,8 @@ const styles = StyleSheet.create({
   },
   fab: {
     position: "absolute",
-    marginBottom: 110,
-    marginRight: 20,
+    marginBottom: 105,
+    marginRight: 12,
     right: 0,
     bottom: 0,
   },

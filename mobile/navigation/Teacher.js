@@ -13,6 +13,8 @@ import Attendance from "../screens/teacher/Attendance";
 import Courses from "../screens/teacher/Courses";
 import Settings from "../screens/common/Settings";
 
+import NewCourse from "../screens/teacher/NewCourse";
+import EditCourse from "../screens/teacher/EditCourse";
 import QR from "../screens/teacher/QR";
 import * as Biometrics from "../utils/biometrics";
 import BiometricAuthenticationDialog from "../screens/common/components/BiometricAuthenticationDialog";
@@ -21,6 +23,26 @@ import { signOut } from "../actions";
 
 const Stack = createStackNavigator();
 const Tabs = createMaterialBottomTabNavigator();
+const CoursesStack = createStackNavigator();
+
+const CoursesStackNavigation = () => {
+
+  return( <CoursesStack.Navigator headerMode="none">
+            <CoursesStack.Screen 
+                name="Courses" 
+                component={Courses} 
+              />
+            <CoursesStack.Screen 
+                name="NewCourse" 
+                component={NewCourse} 
+              />
+            <CoursesStack.Screen 
+                name="EditCourse" 
+                component={EditCourse} 
+              />
+          </CoursesStack.Navigator>)
+
+}
 
 const TeacherTabNavigation = () => {
   return (
@@ -44,8 +66,8 @@ const TeacherTabNavigation = () => {
       />
 
       <Tabs.Screen
-        name="Courses"
-        component={Courses}
+        name="Courses" 
+        component={CoursesStackNavigation}
         options={{
           tabBarLabel: "Courses",
           tabBarIcon: ({ color }) => <FontAwesomeIcons name="book" color={color} size={22} />,

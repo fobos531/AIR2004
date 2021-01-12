@@ -1,29 +1,52 @@
-import React from "react";
-import { NavigationContainer, DefaultTheme } from "@react-navigation/native";
-import { createStore, applyMiddleware } from "redux";
-import { Provider } from "react-redux";
-import { Provider as PaperProvider } from "react-native-paper";
-import userReducer from "./reducers/user";
-import Navigation from "./navigation";
-import signInOutMiddleware from "./middleware/signInOut";
-
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { DarkTheme as NavigationDarkTheme, DefaultTheme as NavigationDefaultTheme, NavigationContainer } from "@react-navigation/native";
+import merge from "deepmerge";
+import React, { useEffect, useState } from "react";
+import { Appearance } from "react-native";
 import FlashMessage from "react-native-flash-message";
+import { DarkTheme as PaperDarkTheme, DefaultTheme as PaperDefaultTheme, Provider as PaperProvider } from "react-native-paper";
+import { Provider } from "react-redux";
+import { applyMiddleware, createStore } from "redux";
+import { setTheme } from "./actions/index";
+import signInOutMiddleware from "./middleware/signInOut";
+import Navigation from "./navigation";
+import userReducer from "./reducers/user";
+
+const CombinedDefaultTheme = merge(PaperDefaultTheme, NavigationDefaultTheme);
+const CombinedDarkTheme = merge(PaperDarkTheme, NavigationDarkTheme);
 
 const store = createStore(userReducer, applyMiddleware(signInOutMiddleware));
 
-const AppTheme = {
-  ...DefaultTheme,
-  colors: {
-    ...DefaultTheme.colors,
-    background: "rgb(255, 255, 255)",
-  },
-};
-
 const App = () => {
+  const [globalTheme, setGlobalTheme] = useState();
+
+  store.subscribe(() => {
+    if (store.getState().themePreference == null || store.getState().themePreference == "systemDefault") {
+      setGlobalTheme(Appearance.getColorScheme() == "light" ? CombinedDefaultTheme : CombinedDarkTheme);
+    } else if (store.getState().themePreference == "light") {
+      setGlobalTheme(CombinedDefaultTheme);
+    } else {
+      setGlobalTheme(CombinedDarkTheme);
+    }
+  });
+
+  useEffect(() => {
+    getTheme();
+  }, []);
+
+  const getTheme = async () => {
+    let themePref = null;
+    try {
+      themePref = await AsyncStorage.getItem("themePreference");
+      console.log("THEME PREF ASYNC STORAGE", themePref);
+      store.dispatch(setTheme(themePref));
+    } catch (e) {}
+  };
+
   return (
     <Provider store={store}>
-      <PaperProvider>
-        <NavigationContainer theme={AppTheme}>
+      <PaperProvider theme={globalTheme}>
+        <NavigationContainer theme={globalTheme}>
           <Navigation />
         </NavigationContainer>
       </PaperProvider>

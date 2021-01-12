@@ -5,7 +5,7 @@ const lectureSelected = async (socket, data) => {
   const courseId = data.selectedCourse.id;
 
   // Create the lecture
-  const lecture = await new Lecture({ course: courseId._id, type: lectureType }).save();
+  const lecture = await new Lecture({ course: courseId, type: lectureType }).save();
 
   // Send back the lecture id to the tablet
   socket.emit("lecture created", lecture);
