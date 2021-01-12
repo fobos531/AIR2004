@@ -1,25 +1,23 @@
 const jwt = require("jsonwebtoken");
 const Attendance = require("../models/attendance");
 const User = require("../models/user");
+const Lecture = require("../models/lecture");
 const moment = require("moment");
 
 function getDayName(date, locale) {
   return date.toLocaleDateString(locale, { weekday: "long" }).toUpperCase();
 }
 
-const Lecture = require("../models/lecture");
 exports.add = async (req, res) => {
   try {
-    await new Attendance({ ...req.body }).save();
+    console.log('add');
     await new Attendance({
       ...req.body,
     }).save();
     const lectureId = req.body.lecture;
-    console.log('lecture id:', lectureId);
-    //const lecture = await Lecture.findById(lectureId).populate("attendingStudents");
-    //console.log('lecture: ', lecture);
-    await Lecture.findOneAndUpdate({_id : lectureId}, {
-      $push: { attendingStudents: req.body.user }
+    Lecture.findOneAndUpdate(
+      { _id : lectureId }, 
+      { $push: { attendingStudents: req.body.user },
     }, function(err, affected, resp) {
       console.log(resp);
     });
@@ -65,28 +63,46 @@ exports.getAll = async (req, res) => {
         path: "course",
       },
     });
-
     const data = allAttendances
       .map((attendance) => {
-        if (attendance.lecture !== null && attendance.lecture !== undefined) {
-          return {
-            id: attendance._id,
-            fullDate: attendance.modifiedAt,
-            date: moment(attendance.modifiedAt).format("DD"),
-            month: moment(attendance.modifiedAt).format("MMMM").substr(0, 3),
-            day: getDayName(attendance.modifiedAt, "en-US"),
-            courseName: attendance.lecture.course.name,
-            lectureType: attendance.lecture.type,
-            attendanceTime: moment(attendance.modifiedAt).subtract(1, "hours").format("HH:mm"),
-            present: true,
-          };
-        }
+        return {
+          id: attendance._id,
+          fullDate: attendance.modifiedAt,
+          date: moment(attendance.modifiedAt).format("DD"),
+          month: moment(attendance.modifiedAt).format("MMMM").substr(0, 3),
+          day: getDayName(attendance.modifiedAt, "en-US"),
+          courseName: attendance.lecture.course.name,
+          lectureType: attendance.lecture.type,
+          attendanceTime: moment(attendance.modifiedAt).subtract(1, "hours").format("HH:mm"),
+          present: true,
+        };
       })
-      .filter((item) => item !== undefined);
-
     res.status(200).json({ success: true, data });
   } catch (error) {
     console.log(error);
+    res.status(400).json({ success: false, error });
+  }
+};
+
+exports.getMissed = async (req, res) => {
+  try {
+    const token = req.header("Authorization").replace("Bearer ", "");
+    let studentTokenData = jwt.verify(token, process.env.JWT_SECRET);
+
+    let student = await User.find({ jmbag: studentTokenData.jmbag });
+
+    const missedAttendance = await Lecture.find().populate({
+      path: "course"
+    });
+
+    const missed = missedAttendance.map(item => {
+      if (item.course.enrolledStudents.includes(student._id) && !item.attendingStudents.includes(student._id)) {
+        return item;
+      }
+    });
+
+    res.status(200).json({ success: true, missed });
+  } catch (error) {
     res.status(400).json({ success: false, error });
   }
 };

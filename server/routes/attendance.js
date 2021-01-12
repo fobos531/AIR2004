@@ -63,5 +63,6 @@ router.get("/", attendanceController.getAll);
  */
 router.post("/mark", attendanceController.markAttendance);
 router.delete("/:id", attendanceController.delete);
+router.get("/missed", attendanceController.getMissed)
 
 module.exports = router;
