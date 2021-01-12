@@ -1,15 +1,25 @@
 import React from "react";
 import QRCodeScanner from "react-native-qrcode-scanner";
 import { Dimensions, View } from "react-native";
+import { StackActions } from "@react-navigation/native";
+import { useDispatch, useSelector } from "react-redux";
 
+import { signInTablet } from "../../actions/index";
 import api from "../../utils/api";
 
-const QR = () => {
+const QR = ({ navigation, route }) => {
+  const user = useSelector((state) => state);
+
+  const dispatch = useDispatch();
   const onScanned = (e) => {
-    const token = JSON.parse(e.data).token;
-    api.post("/user/login/tablet", { token }).then(({ data }) => {
-      // TODO
-      console.log(data);
+    const attendanceToken = e.data;
+    api.post("/user/login/tablet", { attendanceToken }).then(({ data }) => {
+      console.log("SOCKET TOKEN", attendanceToken);
+      dispatch(signInTablet(attendanceToken));
+
+      //  console.log("USER LOGGED IN?", user.loggedInTablet)
+
+      navigation.dispatch(StackActions.pop(1));
     });
   };
 

@@ -14,7 +14,11 @@ const attendanceSchema = mongoose.Schema({
     type: String,
     required: false,
     unique: true,
-    default: cryptoRandomString({ length: 15 }),
+    default: () => cryptoRandomString({ length: 15 }),
+  },
+  modifiedAt: {
+    type: Date,
+    default: Date.now,
   },
 });
 

@@ -1,33 +1,12 @@
-import React, { useEffect, useRef, useState } from "react";
+import React from "react";
 import { View, Text, StyleSheet, Dimensions, Image } from "react-native";
-import { useDispatch } from "react-redux";
 import QRCode from "react-native-qrcode-svg";
-import { io } from "socket.io-client";
-import { API_URL } from "@env";
-
-import { signIn } from "../actions/";
+import { useSelector } from "react-redux";
 
 const Login = () => {
-  const socket = useRef();
-  const [token, setToken] = useState(null);
-  const dispatch = useDispatch();
+  const attendanceToken = useSelector((state) => state.attendanceToken);
 
-  useEffect(() => {
-    socket.current = io(API_URL);
-
-    socket.current.on("tokenReceived", (data) =>
-      setToken(JSON.stringify(data)),
-    );
-
-    socket.current.on("loginSuccess", (data) => {
-      console.log(data);
-      dispatch(signIn(data));
-    });
-
-    return () => socket.current.disconnect();
-  }, []);
-
-  if (!token)
+  if (!attendanceToken)
     return (
       <View>
         <Text>Loading...</Text>
@@ -37,11 +16,7 @@ const Login = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.text}>Please scan the QR code to login</Text>
-      <QRCode
-        value={token}
-        style={styles.qr}
-        size={Dimensions.get("screen").height * 0.45}
-      />
+      <QRCode value={attendanceToken} style={styles.qr} size={Dimensions.get("screen").height * 0.45} />
       <Image style={styles.logo} source={require("../assets/logo.png")} />
     </View>
   );

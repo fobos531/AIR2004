@@ -24,6 +24,7 @@ const userController = require("../controllers/user");
  *      '200':
  *        description: A successful response
  */
+
 router.post("/login", userController.login);
 
 /**
@@ -46,7 +47,64 @@ router.post("/login", userController.login);
  *      '200':
  *        description: A successful response
  */
+
 router.post("/login/tablet", userController.loginTablet);
+
+/**
+ * @swagger
+ * /user/enroll:
+ *  post:
+ *    tags:
+ *    - "/user/"
+ *    summary: Enroll a student into a specified course
+ *    parameters:
+ *    - in: header
+ *      name: Bearer
+ *      description: User token
+ *    - name: "body"
+ *      in: "body"
+ *      description: "Course join passcode"
+ *      schema:
+ *        type: "object"
+ *        properties:
+ *          passcode:
+ *            type: "string"
+ *    responses:
+ *      '200':
+ *        description: An object containing the both the newly modified student and the course
+ *      '400':
+ *        description: An unsuccessful response
+ */
+
+router.post("/enroll", userController.enroll);
+
+/**
+ * @swagger
+ * /user/assignCourse:
+ *  post:
+ *    tags:
+ *    - "/user/"
+ *    summary: Assign a course to a teacher
+ *    parameters:
+ *    - in: header
+ *      name: Bearer
+ *      description: User token
+ *    - name: "body"
+ *      in: "body"
+ *      description: "Course join passcode"
+ *      schema:
+ *        type: "object"
+ *        properties:
+ *          passcode:
+ *            type: "string"
+ *    responses:
+ *      '200':
+ *        description: An object containing the both the newly modified teacher and the course
+ *      '400':
+ *        description: An unsuccessful response
+ */
+
+router.post("/assignCourse", userController.assignCourse);
 
 /**
  * @swagger
@@ -68,7 +126,33 @@ router.post("/login/tablet", userController.loginTablet);
  *      '200':
  *        description: A successful response
  */
+
 router.get("/verify", userController.verify);
+
+/**
+ * @swagger
+ * /user/resetPassword:
+ *  post:
+ *    tags:
+ *    - "/user/"
+ *    summary: Reset a user's (student/teacher) password
+ *    parameters:
+ *    - name: "body"
+ *      in: "body"
+ *      description: "Email used to register"
+ *      schema:
+ *        type: "object"
+ *        properties:
+ *          email:
+ *            type: "string"
+ *    responses:
+ *      '200':
+ *        description: An successful response
+ *      '400':
+ *        description: An unsuccessful response containing the error description
+ */
+
+router.post("/resetPassword", userController.resetPassword);
 
 /**
  * @swagger
@@ -105,7 +189,24 @@ router.get("/verify", userController.verify);
  *      '200':
  *        description: A successful response
  */
+
 router.post("/:role/register", userController.register);
+
+/**
+ * @swagger
+ * /user/details:
+ *  get:
+ *    tags:
+ *    - "/user/"
+ *    summary: Get detailed information about the user
+ *    responses:
+ *      '200':
+ *        description: Detailed information about the requested user
+ *      '400':
+ *        description: An unsuccessful request
+ */
+
+router.get("/details", userController.getSingle);
 
 /**
  * @swagger
@@ -118,6 +219,7 @@ router.post("/:role/register", userController.register);
  *      '200':
  *        description: A successful response
  */
+
 router.get("/:role", userController.getAllUsers);
 
 module.exports = router;
