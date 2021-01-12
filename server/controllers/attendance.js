@@ -1,11 +1,20 @@
 const bcrypt = require("bcrypt");
 const Attendance = require("../models/attendance");
-
+const Lecture = require("../models/lecture");
 exports.add = async (req, res) => {
   try {
     await new Attendance({
       ...req.body,
     }).save();
+    const lectureId = req.body.lecture;
+    console.log('lecture id:', lectureId);
+    //const lecture = await Lecture.findById(lectureId).populate("attendingStudents");
+    //console.log('lecture: ', lecture);
+    await Lecture.findOneAndUpdate({_id : lectureId}, {
+      $push: { attendingStudents: req.body.user }
+    }, function(err, affected, resp) {
+      console.log(resp);
+    });
     res.status(200).json({ success: true });
   } catch (error) {
     res.status(400).json({ success: false, error });

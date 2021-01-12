@@ -10,6 +10,8 @@ import CoursesViewAdd from "./pages/CoursesViewAdd/CoursesViewAdd";
 import CoursesViewEdit from "./pages/CoursesViewEdit/CoursesViewEdit";
 import LecturesView from "./pages/LecturesView/LecturesView";
 import LecturesViewAdd from "./pages/LecturesViewAdd/LecturesViewAdd";
+import AttendanceView from "./pages/AttendanceView/AttendanceView";
+import AttendanceViewAdd from "./pages/AttendanceViewAdd/AttendanceViewAdd";
 import Login from "./pages/Login/Login";
 import PrivateRoute from "./components/PrivateRoute";
 
@@ -63,6 +65,16 @@ const App = () => {
         <PrivateRoute path="/lectures/add">
           <Dashboard>
             <LecturesViewAdd />
+          </Dashboard>
+        </PrivateRoute>
+        <PrivateRoute exact path="/attendances">
+          <Dashboard>
+            <AttendanceView />
+          </Dashboard>
+        </PrivateRoute>
+        <PrivateRoute path="/attendances/add">
+          <Dashboard>
+            <AttendanceViewAdd />
           </Dashboard>
         </PrivateRoute>
         <PrivateRoute path="/">

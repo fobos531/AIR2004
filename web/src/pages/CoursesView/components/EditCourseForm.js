@@ -4,7 +4,9 @@ import { TextField, Button, Typography, Snackbar } from "@material-ui/core";
 import { useForm } from "react-hook-form";
 import Alert from "../../../components/Alert";
 import * as Yup from "yup";
-import { useHistory, useLocation } from "react-router-dom";
+import { useHistory } from "react-router-dom";
+import { useSelector, useDispatch } from  "react-redux";
+import { courseEdit } from "../../../store/actions/userActions";
 
 import api from "../../../api/api";
 
@@ -24,26 +26,9 @@ const validationSchema = Yup.object().shape({
 });
 
 const EditCourseForm = () => {
-  const location = useLocation();
+  const selectedCourse = useSelector((state) => state.courseEdit);
 
-  const [initialValues, setInitialValues]=  useState({
-    id: "",
-    name: "",
-    passcode: "",
-    allowedAbsences: 0,
-  });
-
-  useEffect(() => {
-    if (location.state !== undefined) {
-      setInitialValues({
-        id : location.state.detail.id,
-        name: location.state.detail.data[0],
-        passcode: location.state.detail.data[1],
-        allowedAbsences: location.state.detail.data[2]
-      });
-      console.log(location.state.detail);
-    }
- }, [location]);
+  const dispatch = useDispatch();
 
   const [SnackbarData, setSnackBarData] = useState({
     isOpen: false,
@@ -54,11 +39,11 @@ const EditCourseForm = () => {
   const { register, handleSubmit, errors, reset } = useForm({
     mode: "onChange",
     resolver: yupResolver(validationSchema),
-    defaultValues: initialValues 
+    defaultValues: selectedCourse
   });
   const history = useHistory();
   const onSubmit = (data) => {
-    const course = { data, id: location.state.detail.id}
+    const course = { data, id: selectedCourse.id }
     console.log('course: ', course)
     
     api
@@ -69,12 +54,12 @@ const EditCourseForm = () => {
         console.log("RESPONSE", response);
         setSnackBarData({ isOpen: true, response: response.data.success });
         reset();
+        history.push('/courses');
       })
       .catch((error) => {
         setSnackBarData({ isOpen: true, response: false });
         reset();
       });
-      history.push('/courses');
   };
   console.log("SNACKBAR response", SnackbarData.response);
 
@@ -91,8 +76,8 @@ const EditCourseForm = () => {
           fullWidth
           id="name"
           autoComplete="name"
-          value={initialValues.name}
-          onChange={({ target }) => setInitialValues({ ...initialValues, name: target.value })}
+          value={selectedCourse.name}
+          onChange={({ target }) => dispatch(courseEdit({...selectedCourse, name: target.value}))}
         />
         {errors.name?.message && <Typography>{errors.name.message}</Typography>}
 
@@ -106,8 +91,8 @@ const EditCourseForm = () => {
           fullWidth
           id="passcode"
           autoComplete="passcode"
-          value={initialValues.passcode}
-          onChange={({ target }) => setInitialValues({ ...initialValues, passcode: target.value })}
+          value={selectedCourse.passcode}
+          onChange={({ target }) => dispatch(courseEdit({...selectedCourse, passcode: target.value}))}
         />
         {errors.passcode?.message && <Typography>{errors.passcode.message}</Typography>}
 
@@ -121,8 +106,8 @@ const EditCourseForm = () => {
           fullWidth
           id="allowedAbsences"
           autoComplete="allowedAbsences"
-          value={initialValues.allowedAbsences}
-          onChange={({ target }) => setInitialValues({ ...initialValues, allowedAbsences: target.value })}
+          value={selectedCourse.allowedAbsences}
+          onChange={({ target }) => dispatch(courseEdit({...selectedCourse, allowedAbsences: target.value}))}
         />
         {errors.allowedAbsences?.message && <Typography>{errors.allowedAbsences.message}</Typography>}
         <Button type="submit" fullWidth variant="contained" color="primary" className={classes.submit}>
@@ -132,7 +117,7 @@ const EditCourseForm = () => {
       <Snackbar open={SnackbarData.isOpen} autoHideDuration={4000} onClose={handleSnackBarClose}>
         {SnackbarData.response != null && (
           <Alert onClose={handleSnackBarClose} severity={SnackbarData.response == false ? "error" : "success"}>
-            {SnackbarData.response == false ? "Unable to add a new course! Please check your data!" : "Course successfully added!"}
+            {SnackbarData.response == false ? "Unable to update course! Please check your data!" : "Course successfully updated!"}
           </Alert>
         )}
       </Snackbar>
