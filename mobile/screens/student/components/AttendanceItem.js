@@ -1,5 +1,5 @@
 import React from "react";
-import { View } from "react-native";
+import { View, StyleSheet } from "react-native";
 import { Card, Paragraph } from "react-native-paper";
 import Feather from "react-native-vector-icons/Feather";
 
@@ -28,14 +28,7 @@ const AttendanceItem = ({ item }) => {
   } else {
     return (
       <View>
-        <Card
-          style={{
-            marginLeft: 10,
-            marginRight: 10,
-            marginTop: 7,
-            marginBottom: 5,
-          }}
-        >
+        <Card style={styles.card}>
           <Card.Content style={{ flexDirection: "row" }}>
             <View style={{ marginRight: 20 }}>
               <Paragraph style={{ fontSize: 30, lineHeight: 40 }}>
@@ -55,7 +48,9 @@ const AttendanceItem = ({ item }) => {
               >
                 {item.courseName}
               </Paragraph>
-              <Paragraph>{item.attendanceTime}</Paragraph>
+              {item.attendanceTime && (
+                <Paragraph>{item.attendanceTime}</Paragraph>
+              )}
             </View>
 
             <View style={{ position: "absolute", right: 10, top: 7 }}>
@@ -72,5 +67,15 @@ const AttendanceItem = ({ item }) => {
     );
   }
 };
+
+const styles = StyleSheet.create({
+  card: {
+    marginLeft: 10,
+    marginRight: 10,
+    marginTop: 7,
+    marginBottom: 5,
+    elevation: 4,
+  },
+});
 
 export default AttendanceItem;

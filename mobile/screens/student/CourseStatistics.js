@@ -28,6 +28,7 @@ const theme = {
 const CourseStatistics = ({ route }) => {
   const [enrolledCourses, setEnrolledCourses] = useState([]);
   const [attendanceData, setAttendanceData] = useState([]);
+  const [missedAttendanceData, setMissedAttendanceData] = useState([]);
   const [lectureData, setLectureData] = useState([]);
   const [animationVisible, setAnimationVisible] = useState(true);
   const { courseId } = route.params;
@@ -36,6 +37,54 @@ const CourseStatistics = ({ route }) => {
   const user = useSelector((state) => state);
 
   useEffect(() => {
+    const getAllSubmitedAttendances = async () => {
+      await api
+        .get("/attendance", {
+          headers: {
+            Authorization: `Bearer ${user.token}`,
+            "Content-Type": "application/json",
+          },
+        })
+        .then(({ data }) => {
+          setAttendanceData(
+            data.data
+              .filter((item) => item.courseName === selectedCourse)
+              .sort((a, b) =>
+                moment(a.fullDate).isBefore(b.fullDate)
+                  ? -1
+                  : moment(a.fullDate).isAfter(b.fullDate)
+                  ? 1
+                  : 0
+              )
+          );
+        })
+        .catch((error) => console.log(error));
+    };
+
+    const getAllMissedAttendances = async () => {
+      await api
+        .get("attendance/missed", {
+          headers: {
+            Authorization: `Bearer ${user.token}`,
+            "Content-Type": "application/json",
+          },
+        })
+        .then(({ data }) => {
+          setMissedAttendanceData(
+            data.data
+              .sort((a, b) =>
+                moment(a.fullDate).isBefore(b.fullDate)
+                  ? -1
+                  : moment(a.fullDate).isAfter(b.fullDate)
+                  ? 1
+                  : 0
+              )
+              .filter((item) => item.courseName === selectedCourse)
+          );
+        })
+        .catch((error) => console.log(error));
+    };
+
     api
       .get("/user/details", {
         headers: {
@@ -49,37 +98,16 @@ const CourseStatistics = ({ route }) => {
       .catch((error) => console.log(error));
 
     api
-      .get("/attendance", {
-        headers: {
-          Authorization: `Bearer ${user.token}`,
-          "Content-Type": "application/json",
-        },
-      })
-      .then(({ data }) => {
-        setAttendanceData(
-          data.data
-            .filter((item) => item.courseName === selectedCourse)
-            .sort((a, b) =>
-              moment(a.fullDate).isBefore(b.fullDate)
-                ? -1
-                : moment(a.fullDate).isAfter(b.fullDate)
-                ? 1
-                : 0
-            )
-        );
-      })
-      .catch((error) => console.log(error));
-
-    api
       .get("/lecture")
       .then(({ data }) =>
-        console.log(
-          setLectureData(
-            data.data.filter((item) => item.course.name === selectedCourse)
-          )
+        setLectureData(
+          data.data.filter((item) => item.course.name === selectedCourse)
         )
       )
       .catch((error) => console.log(error));
+
+    getAllSubmitedAttendances();
+    getAllMissedAttendances();
 
     setTimeout(() => {
       setAnimationVisible(false);
@@ -157,10 +185,10 @@ const CourseStatistics = ({ route }) => {
                   Your attendance on {selectedCourse}
                 </Text>
 
-                {attendanceData.length !== 0 ? (
+                {attendanceData.concat(missedAttendanceData).length !== 0 ? (
                   <FlatList
                     keyExtractor={(item) => item.id}
-                    data={attendanceData}
+                    data={attendanceData.concat(missedAttendanceData)}
                     renderItem={({ item }) => <AttendanceItem item={item} />}
                   />
                 ) : (
