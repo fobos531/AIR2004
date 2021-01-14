@@ -10,11 +10,9 @@ import {
   Button,
   Text,
   Surface,
-  DefaultTheme,
   Portal,
   Dialog,
   TextInput,
-  Provider as PaperProvider,
   FAB,
 } from "react-native-paper";
 import { LineChart, BarChart } from "react-native-chart-kit";
@@ -28,14 +26,7 @@ import CourseItem from "../student/components/CourseItem";
 import AttendanceItem from "../student/components/AttendanceItem";
 
 import api from "../../utils/api";
-
-const theme = {
-  ...DefaultTheme,
-  colors: {
-    ...DefaultTheme.colors,
-    surface: "rgb(255, 255, 255)",
-  },
-};
+import { set } from "react-native-reanimated";
 
 const Dashboard = ({ navigation }) => {
   const [coursePasscode, setCoursePasscode] = useState("");
@@ -111,6 +102,7 @@ const Dashboard = ({ navigation }) => {
       },
     ],
   };
+
   const handleSubmitAddCourse = () => {
     const body = { passcode: coursePasscode };
 
@@ -151,7 +143,7 @@ const Dashboard = ({ navigation }) => {
   };
 
   return (
-    <PaperProvider>
+    <View>
       <ScrollView style={styles.container}>
         <Text style={styles.title}>
           Hi,{" "}
@@ -162,10 +154,7 @@ const Dashboard = ({ navigation }) => {
 
         <View style={{ marginTop: 25 }}>
           <Text style={styles.font}>Here's your summary for today:</Text>
-          <Surface
-            style={{ ...styles.graphContainer, marginTop: 20 }}
-            theme={theme}
-          >
+          <Surface style={{ ...styles.graphContainer, marginTop: 20 }}>
             <Text
               style={
                 (styles.font,
@@ -173,22 +162,17 @@ const Dashboard = ({ navigation }) => {
                   marginLeft: 12,
                   marginTop: 12,
                   fontWeight: "bold",
-                  color: "#626262",
                 })
               }
             >
               Recent attendance
             </Text>
 
-            <Text
-              style={
-                (styles.font, { marginLeft: 12, color: "#000", fontSize: 34 })
-              }
-            >
+            <Text style={(styles.font, { marginLeft: 12, fontSize: 34 })}>
               {lastWeekAttendanceData.length}
             </Text>
 
-            <Text style={(styles.font, { marginLeft: 12, color: "#000" })}>
+            <Text style={(styles.font, { marginLeft: 12 })}>
               in the last week
             </Text>
 
@@ -200,30 +184,65 @@ const Dashboard = ({ navigation }) => {
                   padding: 10,
                 }}
               >
-                <BarChart
-                  data={graphData}
-                  showBarTops={true}
-                  showValuesOnTopOfBars={true}
-                  withInnerLines={false}
-                  segments={5}
-                  withHorizontalLabels={false}
-                  width={320}
-                  height={220}
-                  withCustomBarColorFromData={true}
-                  flatColor={true}
-                  chartConfig={{
-                    backgroundGradientFrom: "#Ffffff",
-                    backgroundGradientTo: "#ffffff",
-                    data: graphData.datasets,
-                    decimalPlaces: 2,
-                    color: () => "#731ff0",
-                    labelColor: () => "#6a6a6a",
-                  }}
-                />
+                {user.themePreference === "dark" ? (
+                  <BarChart
+                    data={graphData}
+                    showBarTops={true}
+                    showValuesOnTopOfBars={true}
+                    withInnerLines={false}
+                    segments={5}
+                    withHorizontalLabels={false}
+                    width={320}
+                    height={220}
+                    withCustomBarColorFromData={true}
+                    flatColor={true}
+                    chartConfig={{
+                      backgroundGradientFrom: "#272727",
+                      backgroundGradientTo: "#272727",
+                      data: graphData.datasets,
+                      decimalPlaces: 2,
+                      color: () => "#731ff0",
+                      labelColor: () => "#6a6a6a",
+                    }}
+                  />
+                ) : (
+                  <BarChart
+                    data={graphData}
+                    showBarTops={true}
+                    showValuesOnTopOfBars={true}
+                    withInnerLines={false}
+                    segments={5}
+                    withHorizontalLabels={false}
+                    width={320}
+                    height={220}
+                    withCustomBarColorFromData={true}
+                    flatColor={true}
+                    chartConfig={{
+                      backgroundGradientFrom: "#ffffff",
+                      backgroundGradientTo: "#ffffff",
+                      data: graphData.datasets,
+                      decimalPlaces: 2,
+                      color: () => "#731ff0",
+                      labelColor: () => "#6a6a6a",
+                    }}
+                  />
+                )}
               </View>
             ) : (
               <View style={{ marginLeft: 20 }}>
-                <MaterialCommunityIcons name="cloud-sync-outline" size={26} />
+                {user.themePreference === "dark" ? (
+                  <MaterialCommunityIcons
+                    color="white"
+                    name="cloud-sync-outline"
+                    size={26}
+                  />
+                ) : (
+                  <MaterialCommunityIcons
+                    color="black"
+                    name="cloud-sync-outline"
+                    size={26}
+                  />
+                )}
                 <Text style={styles.font}>No data found!</Text>
               </View>
             )}
@@ -233,7 +252,6 @@ const Dashboard = ({ navigation }) => {
         <View style={{ marginTop: 15 }}>
           <Surface
             style={{ ...styles.graphContainer, height: 200 }}
-            theme={theme}
             nestedScrollEnabled={true}
           >
             <Text
@@ -243,7 +261,6 @@ const Dashboard = ({ navigation }) => {
                   margin: 12,
                   marginBottom: 5,
                   fontWeight: "bold",
-                  color: "#626262",
                 })
               }
             >
@@ -259,7 +276,19 @@ const Dashboard = ({ navigation }) => {
               />
             ) : (
               <View style={{ marginLeft: 20 }}>
-                <MaterialCommunityIcons name="cloud-sync-outline" size={26} />
+                {user.themePreference === "dark" ? (
+                  <MaterialCommunityIcons
+                    color="white"
+                    name="cloud-sync-outline"
+                    size={26}
+                  />
+                ) : (
+                  <MaterialCommunityIcons
+                    color="black"
+                    name="cloud-sync-outline"
+                    size={26}
+                  />
+                )}
                 <Text style={styles.font}>No data found!</Text>
               </View>
             )}
@@ -269,7 +298,6 @@ const Dashboard = ({ navigation }) => {
         <View style={{ marginTop: 15 }}>
           <Surface
             style={{ ...styles.graphContainer, height: 200, marginBottom: 100 }}
-            theme={theme}
             nestedScrollEnabled={true}
           >
             <Text
@@ -279,7 +307,6 @@ const Dashboard = ({ navigation }) => {
                   margin: 12,
                   marginBottom: 5,
                   fontWeight: "bold",
-                  color: "#626262",
                 })
               }
             >
@@ -298,17 +325,40 @@ const Dashboard = ({ navigation }) => {
               />
             ) : (
               <View style={{ marginLeft: 20 }}>
-                <MaterialCommunityIcons name="cloud-sync-outline" size={26} />
+                {user.themePreference === "dark" ? (
+                  <MaterialCommunityIcons
+                    color="white"
+                    name="cloud-sync-outline"
+                    size={26}
+                  />
+                ) : (
+                  <MaterialCommunityIcons
+                    color="black"
+                    name="cloud-sync-outline"
+                    size={26}
+                  />
+                )}
                 <Text style={styles.font}>No data found!</Text>
               </View>
             )}
 
-            <MaterialCommunityIcons
-              style={styles.plusIcon}
-              name="plus"
-              size={35}
-              onPress={() => toggleVisible(true)}
-            />
+            {user.themePreference === "dark" ? (
+              <MaterialCommunityIcons
+                style={styles.plusIcon}
+                color="white"
+                name="plus"
+                size={35}
+                onPress={() => toggleVisible(true)}
+              />
+            ) : (
+              <MaterialCommunityIcons
+                style={styles.plusIcon}
+                color="black"
+                name="plus"
+                size={35}
+                onPress={() => toggleVisible(true)}
+              />
+            )}
           </Surface>
         </View>
 
@@ -362,7 +412,7 @@ const Dashboard = ({ navigation }) => {
         color="black"
         onPress={() => navigation.push("QRScan")}
       />
-    </PaperProvider>
+    </View>
   );
 };
 
@@ -371,7 +421,6 @@ const styles = StyleSheet.create({
     padding: "4%",
     width: "100%",
     height: "100%",
-    backgroundColor: "#fff",
   },
 
   title: {
