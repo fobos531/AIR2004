@@ -96,8 +96,8 @@ const styles = StyleSheet.create({
   },
   fab: {
     position: "absolute",
-    marginBottom: 110,
-    marginRight: 20,
+    marginBottom: 105,
+    marginRight: 12,
     right: 0,
     bottom: 0,
   },

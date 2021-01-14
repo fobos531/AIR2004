@@ -187,3 +187,24 @@ exports.assignCourse = async (req, res) => {
     res.status(400).json({ success: false, error });
   }
 };
+
+exports.update = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    Object.assign(user, req.body);
+    user.save();
+    res.status(200).json({ success: true, user });
+  } catch (error) {
+    res.status(400).json({ success: false, error });
+  }
+};
+
+exports.delete = async (req, res) => {
+  try {
+    const user = await (await User.findById(req.params.id)).deleteOne();
+    const data = user.toJSON();
+    res.status(200).json({ success: true, data });
+  } catch (error) {
+    res.status(400).json({ success: false, error }); 
+  }
+};
