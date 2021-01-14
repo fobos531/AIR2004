@@ -40,7 +40,7 @@ const Statistics = ({ navigation }) => {
   }, []);
 
   return (
-    <PaperProvider>
+    <View>
       <View style={styles.container}>
         <View style={styles.courseContainer}>
           <Text
@@ -100,7 +100,7 @@ const Statistics = ({ navigation }) => {
           )}
         </View>
       </View>
-    </PaperProvider>
+    </View>
   );
 };
 
