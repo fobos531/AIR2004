@@ -72,17 +72,25 @@ const Attendance = () => {
         break;
 
       case "Missed":
-        setFilteredData(
-          attendanceData
-            .filter((item) => item.present === false)
-            .sort((a, b) =>
-              moment(a.fullDate).isBefore(b.fullDate)
-                ? -1
-                : moment(a.fullDate).isAfter(b.fullDate)
-                ? 1
-                : 0
-            )
-        );
+        api
+          .get("attendance/missed", {
+            headers: {
+              Authorization: `Bearer ${user.token}`,
+              "Content-Type": "application/json",
+            },
+          })
+          .then(({ data }) => {
+            setFilteredData(
+              data.data.sort((a, b) =>
+                moment(a.fullDate).isBefore(b.fullDate)
+                  ? -1
+                  : moment(a.fullDate).isAfter(b.fullDate)
+                  ? 1
+                  : 0
+              )
+            );
+          })
+          .catch((error) => console.log(error));
         break;
 
       case "LastWeek": {
@@ -108,10 +116,8 @@ const Attendance = () => {
       case "LastMonth":
         setFilteredData(
           attendanceData
-            .filter(
-              (item) =>
-                moment().isSame(item.fullDate, "month") &&
-                moment().isSame(item.fullDate, "year")
+            .filter((item) =>
+              moment().subtract(1, "month").isSame(item.fullDate, "month")
             )
             .sort((a, b) =>
               moment(a.fullDate).isBefore(b.fullDate)

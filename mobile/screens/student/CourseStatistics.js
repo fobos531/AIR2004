@@ -17,17 +17,10 @@ import api from "../../utils/api";
 
 const moment = require("moment");
 
-const theme = {
-  ...DefaultTheme,
-  colors: {
-    ...DefaultTheme.colors,
-    surface: "rgb(255, 255, 255)",
-  },
-};
-
 const CourseStatistics = ({ route }) => {
   const [enrolledCourses, setEnrolledCourses] = useState([]);
   const [attendanceData, setAttendanceData] = useState([]);
+  const [missedAttendanceData, setMissedAttendanceData] = useState([]);
   const [lectureData, setLectureData] = useState([]);
   const [animationVisible, setAnimationVisible] = useState(true);
   const { courseId } = route.params;
@@ -36,6 +29,54 @@ const CourseStatistics = ({ route }) => {
   const user = useSelector((state) => state);
 
   useEffect(() => {
+    const getAllSubmitedAttendances = async () => {
+      await api
+        .get("/attendance", {
+          headers: {
+            Authorization: `Bearer ${user.token}`,
+            "Content-Type": "application/json",
+          },
+        })
+        .then(({ data }) => {
+          setAttendanceData(
+            data.data
+              .filter((item) => item.courseName === selectedCourse)
+              .sort((a, b) =>
+                moment(a.fullDate).isBefore(b.fullDate)
+                  ? -1
+                  : moment(a.fullDate).isAfter(b.fullDate)
+                  ? 1
+                  : 0
+              )
+          );
+        })
+        .catch((error) => console.log(error));
+    };
+
+    const getAllMissedAttendances = async () => {
+      await api
+        .get("attendance/missed", {
+          headers: {
+            Authorization: `Bearer ${user.token}`,
+            "Content-Type": "application/json",
+          },
+        })
+        .then(({ data }) => {
+          setMissedAttendanceData(
+            data.data
+              .sort((a, b) =>
+                moment(a.fullDate).isBefore(b.fullDate)
+                  ? -1
+                  : moment(a.fullDate).isAfter(b.fullDate)
+                  ? 1
+                  : 0
+              )
+              .filter((item) => item.courseName === selectedCourse)
+          );
+        })
+        .catch((error) => console.log(error));
+    };
+
     api
       .get("/user/details", {
         headers: {
@@ -49,37 +90,16 @@ const CourseStatistics = ({ route }) => {
       .catch((error) => console.log(error));
 
     api
-      .get("/attendance", {
-        headers: {
-          Authorization: `Bearer ${user.token}`,
-          "Content-Type": "application/json",
-        },
-      })
-      .then(({ data }) => {
-        setAttendanceData(
-          data.data
-            .filter((item) => item.courseName === selectedCourse)
-            .sort((a, b) =>
-              moment(a.fullDate).isBefore(b.fullDate)
-                ? -1
-                : moment(a.fullDate).isAfter(b.fullDate)
-                ? 1
-                : 0
-            )
-        );
-      })
-      .catch((error) => console.log(error));
-
-    api
       .get("/lecture")
       .then(({ data }) =>
-        console.log(
-          setLectureData(
-            data.data.filter((item) => item.course.name === selectedCourse)
-          )
+        setLectureData(
+          data.data.filter((item) => item.course.name === selectedCourse)
         )
       )
       .catch((error) => console.log(error));
+
+    getAllSubmitedAttendances();
+    getAllMissedAttendances();
 
     setTimeout(() => {
       setAnimationVisible(false);
@@ -87,99 +107,83 @@ const CourseStatistics = ({ route }) => {
   }, []);
 
   return (
-    <PaperProvider>
-      <View style={styles.container}>
-        {animationVisible === true ? (
-          <AnimatedLoader
-            visible={animationVisible}
-            overlayColor="rgba(255,255,255,0)"
-            source={require("../../assets/animations/935-loading.json")}
-            animationStyle={styles.lottie}
-            speed={1}
-            loop={false}
-          />
-        ) : (
+    <View style={styles.container}>
+      {animationVisible === true ? (
+        <AnimatedLoader
+          visible={animationVisible}
+          overlayColor="rgba(255,255,255,0)"
+          source={require("../../assets/animations/935-loading.json")}
+          animationStyle={styles.lottie}
+          speed={1}
+          loop={false}
+        />
+      ) : (
+        <View>
           <View>
-            <View>
-              <Surface
-                style={{
-                  ...styles.attendanceContainer,
-                  marginTop: 5,
-                  width: "100%",
-                  height: 100,
-                }}
-                theme={theme}
+            <Surface
+              style={{
+                ...styles.attendanceContainer,
+                marginTop: 5,
+                width: "100%",
+                height: 100,
+              }}
+            >
+              <Text
+                style={
+                  (styles.font,
+                  {
+                    margin: 12,
+                    marginBottom: 5,
+                    fontWeight: "bold",
+                  })
+                }
               >
-                <Text
-                  style={
-                    (styles.font,
-                    {
-                      margin: 12,
-                      marginBottom: 5,
-                      fontWeight: "bold",
-                      color: "#626262",
-                    })
-                  }
-                >
-                  Total attended
-                </Text>
+                Total attended
+              </Text>
 
-                <Text
-                  style={
-                    (styles.font,
-                    { marginLeft: 12, color: "#000", fontSize: 34 })
-                  }
-                >
-                  {attendanceData.length}/{lectureData.length}
-                </Text>
-              </Surface>
-            </View>
-
-            <View style={{ marginTop: 10 }}>
-              <Surface
-                style={{
-                  ...styles.attendanceContainer,
-                  marginTop: 5,
-                  width: "100%",
-                  height: 100,
-                }}
-                theme={theme}
-              >
-                <Text
-                  style={
-                    (styles.font,
-                    {
-                      margin: 12,
-                      marginBottom: 5,
-                      fontWeight: "bold",
-                      color: "#626262",
-                    })
-                  }
-                >
-                  Your attendance on {selectedCourse}
-                </Text>
-
-                {attendanceData.length !== 0 ? (
-                  <FlatList
-                    keyExtractor={(item) => item.id}
-                    data={attendanceData}
-                    renderItem={({ item }) => <AttendanceItem item={item} />}
-                  />
-                ) : (
-                  <View style={{ marginLeft: 20 }}>
-                    <MaterialCommunityIcons
-                      name="cloud-sync-outline"
-                      size={26}
-                    />
-                    <Text style={styles.font}>No data found!</Text>
-                  </View>
-                )}
-              </Surface>
-            </View>
+              <Text style={(styles.font, { marginLeft: 12, fontSize: 34 })}>
+                {attendanceData.length}/{lectureData.length}
+              </Text>
+            </Surface>
           </View>
-        )}
-      </View>
-    </PaperProvider>
+
+          <View style={{ marginTop: 10 }}>
+            <Surface
+              style={{
+                ...styles.attendanceContainer,
+                marginTop: 5,
+              }}
+            >
+              <Text
+                style={
+                  (styles.font,
+                  {
+                    margin: 12,
+                    marginBottom: 5,
+                    fontWeight: "bold",
+                  })
+                }
+              >
+                Your attendance on {selectedCourse}
+              </Text>
+
+              {attendanceData.concat(missedAttendanceData).length !== 0 ? (
+                <FlatList
+                  keyExtractor={(item) => item.id}
+                  data={attendanceData.concat(missedAttendanceData)}
+                  renderItem={({ item }) => <AttendanceItem item={item} />}
+                />
+              ) : (
+                <View style={{ marginLeft: 20 }}>
+                  <MaterialCommunityIcons name="cloud-sync-outline" size={26} />
+                  <Text style={styles.font}>No data found!</Text>
+                </View>
+              )}
+            </Surface>
+          </View>
+        </View>
+      )}
+    </View>
   );
 };
 
