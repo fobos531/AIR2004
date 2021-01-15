@@ -10,22 +10,14 @@ const AttendanceItem = ({ item }) => {
   if (item.present === undefined) {
     return (
       <View>
-        <Card
-          key={item.id}
-          style={{
-            marginLeft: 10,
-            marginRight: 10,
-            marginTop: 7,
-            marginBottom: 5,
-          }}
-        >
-          <Card.Content>
+        <View key={item.id} style={styles.card}>
+          <View>
             <Paragraph>{item.attendanceTime}</Paragraph>
             <Paragraph style={{ fontWeight: "bold" }}>
               {item.courseName}
             </Paragraph>
-          </Card.Content>
-        </Card>
+          </View>
+        </View>
       </View>
     );
   } else {
